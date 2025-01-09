@@ -281,12 +281,12 @@ subprojects {
                 // Skips creating a tag.
                 // Useful when the tag was created externally.
                 // Defaults to `false`.
-                skipTag.set(this@subprojects.project.name != "public-kotlin")
+                skipTag.set(true)
 
                 // Skips creating a release.
                 // Useful when release assets will be handled with an uploader.
                 // Defaults to `false`.
-                skipRelease.set(this@subprojects.project.name != "public-kotlin")
+                skipRelease.set(true)
 
                 // Signs commits with the configured credentials.
                 // The Signing section must be configured as well.
@@ -312,7 +312,7 @@ subprojects {
                         // Enables or disables the deployer.
                         // Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
                         // Defaults to `NEVER`.
-                        active.set(Active.ALWAYS)
+                        active.set(Active.NEVER)
 
                         // URL where the Github service is enabled.
                         url.set("https://maven.pkg.github.com/zmkn/public-kotlin")
