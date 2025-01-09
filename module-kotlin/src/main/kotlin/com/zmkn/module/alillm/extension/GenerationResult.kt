@@ -1,8 +1,8 @@
 package com.zmkn.module.alillm.extension
 
+import com.alibaba.dashscope.aigc.generation.GenerationResult
 import com.zmkn.module.alillm.enumeration.ResponseMessageChoiceFinishReason
 import com.zmkn.module.alillm.model.ResponseMessage
-import com.alibaba.dashscope.aigc.generation.GenerationResult
 
 fun GenerationResult.toResponseMessage(): ResponseMessage {
     val choices =

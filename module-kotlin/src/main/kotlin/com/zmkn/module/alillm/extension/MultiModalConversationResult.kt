@@ -9,11 +9,11 @@ fun MultiModalConversationResult.toResponseMessage(): ResponseMessage {
         output.choices.map { choice ->
             ResponseMessage.Choice(
                 finishReason =
-                    if (!choice.finishReason.isNullOrEmpty() && choice.finishReason != "null") {
-                        ResponseMessageChoiceFinishReason.fromValue(choice.finishReason)
-                    } else {
-                        null
-                    },
+                if (!choice.finishReason.isNullOrEmpty() && choice.finishReason != "null") {
+                    ResponseMessageChoiceFinishReason.fromValue(choice.finishReason)
+                } else {
+                    null
+                },
                 message = choice.message.toResponseMessageChoiceMessage(),
             )
         }

@@ -35,6 +35,11 @@ val projectInfo = mapOf(
         "description" to "Methods from Zmkn",
         "tags" to listOf("kotlin", "method")
     ),
+    "public-kotlin" to mapOf(
+        "name" to "Kotlin Public",
+        "description" to "Public from Zmkn",
+        "tags" to listOf("kotlin", "public")
+    ),
     "module-kotlin" to mapOf(
         "name" to "Kotlin Module",
         "description" to "Modules from Zmkn",
@@ -126,6 +131,8 @@ subprojects {
     }
 
     configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
+        gitRootSearch.set(true)
+
         project {
             name.set("${projectInfo[this@subprojects.project.name]!!["name"]}")
 
@@ -228,7 +235,7 @@ subprojects {
             github {
                 // Disables or enables publication to GitHub.
                 // defaults to `true`.
-                enabled.set(false)
+                enabled.set(true)
 
                 // Defines the connection timeout in seconds.
                 // Defaults to `20`.
@@ -274,12 +281,12 @@ subprojects {
                 // Skips creating a tag.
                 // Useful when the tag was created externally.
                 // Defaults to `false`.
-                skipTag.set(false)
+                skipTag.set(this@subprojects.project.name != "public-kotlin")
 
                 // Skips creating a release.
                 // Useful when release assets will be handled with an uploader.
                 // Defaults to `false`.
-                skipRelease.set(false)
+                skipRelease.set(this@subprojects.project.name != "public-kotlin")
 
                 // Signs commits with the configured credentials.
                 // The Signing section must be configured as well.
@@ -305,7 +312,7 @@ subprojects {
                         // Enables or disables the deployer.
                         // Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
                         // Defaults to `NEVER`.
-                        active.set(Active.NEVER)
+                        active.set(Active.ALWAYS)
 
                         // URL where the Github service is enabled.
                         url.set("https://maven.pkg.github.com/zmkn/public-kotlin")
@@ -387,7 +394,7 @@ subprojects {
                         // Enables or disables the deployer.
                         // Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
                         // Defaults to `NEVER`.
-                        active.set(Active.NEVER)
+                        active.set(Active.ALWAYS)
 
                         // URL where the MavenCentral service is enabled.
                         url.set("https://central.sonatype.com/api/v1/publisher")

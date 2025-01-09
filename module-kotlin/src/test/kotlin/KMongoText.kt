@@ -1,15 +1,15 @@
-import com.zmkn.module.kmongo.KMongo
-import com.ailingqi.module.kmongo.extension.*
-import com.ailingqi.module.kmongo.util.KMongoUtils.bsonToJson
-import com.ailingqi.module.kmongo.util.KMongoUtils.documentToJson
-import com.ailingqi.module.kmongo.util.KMongoUtils.encodeToString
-import com.ailingqi.service.LoggerService
 import com.mongodb.MongoNamespace
 import com.mongodb.client.model.DropIndexOptions
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.RenameCollectionOptions
 import com.mongodb.client.result.InsertOneResult
 import com.mongodb.client.result.UpdateResult
+import com.zmkn.module.kmongo.KMongo
+import com.zmkn.module.kmongo.extension.*
+import com.zmkn.module.kmongo.util.KMongoUtils.bsonToJson
+import com.zmkn.module.kmongo.util.KMongoUtils.documentToJson
+import com.zmkn.module.kmongo.util.KMongoUtils.encodeToString
+import com.zmkn.service.LoggerService
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import model.User
@@ -24,7 +24,7 @@ class KMongoText {
     private val logger = LoggerService.getInstance()
 
     private val user = "usercenter"
-    private val password = "com.ailingqi.lq.usercenter"
+    private val password = "com.zmkn.lq.usercenter"
     private val hosts = listOf("39.106.11.144:27017", "39.106.11.144:27018", "39.106.11.144:27019", "39.106.11.144:27020")
     private val database = "usercenter"
     private val replicaName = "rs0"

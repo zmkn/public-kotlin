@@ -1,8 +1,8 @@
 package com.zmkn.module.alillm.extension
 
+import com.alibaba.dashscope.common.MultiModalMessage
 import com.zmkn.module.alillm.enumeration.MessageRole
 import com.zmkn.module.alillm.model.ResponseMessage
-import com.alibaba.dashscope.common.MultiModalMessage
 
 fun MultiModalMessage.toResponseMessageChoiceMessage(): ResponseMessage.Choice.Message {
     val content =
