@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.shadow) apply false
@@ -68,11 +68,6 @@ val projectInfo = mapOf(
 )
 
 allprojects {
-    group = "com.zmkn"
-    version = "1.0.0-SNAPSHOT"
-}
-
-subprojects {
     apply {
         plugin("maven-publish")
         plugin(rootProject.libs.plugins.kotlin.jvm.get().pluginId)
@@ -84,6 +79,14 @@ subprojects {
     val buildJreleaserDir = layout.buildDirectory.dir("jreleaser").get().asFile
     if (!buildJreleaserDir.exists()) {
         buildJreleaserDir.mkdirs()
+    }
+
+    group = "com.zmkn"
+    version = "1.0.0-SNAPSHOT"
+
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor(300, TimeUnit.SECONDS)
+        resolutionStrategy.cacheDynamicVersionsFor(300, TimeUnit.SECONDS)
     }
 
     configure<JavaPluginExtension> {
@@ -134,11 +137,11 @@ subprojects {
         gitRootSearch.set(true)
 
         project {
-            name.set("${projectInfo[this@subprojects.project.name]!!["name"]}")
+            name.set("${projectInfo[this@allprojects.project.name]!!["name"]}")
 
             // A short description (60 chars max).
             //  Only if configured distributions or announcers.
-            description.set("${projectInfo[this@subprojects.project.name]!!["description"]}")
+            description.set("${projectInfo[this@allprojects.project.name]!!["description"]}")
 
             // A list of author names.
             //  Only if configured distributions or announcers.
@@ -146,7 +149,7 @@ subprojects {
 
             // A list of tags.
             @Suppress("UNCHECKED_CAST")
-            tags.addAll(projectInfo[this@subprojects.project.name]!!["tags"] as List<String>)
+            tags.addAll(projectInfo[this@allprojects.project.name]!!["tags"] as List<String>)
 
             // List of maintainers.
             // Values are typically GitHub/GitLab usernames.
@@ -501,6 +504,19 @@ subprojects {
         }
     }
 
+    tasks.withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
+
+    tasks.withType<ProcessResources> {
+        filteringCharset = "UTF-8"
+    }
+
+    tasks.withType<Javadoc> {
+        options.encoding = "UTF-8"
+        (options as StandardJavadocDocletOptions).addBooleanOption("Xdoclint:all,-missing", true)
+    }
+
     // 声明当前时间
     val currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
 
@@ -525,14 +541,13 @@ subprojects {
     }
 }
 
-tasks.register("build") {
-    // 执行所有子项目的 build 任务
-    dependsOn(gradle.includedBuilds.map { it.task(":build") })
-    dependsOn(subprojects.map { "${it.path}:build" })
-}
-
-tasks.register("clean") {
-    // 执行所有子项目的 clean 任务
-    dependsOn(gradle.includedBuilds.map { it.task(":clean") })
-    dependsOn(subprojects.map { "${it.path}:clean" })
+dependencies {
+    api(libs.zmkn.util.kotlin) // Utilities from Zmkn
+    api(libs.zmkn.model.kotlin) // Models from Zmkn
+    api(libs.zmkn.method.kotlin) // Methods from Zmkn
+    api(libs.zmkn.module.kotlin) // Modules from Zmkn
+    api(libs.zmkn.service.kotlin) // Services from Zmkn
+    api(libs.zmkn.constant.kotlin) // Constants from Zmkn
+    api(libs.zmkn.extension.kotlin) // Extensions from Zmkn
+    api(libs.zmkn.enumeration.kotlin) // Enumerations from Zmkn
 }
