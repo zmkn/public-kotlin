@@ -69,16 +69,9 @@ val projectInfo = mapOf(
 
 allprojects {
     apply {
-        plugin("maven-publish")
         plugin(rootProject.libs.plugins.kotlin.jvm.get().pluginId)
         plugin(rootProject.libs.plugins.ktlint.get().pluginId)
         plugin(rootProject.libs.plugins.shadow.get().pluginId)
-        plugin(rootProject.libs.plugins.jreleaser.get().pluginId)
-    }
-
-    val buildJreleaserDir = layout.buildDirectory.dir("jreleaser").get().asFile
-    if (!buildJreleaserDir.exists()) {
-        buildJreleaserDir.mkdirs()
     }
 
     group = "com.zmkn"
@@ -94,392 +87,425 @@ allprojects {
         withSourcesJar()
     }
 
-    configure<PublishingExtension> {
-        publications {
-            create<MavenPublication>("mavenJava") {
-                groupId = project.group.toString()
-                artifactId = project.name
-                from(components["java"])
-                pom {
-                    name.set("${projectInfo[project.name]!!["name"]}")
-                    description.set("${projectInfo[project.name]!!["description"]}")
-                    url.set("https://github.com/zmkn/public-kotlin")
-                    inceptionYear.set("2025")
-                    licenses {
-                        license {
-                            name.set("MIT License")
-                            url.set("https://github.com/zmkn/public-kotlin/blob/master/LICENSE")
-                        }
-                    }
-                    developers {
-                        developer {
-                            id.set("zmkn")
-                            name.set("HZ")
-                            email.set("beijingren@vip.qq.com")
-                        }
-                    }
-                    scm {
-                        connection.set("scm:git:https://github.com/zmkn/public-kotlin.git")
-                        developerConnection.set("scm:git:git@github.com:zmkn/public-kotlin.git")
+    if (localProperties.getProperty("mavenPublish.enable") == "true") {
+        apply {
+            plugin("maven-publish")
+        }
+
+        configure<PublishingExtension> {
+            publications {
+                create<MavenPublication>("mavenJava") {
+                    groupId = project.group.toString()
+                    artifactId = project.name
+                    from(components["java"])
+                    pom {
+                        name.set("${projectInfo[project.name]!!["name"]}")
+                        description.set("${projectInfo[project.name]!!["description"]}")
                         url.set("https://github.com/zmkn/public-kotlin")
+                        inceptionYear.set("2025")
+                        licenses {
+                            license {
+                                name.set("MIT License")
+                                url.set("https://github.com/zmkn/public-kotlin/blob/master/LICENSE")
+                            }
+                        }
+                        developers {
+                            developer {
+                                id.set("zmkn")
+                                name.set("HZ")
+                                email.set("beijingren@vip.qq.com")
+                            }
+                        }
+                        scm {
+                            connection.set("scm:git:https://github.com/zmkn/public-kotlin.git")
+                            developerConnection.set("scm:git:git@github.com:zmkn/public-kotlin.git")
+                            url.set("https://github.com/zmkn/public-kotlin")
+                        }
                     }
                 }
             }
-        }
-        repositories {
-            maven {
-                url = uri(layout.buildDirectory.dir("staging-deploy").get().asFile)
+            repositories {
+                maven {
+                    name = "local"
+                    url = uri(layout.buildDirectory.dir("staging-deploy").get().asFile)
+                }
+                if (localProperties.getProperty("mavenPublish.deploy.enable") == "true") {
+                    val mavenUrl = if (project.version.toString().endsWith("-SNAPSHOT")) {
+                        "https://repository.zmkn.com/repository/maven-snapshots/"
+                    } else {
+                        "https://repository.zmkn.com/repository/maven-releases/"
+                    }
+                    maven {
+                        name = "maven-zmkn"
+                        url = uri(mavenUrl)
+                        credentials {
+                            username = localProperties.getProperty("mavenPublish.deploy.username")
+                            password = localProperties.getProperty("mavenPublish.deploy.password")
+                        }
+                    }
+                }
             }
         }
     }
 
-    configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
-        gitRootSearch.set(true)
-
-        project {
-            name.set("${projectInfo[this@allprojects.project.name]!!["name"]}")
-
-            // A short description (60 chars max).
-            //  Only if configured distributions or announcers.
-            description.set("${projectInfo[this@allprojects.project.name]!!["description"]}")
-
-            // A list of author names.
-            //  Only if configured distributions or announcers.
-            authors.addAll(listOf("HZ"))
-
-            // A list of tags.
-            @Suppress("UNCHECKED_CAST")
-            tags.addAll(projectInfo[this@allprojects.project.name]!!["tags"] as List<String>)
-
-            // List of maintainers.
-            // Values are typically GitHub/GitLab usernames.
-            maintainers.addAll(listOf("HZ"))
-
-            // The stereotype of this project.
-            // Supported values are [`NONE`, `CLI`, `DESKTOP`, `WEB`, `MOBILE`].
-            // Defaults to `NONE`.
-            stereotype.set(Stereotype.WEB)
-
-            // The project's license.
-            // It's recommended to use a valid SPDX identifier if the project is Open Source.
-            // See https://spdx.org/licenses.
-            //  Only if configured distributions or announcers.
-            license.set("MIT")
-
-            // The project's inception year.
-            inceptionYear.set("2025")
-
-            snapshot {
-                // A regex to determine if the project version is snapshot
-                pattern.set(".*-SNAPSHOT")
-
-                // The value of the snapshot tag.
-                // If undefined, will use `early-access`.
-                label.set("${rootProject.version}")
-
-                // Generate full changelog since last non-snapshot release.
-                // Default is `false`.
-                fullChangelog.set(false)
-            }
-
-            links {
-                homepage.set("https://github.com/zmkn/public-kotlin")
-                documentation.set("https://github.com/zmkn/public-kotlin/wiki")
-                license.set("https://github.com/zmkn/public-kotlin/blob/master/LICENSE")
-                bugTracker.set("https://github.com/zmkn/public-kotlin/issues")
-                donation.set("https://github.com/zmkn/public-kotlin")
-            }
+    if (localProperties.getProperty("jreleaser.enable") == "true") {
+        apply {
+            plugin(rootProject.libs.plugins.jreleaser.get().pluginId)
         }
-        signing {
-            // Enables or disables file signing.
-            // Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
-            // Defaults to `NEVER`.
-            active.set(Active.ALWAYS)
 
-            // Generates an armored signature.
-            // Defaults to `false`.
-            armored.set(true)
-
-            // Verify signature files.
-            // If `false` then `publicKey` may be ommitted.
-            // Defaults to `true`.
-            verify.set(true)
-
-            // How should GPG keys be handled.
-            // Supported values are [`MEMORY`, `FILE`, `COMMAND`, `COSIGN`].
-            // Defaults to `MEMORY`.
-            mode.set(Signing.Mode.MEMORY)
-
-            // The passphrase required to read secret keys.
-            passphrase.set(localProperties.getProperty("signing.password"))
-
-            // The public GPG (ascii armored) used to sign files and commits.
-            // Required when mode = `MEMORY` || `FILE`.
-            publicKey.set(localProperties.getProperty("signing.publicKey"))
-
-            // The private GPG (ascii armored) used to sign files and commits.
-            // Required when mode = `MEMORY` || `FILE`.
-            secretKey.set(localProperties.getProperty("signing.secretKey"))
-
-            // Sign files.
-            // Defaults to `true`.
-            files.set(true)
-
-            // Sign distribution artifacts.
-            // Defaults to `true`.
-            artifacts.set(true)
-
-            // Sign checksum files.
-            // Defaults to `true`.
-            checksums.set(true)
+        val buildJreleaserDir = layout.buildDirectory.dir("jreleaser").get().asFile
+        if (!buildJreleaserDir.exists()) {
+            buildJreleaserDir.mkdirs()
         }
-        release {
-            // Repo in which the release will be created.
-            github {
-                // Disables or enables publication to GitHub.
-                // defaults to `true`.
-                enabled.set(true)
 
-                // Defines the connection timeout in seconds.
-                // Defaults to `20`.
-                connectTimeout.set(20)
+        configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
+            gitRootSearch.set(true)
 
-                // Defines the read timeout in seconds.
-                // Defaults to `60`.
-                readTimeout.set(60)
+            project {
+                name.set("${projectInfo[this@allprojects.project.name]!!["name"]}")
 
-                // The user or organization that owns the repository.
-                repoOwner.set("zmkn")
+                // A short description (60 chars max).
+                //  Only if configured distributions or announcers.
+                description.set("${projectInfo[this@allprojects.project.name]!!["description"]}")
 
-                // The name of the repository.
-                // If unspecified, will use `#{project.name}`.
-                name.set(localProperties.getProperty("jreleaser.release.github.name"))
+                // A list of author names.
+                //  Only if configured distributions or announcers.
+                authors.addAll(listOf("HZ"))
 
-                // The GitHub host url.
-                host.set("github.com")
+                // A list of tags.
+                @Suppress("UNCHECKED_CAST")
+                tags.addAll(projectInfo[this@allprojects.project.name]!!["tags"] as List<String>)
 
-                // Username used for authoring commits. Must have write access to the repository.
-                // Defaults to the repository's owner.
-                username.set(localProperties.getProperty("jreleaser.release.github.username"))
+                // List of maintainers.
+                // Values are typically GitHub/GitLab usernames.
+                maintainers.addAll(listOf("HZ"))
 
-                // Password or OAuth token with write access to the repository.
-                token.set(localProperties.getProperty("jreleaser.release.github.token"))
+                // The stereotype of this project.
+                // Supported values are [`NONE`, `CLI`, `DESKTOP`, `WEB`, `MOBILE`].
+                // Defaults to `NONE`.
+                stereotype.set(Stereotype.WEB)
 
-                // Drops and creates an existing release with matching tag.
+                // The project's license.
+                // It's recommended to use a valid SPDX identifier if the project is Open Source.
+                // See https://spdx.org/licenses.
+                //  Only if configured distributions or announcers.
+                license.set("MIT")
+
+                // The project's inception year.
+                inceptionYear.set("2025")
+
+                snapshot {
+                    // A regex to determine if the project version is snapshot
+                    pattern.set(".*-SNAPSHOT")
+
+                    // The value of the snapshot tag.
+                    // If undefined, will use `early-access`.
+                    label.set("${rootProject.version}")
+
+                    // Generate full changelog since last non-snapshot release.
+                    // Default is `false`.
+                    fullChangelog.set(false)
+                }
+
+                links {
+                    homepage.set("https://github.com/zmkn/public-kotlin")
+                    documentation.set("https://github.com/zmkn/public-kotlin/wiki")
+                    license.set("https://github.com/zmkn/public-kotlin/blob/master/LICENSE")
+                    bugTracker.set("https://github.com/zmkn/public-kotlin/issues")
+                    donation.set("https://github.com/zmkn/public-kotlin")
+                }
+            }
+            signing {
+                // Enables or disables file signing.
+                // Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
+                // Defaults to `NEVER`.
+                active.set(Active.ALWAYS)
+
+                // Generates an armored signature.
                 // Defaults to `false`.
-                overwrite.set(true)
+                armored.set(true)
 
-                update {
-                    // Appends artifacts to an existing release with matching tag,
-                    // useful if `overwrite` is set to `false`.
-                    // Defaults to `false`.
+                // Verify signature files.
+                // If `false` then `publicKey` may be ommitted.
+                // Defaults to `true`.
+                verify.set(true)
+
+                // How should GPG keys be handled.
+                // Supported values are [`MEMORY`, `FILE`, `COMMAND`, `COSIGN`].
+                // Defaults to `MEMORY`.
+                mode.set(Signing.Mode.MEMORY)
+
+                // The passphrase required to read secret keys.
+                passphrase.set(localProperties.getProperty("signing.password"))
+
+                // The public GPG (ascii armored) used to sign files and commits.
+                // Required when mode = `MEMORY` || `FILE`.
+                publicKey.set(localProperties.getProperty("signing.publicKey"))
+
+                // The private GPG (ascii armored) used to sign files and commits.
+                // Required when mode = `MEMORY` || `FILE`.
+                secretKey.set(localProperties.getProperty("signing.secretKey"))
+
+                // Sign files.
+                // Defaults to `true`.
+                files.set(true)
+
+                // Sign distribution artifacts.
+                // Defaults to `true`.
+                artifacts.set(true)
+
+                // Sign checksum files.
+                // Defaults to `true`.
+                checksums.set(true)
+            }
+            release {
+                // Repo in which the release will be created.
+                github {
+                    // Disables or enables publication to GitHub.
+                    // defaults to `true`.
                     enabled.set(true)
 
-                    // Release sections to be updated.
-                    // Supported values are [`TITLE`, `BODY`, `ASSETS`].
-                    // Defaults to `ASSETS`.
-                    section("ASSETS")
-                }
+                    // Defines the connection timeout in seconds.
+                    // Defaults to `20`.
+                    connectTimeout.set(20)
 
-                // Skips creating a tag.
-                // Useful when the tag was created externally.
-                // Defaults to `false`.
-                skipTag.set(this@allprojects.project.name != "public-kotlin")
+                    // Defines the read timeout in seconds.
+                    // Defaults to `60`.
+                    readTimeout.set(60)
 
-                // Skips creating a release.
-                // Useful when release assets will be handled with an uploader.
-                // Defaults to `false`.
-                skipRelease.set(this@allprojects.project.name != "public-kotlin")
+                    // The user or organization that owns the repository.
+                    repoOwner.set("zmkn")
 
-                // Signs commits with the configured credentials.
-                // The Signing section must be configured as well.
-                // Defaults to `false`.
-                sign.set(true)
+                    // The name of the repository.
+                    // If unspecified, will use `#{project.name}`.
+                    name.set(localProperties.getProperty("jreleaser.release.github.name"))
 
-                // Git author used to commit to the repository.
-                commitAuthor {
-                    // Name used when authoring commits.
-                    // Defaults to `jreleaserbot`.
-                    name.set("HZ")
+                    // The GitHub host url.
+                    host.set("github.com")
 
-                    // E-mail used when authoring commits.
-                    // Defaults to `jreleaser@kordamp.org`.
-                    email.set("beijingren@vip.qq.com")
-                }
-            }
-        }
-        deploy {
-            maven {
-                github {
-                    create("github") {
-                        // Enables or disables the deployer.
-                        // Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
-                        // Defaults to `NEVER`.
-                        active.set(Active.ALWAYS)
+                    // Username used for authoring commits. Must have write access to the repository.
+                    // Defaults to the repository's owner.
+                    username.set(localProperties.getProperty("jreleaser.release.github.username"))
 
-                        // URL where the Github service is enabled.
-                        url.set("https://maven.pkg.github.com/zmkn/public-kotlin")
+                    // Password or OAuth token with write access to the repository.
+                    token.set(localProperties.getProperty("jreleaser.release.github.token"))
 
-                        // Activates publication of snapshot artifacts.
+                    // Drops and creates an existing release with matching tag.
+                    // Defaults to `false`.
+                    overwrite.set(true)
+
+                    update {
+                        // Appends artifacts to an existing release with matching tag,
+                        // useful if `overwrite` is set to `false`.
                         // Defaults to `false`.
-                        snapshotSupported.set(true)
+                        enabled.set(true)
 
-                        // The username required for authorization.
-                        username.set(localProperties.getProperty("jreleaser.release.github.username"))
+                        // Release sections to be updated.
+                        // Supported values are [`TITLE`, `BODY`, `ASSETS`].
+                        // Defaults to `ASSETS`.
+                        section("ASSETS")
+                    }
 
-                        // Password for login into the GITHUB service.
-                        password.set(localProperties.getProperty("jreleaser.release.github.token"))
+                    // Skips creating a tag.
+                    // Useful when the tag was created externally.
+                    // Defaults to `false`.
+                    skipTag.set(this@allprojects.project.name != "public-kotlin" || localProperties.getProperty("jreleaser.release.github.skipTag") == "true")
 
-                        // Signs artifacts with the configured credentials.
-                        // The Signing section must be configured as well.
-                        // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
-                        sign.set(true)
+                    // Skips creating a release.
+                    // Useful when release assets will be handled with an uploader.
+                    // Defaults to `false`.
+                    skipRelease.set(this@allprojects.project.name != "public-kotlin" || localProperties.getProperty("jreleaser.release.github.skipRelease") == "true")
 
-                        // Checksums all artifacts with `MD5`, `SHA-1`, `SHA-256`, and `SHA-512`.
-                        // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
-                        checksums.set(true)
+                    // Signs commits with the configured credentials.
+                    // The Signing section must be configured as well.
+                    // Defaults to `false`.
+                    sign.set(true)
 
-                        // Verifies that a matching `-sources.jar` artifact is staged.
-                        // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
-                        sourceJar.set(true)
+                    // Git author used to commit to the repository.
+                    commitAuthor {
+                        // Name used when authoring commits.
+                        // Defaults to `jreleaserbot`.
+                        name.set("HZ")
 
-                        // Verifies that a matching `-javadoc.jar` artifact is staged.
-                        // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
-                        javadocJar.set(true)
-
-                        // Verifies that POM files comply with the minimum requirements for publication
-                        // to Maven Central. Checks rules using PomChecker.
-                        // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
-                        verifyPom.set(true)
-
-                        // Verifies pom files, signs all artifacts, verifies that matching `-sources.jar` and
-                        // `-javadoc.jar` artifacts are also staged.
-                        // Defaults to `false`.
-                        applyMavenCentralRules.set(true)
-
-                        // Override artifact configuration
-                        artifactOverride {
-                            // Match artifact by artifactId
-                            artifactId.set(rootProject.project.name)
-
-                            // Verifies that a matching `.jar` artifact is staged.
-                            jar.set(true)
-
-                            // Verifies that a matching `-sources.jar` artifact is staged.
-                            sourceJar.set(true)
-
-                            // Verifies that a matching `-javadoc.jar` artifact is staged.
-                            javadocJar.set(true)
-
-                            // Verifies that POM files comply with the minimum requirements for publication
-                            // to Maven Central. Checks rules using PomChecker.
-                            verifyPom.set(true)
-                        }
-
-                        // List of directories where staged artifacts can be found.
-                        stagingRepository("build/staging-deploy")
-
-                        // Defines the connection timeout in seconds.
-                        // Defaults to `20`.
-                        connectTimeout.set(20)
-
-                        // Defines the read timeout in seconds.
-                        // Defaults to `60`.
-                        readTimeout.set(60)
-
-                        // The name of the repository.
-                        // If unspecified, will use `#{release.${releaser}.name}`.
-                        repository.set(localProperties.getProperty("jreleaser.release.github.name"))
+                        // E-mail used when authoring commits.
+                        // Defaults to `jreleaser@kordamp.org`.
+                        email.set("beijingren@vip.qq.com")
                     }
                 }
-                mavenCentral {
-                    create("central") {
-                        // Enables or disables the deployer.
-                        // Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
-                        // Defaults to `NEVER`.
-                        active.set(Active.NEVER)
+            }
+            deploy {
+                maven {
+                    github {
+                        create("github") {
+                            // Enables or disables the deployer.
+                            // Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
+                            // Defaults to `NEVER`.
+                            active.set(if (localProperties.getProperty("jreleaser.deploy.maven.github.enable") == "true") Active.ALWAYS else Active.NEVER)
 
-                        // URL where the MavenCentral service is enabled.
-                        url.set("https://central.sonatype.com/api/v1/publisher")
+                            // URL where the Github service is enabled.
+                            url.set("https://maven.pkg.github.com/zmkn/public-kotlin")
 
-                        // Activates publication of snapshot artifacts.
-                        // Defaults to `false`.
-                        snapshotSupported.set(true)
+                            // Activates publication of snapshot artifacts.
+                            // Defaults to `false`.
+                            snapshotSupported.set(true)
 
-                        // The username required for authorization.
-                        username.set(localProperties.getProperty("jreleaser.deploy.maven.mavenCentral.username"))
+                            // The username required for authorization.
+                            username.set(localProperties.getProperty("jreleaser.release.github.username"))
 
-                        // Password for login into the MAVENCENTRAL service.
-                        password.set(localProperties.getProperty("jreleaser.deploy.maven.mavenCentral.password"))
+                            // Password for login into the GITHUB service.
+                            password.set(localProperties.getProperty("jreleaser.release.github.token"))
 
-                        // Signs artifacts with the configured credentials.
-                        // The Signing section must be configured as well.
-                        // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
-                        sign.set(true)
+                            // Signs artifacts with the configured credentials.
+                            // The Signing section must be configured as well.
+                            // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
+                            sign.set(true)
 
-                        // Checksums all artifacts with `MD5`, `SHA-1`, `SHA-256`, and `SHA-512`.
-                        // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
-                        checksums.set(true)
-
-                        // Verifies that a matching `-sources.jar` artifact is staged.
-                        // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
-                        sourceJar.set(true)
-
-                        // Verifies that a matching `-javadoc.jar` artifact is staged.
-                        // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
-                        javadocJar.set(true)
-
-                        // Verifies that POM files comply with the minimum requirements for publication
-                        // to Maven Central. Checks rules using PomChecker.
-                        // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
-                        verifyPom.set(true)
-
-                        // Verifies pom files, signs all artifacts, verifies that matching `-sources.jar` and
-                        // `-javadoc.jar` artifacts are also staged.
-                        // Defaults to `false`.
-                        applyMavenCentralRules.set(true)
-
-                        // Override artifact configuration
-                        artifactOverride {
-                            // Match artifact by artifactId
-                            artifactId.set(rootProject.project.name)
-
-                            // Verifies that a matching `.jar` artifact is staged.
-                            jar.set(true)
+                            // Checksums all artifacts with `MD5`, `SHA-1`, `SHA-256`, and `SHA-512`.
+                            // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
+                            checksums.set(true)
 
                             // Verifies that a matching `-sources.jar` artifact is staged.
+                            // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
                             sourceJar.set(true)
 
                             // Verifies that a matching `-javadoc.jar` artifact is staged.
+                            // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
                             javadocJar.set(true)
 
                             // Verifies that POM files comply with the minimum requirements for publication
                             // to Maven Central. Checks rules using PomChecker.
+                            // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
                             verifyPom.set(true)
+
+                            // Verifies pom files, signs all artifacts, verifies that matching `-sources.jar` and
+                            // `-javadoc.jar` artifacts are also staged.
+                            // Defaults to `false`.
+                            applyMavenCentralRules.set(true)
+
+                            // Override artifact configuration
+                            artifactOverride {
+                                // Match artifact by artifactId
+                                artifactId.set(rootProject.project.name)
+
+                                // Verifies that a matching `.jar` artifact is staged.
+                                jar.set(true)
+
+                                // Verifies that a matching `-sources.jar` artifact is staged.
+                                sourceJar.set(true)
+
+                                // Verifies that a matching `-javadoc.jar` artifact is staged.
+                                javadocJar.set(true)
+
+                                // Verifies that POM files comply with the minimum requirements for publication
+                                // to Maven Central. Checks rules using PomChecker.
+                                verifyPom.set(true)
+                            }
+
+                            // List of directories where staged artifacts can be found.
+                            stagingRepository("build/staging-deploy")
+
+                            // Defines the connection timeout in seconds.
+                            // Defaults to `20`.
+                            connectTimeout.set(20)
+
+                            // Defines the read timeout in seconds.
+                            // Defaults to `60`.
+                            readTimeout.set(60)
+
+                            // The name of the repository.
+                            // If unspecified, will use `#{release.${releaser}.name}`.
+                            repository.set(localProperties.getProperty("jreleaser.release.github.name"))
                         }
+                    }
+                    mavenCentral {
+                        create("central") {
+                            // Enables or disables the deployer.
+                            // Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
+                            // Defaults to `NEVER`.
+                            active.set(if (localProperties.getProperty("jreleaser.deploy.maven.github.enable") == "true") Active.ALWAYS else Active.NEVER)
 
-                        // List of directories where staged artifacts can be found.
-                        stagingRepository("build/staging-deploy")
+                            // URL where the MavenCentral service is enabled.
+                            url.set("https://central.sonatype.com/api/v1/publisher")
 
-                        // Defines the connection timeout in seconds.
-                        // Defaults to `20`.
-                        connectTimeout.set(20)
+                            // Activates publication of snapshot artifacts.
+                            // Defaults to `false`.
+                            snapshotSupported.set(true)
 
-                        // Defines the read timeout in seconds.
-                        // Defaults to `60`.
-                        readTimeout.set(60)
+                            // The username required for authorization.
+                            username.set(localProperties.getProperty("jreleaser.deploy.maven.mavenCentral.username"))
 
-                        // URL for checking artifacts may be already deployed.
-                        // Additional template tokens: `groupId`, `artifactId`, `version`, `path`, `filename`.
-                        verifyUrl.set("https://repo1.maven.org/maven2/{{path}}/{{filename}}")
+                            // Password for login into the MAVENCENTRAL service.
+                            password.set(localProperties.getProperty("jreleaser.deploy.maven.mavenCentral.password"))
 
-                        // Time to wait between state transition checks, in seconds.
-                        // Defaults to `10`.
-                        retryDelay.set(10)
+                            // Signs artifacts with the configured credentials.
+                            // The Signing section must be configured as well.
+                            // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
+                            sign.set(true)
 
-                        // Maximum number of attempts to verify state transition.
-                        // Defaults to `60`.
-                        maxRetries.set(60)
+                            // Checksums all artifacts with `MD5`, `SHA-1`, `SHA-256`, and `SHA-512`.
+                            // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
+                            checksums.set(true)
+
+                            // Verifies that a matching `-sources.jar` artifact is staged.
+                            // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
+                            sourceJar.set(true)
+
+                            // Verifies that a matching `-javadoc.jar` artifact is staged.
+                            // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
+                            javadocJar.set(true)
+
+                            // Verifies that POM files comply with the minimum requirements for publication
+                            // to Maven Central. Checks rules using PomChecker.
+                            // Defaults to `false` unless `applyMavenCentralRules` is set to `true`.
+                            verifyPom.set(true)
+
+                            // Verifies pom files, signs all artifacts, verifies that matching `-sources.jar` and
+                            // `-javadoc.jar` artifacts are also staged.
+                            // Defaults to `false`.
+                            applyMavenCentralRules.set(true)
+
+                            // Override artifact configuration
+                            artifactOverride {
+                                // Match artifact by artifactId
+                                artifactId.set(rootProject.project.name)
+
+                                // Verifies that a matching `.jar` artifact is staged.
+                                jar.set(true)
+
+                                // Verifies that a matching `-sources.jar` artifact is staged.
+                                sourceJar.set(true)
+
+                                // Verifies that a matching `-javadoc.jar` artifact is staged.
+                                javadocJar.set(true)
+
+                                // Verifies that POM files comply with the minimum requirements for publication
+                                // to Maven Central. Checks rules using PomChecker.
+                                verifyPom.set(true)
+                            }
+
+                            // List of directories where staged artifacts can be found.
+                            stagingRepository("build/staging-deploy")
+
+                            // Defines the connection timeout in seconds.
+                            // Defaults to `20`.
+                            connectTimeout.set(20)
+
+                            // Defines the read timeout in seconds.
+                            // Defaults to `60`.
+                            readTimeout.set(60)
+
+                            // URL for checking artifacts may be already deployed.
+                            // Additional template tokens: `groupId`, `artifactId`, `version`, `path`, `filename`.
+                            verifyUrl.set("https://repo1.maven.org/maven2/{{path}}/{{filename}}")
+
+                            // Time to wait between state transition checks, in seconds.
+                            // Defaults to `10`.
+                            retryDelay.set(10)
+
+                            // Maximum number of attempts to verify state transition.
+                            // Defaults to `60`.
+                            maxRetries.set(60)
+                        }
                     }
                 }
             }
