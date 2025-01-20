@@ -17,7 +17,11 @@ plugins {
 }
 
 val localProperties = Properties()
-localProperties.load(project.file("local.properties").inputStream())
+try {
+    localProperties.load(project.file("local.properties").inputStream())
+} catch (e: Throwable) {
+    println(e.message)
+}
 
 val projectInfo = mapOf(
     "util-kotlin" to mapOf(
