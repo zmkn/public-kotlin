@@ -528,8 +528,8 @@ allprojects {
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
         filter {
             exclude {
-                // 排除所有以 .gradle.kts 结尾的文件和 build/generated 目录下的所有文件
-                it.file.name.endsWith(".gradle.kts") || it.file.path.startsWith(project.layout.buildDirectory.get().dir("generated").toString())
+                // 排除所有以 .gradle.kts 结尾的文件和 build 目录下的所有文件
+                it.file.name.endsWith(".gradle.kts") || it.file.path.startsWith(project.layout.buildDirectory.get().toString())
             }
         }
     }
