@@ -8,7 +8,6 @@ kotlinxSerializationJson = "[1.7,2.0)"
 kotlinxCoroutinesCore = "[1.9,2.0)"
 kotlinxDatetimeBsonCodec = "[1.0,2.0)"
 kotlinxDatetimeJacksonModule = "[1.0,2.0)"
-zmkn = "[1.0,2.0)"
 mongodb = "5.1.4"
 morphia = "[3.0,4.0)"
 kmongo = "[5.1,6.0)"
@@ -33,6 +32,7 @@ jreleaser = { id = "org.jreleaser", version.ref = "jreleaser" }
 
 [libraries]
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlin-test-junit5 = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5", version.ref = "kotlin" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
@@ -40,14 +40,6 @@ kotlinx-coroutines-reactive = { group = "org.jetbrains.kotlinx", name = "kotlinx
 
 kotlinx-datetime-bson-codec = { group = "com.zmkn.bson", name = "kotlinx-datetime-bson-codec", version.ref = "kotlinxDatetimeBsonCodec" }
 kotlinx-datetime-jackson-module = { group = "com.zmkn.jackson", name = "kotlinx-datetime-jackson-module", version.ref = "kotlinxDatetimeJacksonModule" }
-zmkn-util-kotlin = { group = "com.zmkn", name = "util-kotlin", version.ref = "zmkn" }
-zmkn-model-kotlin = { group = "com.zmkn", name = "model-kotlin", version.ref = "zmkn" }
-zmkn-method-kotlin = { group = "com.zmkn", name = "method-kotlin", version.ref = "zmkn" }
-zmkn-module-kotlin = { group = "com.zmkn", name = "module-kotlin", version.ref = "zmkn" }
-zmkn-service-kotlin = { group = "com.zmkn", name = "service-kotlin", version.ref = "zmkn" }
-zmkn-constant-kotlin = { group = "com.zmkn", name = "constant-kotlin", version.ref = "zmkn" }
-zmkn-extension-kotlin = { group = "com.zmkn", name = "extension-kotlin", version.ref = "zmkn" }
-zmkn-enumeration-kotlin = { group = "com.zmkn", name = "enumeration-kotlin", version.ref = "zmkn" }
 mongodb-driver-reactivestreams = { group = "org.mongodb", name = "mongodb-driver-reactivestreams", version.ref = "mongodb" }
 mongodb-driver-sync = { group = "org.mongodb", name = "mongodb-driver-sync", version.ref = "mongodb" }
 mongodb-driver-legacy = { group = "org.mongodb", name = "mongodb-driver-legacy", version.ref = "mongodb" }

@@ -26,9 +26,4 @@ dependencies {
     api(libs.snakeyaml.engine) // snakeyaml-engine YML工具库
     api(libs.jackson.databind) // JSON 序列化库
     api(libs.jackson.module.kotlin) // jackson 支持 kotlin 模块库
-    testImplementation(kotlin("test")) // Kotlin 测试依赖
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
