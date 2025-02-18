@@ -1,0 +1,69 @@
+[versions]
+kotlin = "[2.1,3.0)"
+ktlint = "[12.1,13.0)"
+shadow = "[8.3,9.0)"
+jreleaser = "[1.16,2.0)"
+kotlinxDatetime = "[0.6,1.0)"
+kotlinxSerializationJson = "[1.7,2.0)"
+kotlinxCoroutinesCore = "[1.9,2.0)"
+protobuf = "[4.29,4.30)"
+kotlinxDatetimeBsonCodec = "[1.0,2.0)"
+kotlinxDatetimeJacksonModule = "[1.0,2.0)"
+mongodb = "5.1.4"
+morphia = "[3.0,4.0)"
+kmongo = "[5.1,6.0)"
+squareupOkhttp3 = "[4.12,5.0)"
+ehcache = "[3.10,4.0)"
+jaxbApi = "2.4.0-b180830.0359"
+jaxbRuntime = "2.4.0-b180830.0438"
+jackson = "[2.18,3.0)"
+jsonwebtoken = "[0.12,1.0)"
+bouncycastle = "[1.78,2.0)"
+snakeyamlEngine = "[2.8,3.0)"
+dashscopeSdkJava = "[2.16,3.0)"
+victoolsJsonschemaGenerator = "[4.37,5.0)"
+aliyunDysmsapi = "[3.1,4.0)"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+jreleaser = { id = "org.jreleaser", version.ref = "jreleaser" }
+
+[libraries]
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlin-test-junit5 = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5", version.ref = "kotlin" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-reactive = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactive", version.ref = "kotlinxCoroutinesCore" }
+protobuf-java-util = { group = "com.google.protobuf", name = "protobuf-java-util", version.ref = "protobuf" }
+
+kotlinx-datetime-bson-codec = { group = "com.zmkn.bson", name = "kotlinx-datetime-bson-codec", version.ref = "kotlinxDatetimeBsonCodec" }
+kotlinx-datetime-jackson-module = { group = "com.zmkn.jackson", name = "kotlinx-datetime-jackson-module", version.ref = "kotlinxDatetimeJacksonModule" }
+mongodb-driver-reactivestreams = { group = "org.mongodb", name = "mongodb-driver-reactivestreams", version.ref = "mongodb" }
+mongodb-driver-sync = { group = "org.mongodb", name = "mongodb-driver-sync", version.ref = "mongodb" }
+mongodb-driver-legacy = { group = "org.mongodb", name = "mongodb-driver-legacy", version.ref = "mongodb" }
+morphia-kotlin = { group = "dev.morphia.morphia", name = "morphia-kotlin", version.ref = "morphia" }
+kmongo-coroutine = { group = "org.litote.kmongo", name = "kmongo-coroutine", version.ref = "kmongo" }
+kmongo-coroutine-serialization = { group = "org.litote.kmongo", name = "kmongo-coroutine-serialization", version.ref = "kmongo" }
+kmongo-id = { group = "org.litote.kmongo", name = "kmongo-id", version.ref = "kmongo" }
+kmongo-id-jackson = { group = "org.litote.kmongo", name = "kmongo-id-jackson", version.ref = "kmongo" }
+kmongo-id-serialization = { group = "org.litote.kmongo", name = "kmongo-id-serialization", version.ref = "kmongo" }
+squareup-okhttp3-okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "squareupOkhttp3" }
+squareup-okhttp3-okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
+ehcache = { group = "org.ehcache", name = "ehcache", version.ref = "ehcache" }
+javax-jaxb-api = { group = "javax.xml.bind", name = "jaxb-api", version.ref = "jaxbApi" }
+glassfish-jaxb-runtime = { group = "org.glassfish.jaxb", name = "jaxb-runtime", version.ref = "jaxbRuntime" }
+jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
+jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
+jsonwebtoken-jjwt-api = { group = "io.jsonwebtoken", name = "jjwt-api", version.ref = "jsonwebtoken" }
+jsonwebtoken-jjwt-impl = { group = "io.jsonwebtoken", name = "jjwt-impl", version.ref = "jsonwebtoken" }
+jsonwebtoken-jjwt-jackson = { group = "io.jsonwebtoken", name = "jjwt-jackson", version.ref = "jsonwebtoken" }
+bouncycastle-bcprov-jdk18on = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
+bouncycastle-bcpkix-jdk18on = { group = "org.bouncycastle", name = "bcpkix-jdk18on", version.ref = "bouncycastle" }
+snakeyaml-engine = { group = "org.snakeyaml", name = "snakeyaml-engine", version.ref = "snakeyamlEngine" }
+dashscope-sdk-java = { group = "com.alibaba", name = "dashscope-sdk-java", version.ref = "dashscopeSdkJava" }
+victools-jsonschema-generator = { group = "com.github.victools", name = "jsonschema-generator", version.ref = "victoolsJsonschemaGenerator" }
+aliyun-dysmsapi = { group = "com.aliyun", name = "dysmsapi20170525", version.ref = "aliyunDysmsapi" }
