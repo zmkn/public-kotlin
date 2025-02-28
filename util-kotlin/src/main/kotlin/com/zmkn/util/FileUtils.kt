@@ -32,12 +32,17 @@ object FileUtils {
     }
 
     fun getProjectRootDirectory(vararg paths: String): String {
-        val path = if (paths.isEmpty()) {
-            ""
+        val projectRootDirectory = System.getProperty("ProjectRootDirectory")
+        return if (projectRootDirectory == null) {
+            val path = if (paths.isEmpty()) {
+                ""
+            } else {
+                "./${paths.joinToString("/")}"
+            }
+            File(path).canonicalPath
         } else {
-            "./${paths.joinToString("/")}"
+            projectRootDirectory
         }
-        return File(path).canonicalPath
     }
 
     fun copy(source: InputStream, vararg destinations: File) {
