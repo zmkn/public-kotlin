@@ -6,23 +6,20 @@ import com.zmkn.util.AuthorizationUtils
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
-import java.util.*
 
-class BasicAuthInterceptRequestListener(
-    private val fetchCredentials: suspend () -> Pair<String, String>
+class BearerAuthInterceptRequestListener(
+    private val fetchToken: suspend () -> String
 ) : InterceptRequestListener {
-    constructor(username: String, password: String) : this(suspend { Pair(username, password) })
-    constructor(fetchCredentials: () -> Pair<String, String>) : this(suspend { fetchCredentials() })
+    constructor(token: String) : this(suspend { token })
+    constructor(fetchToken: () -> String) : this(suspend { fetchToken() })
 
     override fun handler(chain: Interceptor.Chain, request: Request): Request {
         val authorization = request.header("Authorization")
         return if (authorization == null) {
-            val credentials = runBlocking {
-                fetchCredentials().run {
-                    "$first:$second"
-                }
+            val token = runBlocking {
+                fetchToken()
             }
-            val authorizationHeader = AuthorizationUtils.addScheme(Base64.getEncoder().encodeToString(credentials.toByteArray()), AuthorizationScheme.BASIC.scheme)
+            val authorizationHeader = AuthorizationUtils.addScheme(token, AuthorizationScheme.BEARER.scheme)
             val newRequest: Request = request.newBuilder()
                 .addHeader("Authorization", authorizationHeader)
                 .build()

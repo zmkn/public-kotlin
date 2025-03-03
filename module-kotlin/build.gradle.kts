@@ -3,8 +3,10 @@ plugins {
 }
 
 dependencies {
+    api(project(":util-kotlin"))
     api(project(":service-kotlin"))
     api(project(":extension-kotlin"))
+    api(project(":enumeration-kotlin"))
     api(libs.kotlin.reflect) // Kotlin 反射库
     api(libs.kotlinx.datetime) // Kotlin 日期类型序列化支持库
     api(libs.kotlinx.serialization.json) // Kotlin json 序列化库
