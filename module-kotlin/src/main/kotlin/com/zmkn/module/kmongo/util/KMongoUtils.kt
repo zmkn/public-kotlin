@@ -97,7 +97,7 @@ object KMongoUtils {
         return json.encodeToString(value)
     }
 
-    fun <T : Any> encodeToString(kType: KType, value: T): String {
+    fun <T> encodeToString(kType: KType, value: T): String {
         return json.encodeToString(json.serializersModule.serializer(kType), value)
     }
 
@@ -111,7 +111,7 @@ object KMongoUtils {
 
     @Suppress("UNCHECKED_CAST")
     @OptIn(InternalSerializationApi::class)
-    fun <T : Any> decodeFromString(kType: KType, @FormatLanguage("json", "", "") jsonString: String): T {
+    fun <T> decodeFromString(kType: KType, @FormatLanguage("json", "", "") jsonString: String): T {
         return json.decodeFromString(json.serializersModule.serializer(kType), jsonString) as T
     }
 

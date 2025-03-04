@@ -36,7 +36,7 @@ object FileUtils {
         val path = if (paths.isEmpty()) {
             projectRootDirectory
         } else {
-            "${projectRootDirectory}./${paths.joinToString("/")}"
+            "$projectRootDirectory./${paths.joinToString("/")}"
         }
         return File(path).canonicalPath
     }

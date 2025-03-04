@@ -23,21 +23,29 @@ class EmqxApi(
         val response = newOkHttpClient.get(
             url = "/clients"
         )
-        val responseBody = response.body!!.string()
-        return when (response.code) {
-            200 -> {
-                val kType = typeOf<ListResponseBody<ClientResponseBody, PaginationMeta>>()
-                val newResponseBody = responseBody.replace(Regex("\"infinity\""), "null")
-                OkHttpUtils.decodeFromString(kType, newResponseBody)
+        return if (response.body != null) {
+            val responseBody = try {
+                response.body!!.string()
+            } catch (_: Exception) {
+                throw EmqxResponseUnknownException()
             }
+            when (response.code) {
+                200 -> {
+                    val kType = typeOf<ListResponseBody<ClientResponseBody, PaginationMeta>>()
+                    val newResponseBody = responseBody.replace(Regex("\"infinity\""), "null")
+                    OkHttpUtils.decodeFromString<ListResponseBody<ClientResponseBody, PaginationMeta>>(kType, newResponseBody)
+                }
 
-            400 -> {
-                throw OkHttpUtils.decodeFromString(ExceptionResponseBody::class, responseBody).toEmqxResponseException()
-            }
+                400 -> {
+                    throw OkHttpUtils.decodeFromString(ExceptionResponseBody::class, responseBody).toEmqxResponseException()
+                }
 
-            else -> {
-                throw EmqxResponseUnknownException(responseBody)
+                else -> {
+                    throw EmqxResponseUnknownException(responseBody)
+                }
             }
+        } else {
+            throw EmqxResponseUnknownException()
         }
     }
 
@@ -46,23 +54,31 @@ class EmqxApi(
             url = "/publish",
             body = body
         )
-        val responseBody = response.body!!.string()
-        return when (response.code) {
-            200 -> {
-                OkHttpUtils.decodeFromString(PublishResponseBody::class, responseBody)
+        return if (response.body != null) {
+            val responseBody = try {
+                response.body!!.string()
+            } catch (_: Exception) {
+                throw EmqxResponseUnknownException()
             }
+            when (response.code) {
+                200 -> {
+                    OkHttpUtils.decodeFromString(PublishResponseBody::class, responseBody)
+                }
 
-            202, 503 -> {
-                throw OkHttpUtils.decodeFromString(PublishExceptionResponseBody::class, responseBody).toEmqxPublishResponseException()
-            }
+                202, 503 -> {
+                    throw OkHttpUtils.decodeFromString(PublishExceptionResponseBody::class, responseBody).toEmqxPublishResponseException()
+                }
 
-            400 -> {
-                throw OkHttpUtils.decodeFromString(ExceptionResponseBody::class, responseBody).toEmqxResponseException()
-            }
+                400 -> {
+                    throw OkHttpUtils.decodeFromString(ExceptionResponseBody::class, responseBody).toEmqxResponseException()
+                }
 
-            else -> {
-                throw EmqxResponseUnknownException(responseBody)
+                else -> {
+                    throw EmqxResponseUnknownException(responseBody)
+                }
             }
+        } else {
+            throw EmqxResponseUnknownException()
         }
     }
 

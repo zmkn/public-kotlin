@@ -40,23 +40,35 @@ suspend fun OkHttpClient.request(request: Request): Response {
 
 suspend fun OkHttpClient.get(
     url: String,
-    queryParams: Map<String, String?> = emptyMap()
+    queryParams: Map<String, String?> = emptyMap(),
+    headers: Headers? = null,
 ): Response {
     val newUrl = OkHttpUtils.createQueryHttpUrl(url, queryParams)
     val okHttpClientRequest = Request.Builder()
         .url(newUrl)
+        .apply {
+            headers?.also {
+                setHeaders(it)
+            }
+        }
         .build()
     return request(okHttpClientRequest)
 }
 
 suspend fun OkHttpClient.delete(
     url: String,
-    queryParams: Map<String, String?> = emptyMap()
+    queryParams: Map<String, String?> = emptyMap(),
+    headers: Headers? = null,
 ): Response {
     val newUrl = OkHttpUtils.createQueryHttpUrl(url, queryParams)
     val okHttpClientRequest = Request.Builder()
         .url(newUrl)
         .delete()
+        .apply {
+            headers?.also {
+                setHeaders(it)
+            }
+        }
         .build()
     return request(okHttpClientRequest)
 }
@@ -64,11 +76,17 @@ suspend fun OkHttpClient.delete(
 suspend fun OkHttpClient.post(
     url: String,
     json: String = EMPTY_JSON,
+    headers: Headers? = null,
 ): Response {
     val requestBody = OkHttpUtils.createJsonRequestBody(json)
     val okHttpClientRequest = Request.Builder()
         .url(url)
         .post(requestBody)
+        .apply {
+            headers?.also {
+                setHeaders(it)
+            }
+        }
         .build()
     return request(okHttpClientRequest)
 }
@@ -76,28 +94,36 @@ suspend fun OkHttpClient.post(
 suspend inline fun <reified T : Any> OkHttpClient.post(
     url: String,
     body: T,
+    headers: Headers? = null,
 ): Response {
     val json = OkHttpUtils.encodeToString(body)
-    return post(url, json)
+    return post(url, json, headers)
 }
 
 suspend fun <T : Any> OkHttpClient.post(
     url: String,
     kType: KType,
     body: T,
+    headers: Headers? = null,
 ): Response {
     val json = OkHttpUtils.encodeToString(kType, body)
-    return post(url, json)
+    return post(url, json, headers)
 }
 
 suspend fun OkHttpClient.post(
     url: String,
     formData: Map<String, String>,
+    headers: Headers? = null,
 ): Response {
     val requestBody = OkHttpUtils.createFormRequestBody(formData)
     val okHttpClientRequest = Request.Builder()
         .url(url)
         .post(requestBody)
+        .apply {
+            headers?.also {
+                setHeaders(it)
+            }
+        }
         .build()
     return request(okHttpClientRequest)
 }
@@ -105,11 +131,17 @@ suspend fun OkHttpClient.post(
 suspend fun OkHttpClient.put(
     url: String,
     json: String = EMPTY_JSON,
+    headers: Headers? = null,
 ): Response {
     val requestBody = OkHttpUtils.createJsonRequestBody(json)
     val okHttpClientRequest = Request.Builder()
         .url(url)
         .put(requestBody)
+        .apply {
+            headers?.also {
+                setHeaders(it)
+            }
+        }
         .build()
     return request(okHttpClientRequest)
 }
@@ -117,28 +149,36 @@ suspend fun OkHttpClient.put(
 suspend inline fun <reified T : Any> OkHttpClient.put(
     url: String,
     body: T,
+    headers: Headers? = null,
 ): Response {
     val json = OkHttpUtils.encodeToString(body)
-    return put(url, json)
+    return put(url, json, headers)
 }
 
 suspend fun <T : Any> OkHttpClient.put(
     url: String,
     kType: KType,
     body: T,
+    headers: Headers? = null,
 ): Response {
     val json = OkHttpUtils.encodeToString(kType, body)
-    return put(url, json)
+    return put(url, json, headers)
 }
 
 suspend fun OkHttpClient.put(
     url: String,
     formData: Map<String, String>,
+    headers: Headers? = null,
 ): Response {
     val requestBody = OkHttpUtils.createFormRequestBody(formData)
     val okHttpClientRequest = Request.Builder()
         .url(url)
         .put(requestBody)
+        .apply {
+            headers?.also {
+                setHeaders(it)
+            }
+        }
         .build()
     return request(okHttpClientRequest)
 }
