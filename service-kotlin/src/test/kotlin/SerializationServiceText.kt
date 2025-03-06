@@ -15,7 +15,7 @@ class SerializationServiceText {
             nickName = "kz",
             profilePictureUrl = "baidu.com",
             status = "DISABLED",
-            mobileNumbers = emptyList(),
+            phoneNumbers = emptyList(),
         )
         val str = _serializationService.json.encodeToString(user)
         _logger.error(str)

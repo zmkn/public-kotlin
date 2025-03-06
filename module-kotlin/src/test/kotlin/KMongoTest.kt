@@ -137,7 +137,7 @@ class KMongoTest {
             nickName = "xz",
             profilePictureUrl = "qq.com",
             status = "DISABLED",
-            mobileNumbers = emptyList(),
+            phoneNumbers = emptyList(),
         )
         println(user)
         val userJson = encodeToString(user)
@@ -159,7 +159,7 @@ class KMongoTest {
                 "nickName" to "xz",
                 "profilePictureUrl" to "qq.com",
                 "status" to "DISABLED",
-                "mobileNumbers" to emptyList<String>(),
+                "phoneNumbers" to emptyList<String>(),
             )
         )
         println(user)
@@ -201,7 +201,7 @@ class KMongoTest {
             nickName = "aaa",
             profilePictureUrl = "taobao.com",
             status = "DISABLED",
-            mobileNumbers = emptyList(),
+            phoneNumbers = emptyList(),
         )
         val replacement = encodeToString(user)
         println(replacement)
@@ -234,7 +234,7 @@ class KMongoTest {
             nickName = "kz",
             profilePictureUrl = "taobao.com",
             status = "DISABLED",
-            mobileNumbers = emptyList(),
+            phoneNumbers = emptyList(),
         )
         println(user)
         val userJson = encodeToString(user)
@@ -260,7 +260,7 @@ class KMongoTest {
             nickName = "testBulkWrite",
             profilePictureUrl = "baidu.com",
             status = "DISABLED",
-            mobileNumbers = emptyList(),
+            phoneNumbers = emptyList(),
         )
         println(user)
         val userJson = encodeToString(user)
@@ -282,7 +282,7 @@ class KMongoTest {
             nickName = "testBulkWrite",
             profilePictureUrl = "baidu.com",
             status = "DISABLED",
-            mobileNumbers = emptyList(),
+            phoneNumbers = emptyList(),
         )
         println(user)
         val userJson = encodeToString(user)

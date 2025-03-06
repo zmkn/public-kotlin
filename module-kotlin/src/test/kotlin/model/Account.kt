@@ -18,7 +18,7 @@ data class Account(
     @Contextual
     val notificationGroupId: Id<String>,
     val account: String,
-    val mobileNumber: String,
+    val phoneNumber: String,
     val status: String,
     @Contextual
     val userId: Id<User>,

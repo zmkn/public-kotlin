@@ -18,7 +18,7 @@ class AliSms {
     fun testSent() = runBlocking {
         val response = aliSms.send(
             SendSmsRequest(
-                mobileNumber = "16601190129",
+                phoneNumber = "16601190129",
                 signName = "灵祇",
                 templateCode = "",
                 templateParam = mapOf("code" to "123456")

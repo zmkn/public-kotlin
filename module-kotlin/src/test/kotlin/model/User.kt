@@ -20,7 +20,7 @@ data class User(
     val nickName: String,
     val profilePictureUrl: String,
     val status: String,
-    val mobileNumbers: List<String> = emptyList(),
+    val phoneNumbers: List<String> = emptyList(),
     val identityCardNumber: String? = null,
     val birth: Instant? = null,
     val gender: String? = null,

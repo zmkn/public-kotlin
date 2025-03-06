@@ -6,7 +6,7 @@ import com.aliyun.dysmsapi20170525.models.SendSmsRequest as AliSmsSendSmsRequest
 
 fun SendSmsRequest.toAliSmsSendSmsRequest(): AliSmsSendSmsRequest {
     return AliSmsSendSmsRequest()
-        .setPhoneNumbers(mobileNumber)
+        .setPhoneNumbers(phoneNumber)
         .setSignName(signName)
         .setTemplateCode(templateCode)
         .setTemplateParam(templateParam.toJson())
