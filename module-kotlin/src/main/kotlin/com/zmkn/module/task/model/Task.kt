@@ -1,7 +1,10 @@
 package com.zmkn.module.task.model
 
-data class CreateParams(
+import kotlinx.coroutines.Job
+
+data class Task(
+    val id: String,
     val name: String,
     val desc: String? = null,
-    val delayMillis: Long? = null,
+    val job: Job,
 )
