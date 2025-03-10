@@ -1,6 +1,6 @@
 package com.zmkn.module.task.util
 
-import com.zmkn.module.task.model.CreateParams
+import com.zmkn.module.task.enumeration.TaskStatus
 import com.zmkn.module.task.model.Task
 import com.zmkn.util.RandomUtils
 import kotlinx.coroutines.*
@@ -20,150 +20,104 @@ object TaskUtils {
     }
 
     fun create(
-        createParams: CreateParams,
-        block: suspend (coroutineScope: CoroutineScope) -> Unit
+        name: String,
+        desc: String?,
+        delayMillis: Long?,
+        block: suspend (coroutineScope: CoroutineScope) -> Any?
     ): String {
+        val id = generateTaskId()
         return _supervisorScope.launch {
-            createParams.delayMillis?.let {
-                delay(it)
+            try {
+                delayMillis?.let {
+                    delay(it)
+                }
+                val result = block(this)
+                _jobs[id]?.also {
+                    _jobs[id] = it.copy(
+                        status = TaskStatus.SUCCEEDED,
+                        result = result,
+                    )
+                }
+            } catch (e: Exception) {
+                _jobs[id]?.also {
+                    if (!it.job.isCancelled) {
+                        _jobs[id] = it.copy(
+                            status = TaskStatus.FAILED,
+                            result = e,
+                        )
+                    }
+                }
             }
-            block(this)
         }.let {
-            val id = generateTaskId()
             _jobs[id] = Task(
                 id = id,
-                name = createParams.name,
-                desc = createParams.desc,
                 job = it,
+                name = name,
+                status = TaskStatus.NORMAL,
+                desc = desc,
+                result = null,
             )
-            it.invokeOnCompletion {
-                _jobs.remove(id)
-            }
             id
         }
     }
 
     fun create(
         name: String,
-        desc: String,
         delayMillis: Long,
-        block: suspend (coroutineScope: CoroutineScope) -> Unit
+        block: suspend (coroutineScope: CoroutineScope) -> Any?
     ): String = create(
-        CreateParams(
-            name = name,
-            desc = desc,
-            delayMillis = delayMillis,
-        ), block
-    )
-
-    fun create(
-        name: String,
-        delayMillis: Long,
-        block: suspend (coroutineScope: CoroutineScope) -> Unit
-    ): String = create(
-        CreateParams(
-            name = name,
-            delayMillis = delayMillis,
-        ), block
+        name = name,
+        desc = null,
+        delayMillis = delayMillis,
+        block = block,
     )
 
     fun create(
         name: String,
         desc: String,
-        block: suspend (coroutineScope: CoroutineScope) -> Unit
+        block: suspend (coroutineScope: CoroutineScope) -> Any?
     ): String = create(
-        CreateParams(
-            name = name,
-            desc = desc,
-        ), block
+        name = name,
+        desc = desc,
+        delayMillis = null,
+        block = block,
     )
 
     fun create(
         name: String,
-        block: suspend (coroutineScope: CoroutineScope) -> Unit
+        block: suspend (coroutineScope: CoroutineScope) -> Any?
     ): String = create(
-        CreateParams(
-            name = name,
-        ), block
-    )
-
-    fun <T> create(
-        createParams: CreateParams,
-        block: suspend (coroutineScope: CoroutineScope) -> T
-    ): String {
-        return _supervisorScope.async {
-            createParams.delayMillis?.let {
-                delay(it)
-            }
-            block(this)
-        }.let {
-            val id = generateTaskId()
-            _jobs[id] = Task(
-                id = id,
-                name = createParams.name,
-                desc = createParams.desc,
-                job = it,
-            )
-            it.invokeOnCompletion {
-                _jobs.remove(id)
-            }
-            id
-        }
-    }
-
-    fun <T> create(
-        name: String,
-        desc: String,
-        delayMillis: Long,
-        block: suspend (coroutineScope: CoroutineScope) -> T
-    ): String = create(
-        CreateParams(
-            name = name,
-            desc = desc,
-            delayMillis = delayMillis,
-        ), block
-    )
-
-    fun <T> create(
-        name: String,
-        delayMillis: Long,
-        block: suspend (coroutineScope: CoroutineScope) -> T
-    ): String = create(
-        CreateParams(
-            name = name,
-            delayMillis = delayMillis,
-        ), block
-    )
-
-    fun <T> create(
-        name: String,
-        desc: String,
-        block: suspend (coroutineScope: CoroutineScope) -> T
-    ): String = create(
-        CreateParams(
-            name = name,
-            desc = desc,
-        ), block
-    )
-
-    fun <T> create(
-        name: String,
-        block: suspend (coroutineScope: CoroutineScope) -> T
-    ): String = create(
-        CreateParams(
-            name = name,
-        ), block
+        name = name,
+        desc = null,
+        delayMillis = null,
+        block = block,
     )
 
     fun cancel(id: String) {
-        _jobs[id]?.job?.cancel()
-        _jobs.remove(id)
+        _jobs[id]?.also {
+            it.job.cancel()
+            _jobs[id] = it.copy(
+                status = TaskStatus.CANCELED
+            )
+        }
     }
 
     fun cancelAll() {
-        _jobs.values.forEach {
-            it.job.cancel()
+        _jobs.forEach { id, task ->
+            task.job.cancel()
+            _jobs[id] = task.copy(
+                status = TaskStatus.CANCELED
+            )
         }
+    }
+
+    fun remove(id: String) {
+        cancel(id)
+        _jobs.remove(id)
+    }
+
+    fun removeAll() {
+        cancelAll()
         _jobs.clear()
     }
 }

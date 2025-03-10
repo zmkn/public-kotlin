@@ -1,4 +1,3 @@
-import com.zmkn.module.task.model.CreateParams
 import com.zmkn.module.task.util.TaskUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -8,11 +7,9 @@ class TaskTest {
     @Test
     fun testCreate() = runBlocking {
         println("testCreate-start")
-        TaskUtils.create(
-            CreateParams(
-                name = "testCreate",
-                delayMillis = 1000,
-            )
+        val id = TaskUtils.create(
+            name = "testCreate",
+            delayMillis = 1000,
         ) {
             println("create")
             "createbbbbbbbbbb"
