@@ -8,6 +8,8 @@ import com.zmkn.module.okhttp.NewOkHttpClient
 import com.zmkn.module.okhttp.listener.BaseUrlInterceptRequestListener
 import com.zmkn.module.okhttp.listener.BasicAuthInterceptRequestListener
 import com.zmkn.module.okhttp.util.OkHttpUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import kotlin.reflect.typeOf
 
@@ -25,7 +27,9 @@ class EmqxApi(
         )
         return if (response.body != null) {
             val responseBody = try {
-                response.body!!.string()
+                withContext(Dispatchers.IO) {
+                    response.body!!.string()
+                }
             } catch (_: Exception) {
                 throw EmqxResponseUnknownException()
             }
@@ -43,6 +47,8 @@ class EmqxApi(
                 else -> {
                     throw EmqxResponseUnknownException(responseBody)
                 }
+            }.apply {
+                response.close()
             }
         } else {
             throw EmqxResponseUnknownException()
@@ -56,7 +62,9 @@ class EmqxApi(
         )
         return if (response.body != null) {
             val responseBody = try {
-                response.body!!.string()
+                withContext(Dispatchers.IO) {
+                    response.body!!.string()
+                }
             } catch (_: Exception) {
                 throw EmqxResponseUnknownException()
             }
@@ -76,6 +84,8 @@ class EmqxApi(
                 else -> {
                     throw EmqxResponseUnknownException(responseBody)
                 }
+            }.apply {
+                response.close()
             }
         } else {
             throw EmqxResponseUnknownException()
