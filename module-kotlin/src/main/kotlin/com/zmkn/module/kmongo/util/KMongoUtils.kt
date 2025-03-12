@@ -69,6 +69,29 @@ object KMongoUtils {
         System.setProperty(KMONGO_MAPPING_SERVICE, SerializationClassMappingTypeService::class.qualifiedName!!)
     }
 
+    fun getCollectionName(fromClass: KClass<*>): String {
+        val simpleName = fromClass.simpleName!!
+        val collectionName =
+            simpleName
+                .toCharArray()
+                .run {
+                    foldIndexed(StringBuilder()) { i, s, c ->
+                        s.append(
+                            if (c.isUpperCase()) {
+                                if (i == 0) {
+                                    c.lowercaseChar()
+                                } else {
+                                    "_${c.lowercaseChar()}"
+                                }
+                            } else {
+                                c
+                            },
+                        )
+                    }.toString()
+                }
+        return collectionName
+    }
+
     fun jsonToBson(jsonString: String): BsonDocument {
         return BsonDocument.parse(jsonString)
     }

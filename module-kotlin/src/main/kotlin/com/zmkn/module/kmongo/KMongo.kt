@@ -1,6 +1,7 @@
 package com.zmkn.module.kmongo
 
 import com.mongodb.reactivestreams.client.ClientSession
+import com.zmkn.module.kmongo.util.KMongoUtils.getCollectionName
 import com.zmkn.module.kmongo.util.KMongoUtils.registerCustomCodec
 import org.bson.Document
 import org.litote.kmongo.coroutine.*
@@ -12,29 +13,6 @@ class KMongo(connectionString: String, databaseName: String) {
     private val _database: CoroutineDatabase = _client.getDatabase(databaseName)
 
     val database: CoroutineDatabase = _database
-
-    fun getCollectionName(fromClass: KClass<*>): String {
-        val simpleName = fromClass.simpleName!!
-        val collectionName =
-            simpleName
-                .toCharArray()
-                .run {
-                    foldIndexed(StringBuilder()) { i, s, c ->
-                        s.append(
-                            if (c.isUpperCase()) {
-                                if (i == 0) {
-                                    c.lowercaseChar()
-                                } else {
-                                    "_${c.lowercaseChar()}"
-                                }
-                            } else {
-                                c
-                            },
-                        )
-                    }.toString()
-                }
-        return collectionName
-    }
 
     fun <T : Any> getCollection(kClass: KClass<T>): CoroutineCollection<T> {
         val collectionName = getCollectionName(kClass)

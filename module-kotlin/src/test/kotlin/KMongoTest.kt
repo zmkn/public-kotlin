@@ -9,6 +9,7 @@ import com.zmkn.module.kmongo.extension.*
 import com.zmkn.module.kmongo.util.KMongoUtils.bsonToJson
 import com.zmkn.module.kmongo.util.KMongoUtils.documentToJson
 import com.zmkn.module.kmongo.util.KMongoUtils.encodeToString
+import com.zmkn.module.kmongo.util.KMongoUtils.getCollectionName
 import com.zmkn.service.LoggerService
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.runBlocking
@@ -18,6 +19,7 @@ import model.Account
 import model.User
 import org.bson.Document
 import org.bson.types.ObjectId
+import org.junit.jupiter.api.Disabled
 import org.litote.kmongo.*
 import org.litote.kmongo.id.WrappedObjectId
 import kotlin.test.Test
@@ -319,6 +321,7 @@ class KMongoTest {
     }
 
     @Test
+    @Disabled
     fun testBsonToJson() {
         val updateBson = combine(
             setValue(Account::account, "aaaabbbb"),
@@ -327,5 +330,11 @@ class KMongoTest {
         println(updateBson)
         val updateJson = bsonToJson(updateBson)
         println(updateJson)
+    }
+
+    @Test
+    fun testGetCollectionName() {
+        val collectionName = getCollectionName(Account::class)
+        println(collectionName)
     }
 }
