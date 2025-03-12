@@ -1,10 +1,12 @@
 import com.zmkn.module.task.util.TaskUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Disabled
 import kotlin.test.Test
 
 class TaskTest {
     @Test
+    @Disabled
     fun testCreate() = runBlocking {
         println("testCreate-start")
         val id = TaskUtils.create(

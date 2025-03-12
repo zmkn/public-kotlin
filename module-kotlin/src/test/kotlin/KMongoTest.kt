@@ -12,12 +12,15 @@ import com.zmkn.module.kmongo.util.KMongoUtils.encodeToString
 import com.zmkn.service.LoggerService
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
+import model.Account
 import model.User
 import org.bson.Document
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 import org.litote.kmongo.id.WrappedObjectId
+import kotlin.test.Test
 
 class KMongoTest {
     private val logger = LoggerService.getInstance()
@@ -28,7 +31,9 @@ class KMongoTest {
     private val database = "usercenter"
     private val replicaName = "rs0"
     private val connectionString = "mongodb://$user:$password@${hosts.joinToString(",")}/$database?authSource=$database&replicaSet=$replicaName"
-    private val kMongo = KMongo(connectionString, database)
+    private val kMongo: KMongo by lazy {
+        KMongo(connectionString, database)
+    }
 
     @Serializable
     data class IndexInfo(
@@ -311,5 +316,16 @@ class KMongoTest {
         val result = collection.projectionAsStringList(Document::class, """{"_id":0,"accountId":1,"nickName":1}""")
         logger.error(result)
         logger.error("testProjectionByDocument---End")
+    }
+
+    @Test
+    fun testBsonToJson() {
+        val updateBson = combine(
+            setValue(Account::account, "aaaabbbb"),
+            setValue(Account::accountUpdatedAt, Clock.System.now()),
+        )
+        println(updateBson)
+        val updateJson = bsonToJson(updateBson)
+        println(updateJson)
     }
 }

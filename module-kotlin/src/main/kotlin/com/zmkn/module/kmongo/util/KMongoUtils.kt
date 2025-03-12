@@ -2,6 +2,7 @@ package com.zmkn.module.kmongo.util
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.mongodb.client.model.Filters
+import com.zmkn.bson.codec.datetime.DatetimeBsonCodec
 import com.zmkn.service.JacksonService
 import com.zmkn.service.SerializationService
 import kotlinx.serialization.InternalSerializationApi
@@ -11,6 +12,7 @@ import org.bson.BsonDocument
 import org.bson.Document
 import org.bson.codecs.Decoder
 import org.bson.codecs.Encoder
+import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.configuration.CodecRegistry
 import org.bson.conversions.Bson
 import org.bson.json.JsonWriterSettings
@@ -19,13 +21,19 @@ import org.litote.kmongo.id.serialization.IdKotlinXSerializationModule
 import org.litote.kmongo.serialization.SerializationClassMappingTypeService
 import org.litote.kmongo.service.ClassMappingType
 import org.litote.kmongo.util.KMongoUtil.defaultCodecRegistry
+import org.litote.kmongo.util.ObjectMappingConfiguration
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.full.starProjectedType
 
 object KMongoUtils {
+    init {
+        registerCustomCodec()
+    }
+
     private val _internalDefaultRegistry: CodecRegistry by lazy(PUBLICATION) {
+        CodecRegistries.fromCodecs()
         ClassMappingType.codecRegistry(defaultCodecRegistry)
     }
 
@@ -43,6 +51,15 @@ object KMongoUtils {
     }).objectMapper.registerModule(IdJacksonModule())
 
     fun isJsonArray(json: String) = json.trim().startsWith('[')
+
+    fun registerCustomCodec() {
+        // 注册自定义 Codec 编解码器
+        ObjectMappingConfiguration.apply {
+            DatetimeBsonCodec.all.forEach {
+                addCustomCodec(it)
+            }
+        }
+    }
 
     fun registerKMongoMappingService() {
         // 使用 KMongo Kotlin Serialization 运行时未导入 org.litote.kmongo:kmongo-serialization-mapping 库时需要设置以下属性以支持字段和类型的映射支持，用于解决 @SerialName 等注解和 Id 等类型序列化和反序列化无效问题，使用 shadow 插件打的 Jar 包中即使包含了 kmongo-serialization-mapping 库也需要设置，因为需要在运行时的项目导入才可以不用设置。

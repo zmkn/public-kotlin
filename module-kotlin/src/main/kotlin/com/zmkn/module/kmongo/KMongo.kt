@@ -1,10 +1,9 @@
 package com.zmkn.module.kmongo
 
 import com.mongodb.reactivestreams.client.ClientSession
-import com.zmkn.bson.codec.datetime.DatetimeBsonCodec
+import com.zmkn.module.kmongo.util.KMongoUtils.registerCustomCodec
 import org.bson.Document
 import org.litote.kmongo.coroutine.*
-import org.litote.kmongo.util.ObjectMappingConfiguration
 import kotlin.reflect.KClass
 import org.litote.kmongo.reactivestreams.KMongo as KMongoUtils
 
@@ -85,11 +84,7 @@ class KMongo(connectionString: String, databaseName: String) {
 
     companion object {
         init {
-            ObjectMappingConfiguration.apply {
-                DatetimeBsonCodec.all.forEach {
-                    addCustomCodec(it)
-                }
-            }
+            registerCustomCodec()
         }
     }
 }
