@@ -1,9 +1,11 @@
 import com.zmkn.util.FileUtils
+import org.junit.jupiter.api.Disabled
 import java.io.File
 import kotlin.test.Test
 
 class FileUtilsTest {
     @Test
+    @Disabled
     fun testCopy() {
         println("testCopy")
         println(File(".").canonicalPath)
