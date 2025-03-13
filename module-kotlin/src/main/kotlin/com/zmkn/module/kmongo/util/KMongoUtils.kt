@@ -1,12 +1,16 @@
 package com.zmkn.module.kmongo.util
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.mongodb.client.model.Filters
 import com.zmkn.bson.codec.datetime.DatetimeBsonCodec
+import com.zmkn.jackson.module.bson.BsonJacksonModule
+import com.zmkn.kotlin.serializers.module.bson.BsonKotlinSerializersModule
 import com.zmkn.service.JacksonService
 import com.zmkn.service.SerializationService
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.internal.FormatLanguage
+import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
 import org.bson.BsonDocument
 import org.bson.Document
@@ -43,12 +47,15 @@ object KMongoUtils {
 
     val json = SerializationService {
         prettyPrint = false
-        serializersModule = IdKotlinXSerializationModule
+        serializersModule = SerializersModule {
+            include(BsonKotlinSerializersModule.all)
+            include(IdKotlinXSerializationModule)
+        }
     }.json
 
-    val objectMapper = JacksonService(initializer = {
+    val objectMapper: ObjectMapper = JacksonService(initializer = {
         disable(SerializationFeature.INDENT_OUTPUT)
-    }).objectMapper.registerModule(IdJacksonModule())
+    }).objectMapper.registerModule(BsonJacksonModule.all).registerModule(IdJacksonModule())
 
     fun isJsonArray(json: String) = json.trim().startsWith('[')
 
@@ -133,12 +140,24 @@ object KMongoUtils {
         return Document.parse(json, decoder)
     }
 
+    fun encodeDocumentToString(document: Document): String {
+        return objectMapper.writeValueAsString(document)
+    }
+
+    fun decodeDocumentFromString(jsonString: String): Document {
+        return objectMapper.readValue(jsonString, Document::class.java)
+    }
+
     inline fun <reified T> encodeToString(value: T): String {
-        return json.encodeToString(value)
+        return encodeToString(T::class.starProjectedType, value)
     }
 
     fun <T> encodeToString(kType: KType, value: T): String {
-        return json.encodeToString(json.serializersModule.serializer(kType), value)
+        return if (kType == Document::class.starProjectedType) {
+            encodeDocumentToString(value as Document)
+        } else {
+            json.encodeToString(json.serializersModule.serializer(kType), value)
+        }
     }
 
     fun <T : Any> encodeToString(schema: KClass<T>, value: T): String {
@@ -146,17 +165,26 @@ object KMongoUtils {
     }
 
     inline fun <reified T> decodeFromString(jsonString: String): T {
-        return json.decodeFromString<T>(jsonString)
+        return decodeFromString(T::class.starProjectedType, jsonString)
     }
 
     @Suppress("UNCHECKED_CAST")
     @OptIn(InternalSerializationApi::class)
     fun <T> decodeFromString(kType: KType, @FormatLanguage("json", "", "") jsonString: String): T {
-        return json.decodeFromString(json.serializersModule.serializer(kType), jsonString) as T
+        return if (kType == Document::class.starProjectedType) {
+            decodeDocumentFromString(jsonString) as T
+        } else {
+            json.decodeFromString(json.serializersModule.serializer(kType), jsonString) as T
+        }
     }
 
     @OptIn(InternalSerializationApi::class)
     fun <T : Any> decodeFromString(schema: KClass<T>, @FormatLanguage("json", "", "") jsonString: String): T {
         return decodeFromString(schema.starProjectedType, jsonString)
+    }
+
+    fun <T : Any> decodeFromDocument(schema: KClass<T>, document: Document): T {
+        val json = encodeDocumentToString(document)
+        return decodeFromString(schema, json)
     }
 }

@@ -7,17 +7,20 @@ import com.mongodb.client.result.InsertOneResult
 import com.mongodb.client.result.UpdateResult
 import com.zmkn.module.kmongo.KMongo
 import com.zmkn.module.kmongo.extension.*
+import com.zmkn.module.kmongo.util.KMongoUtils
 import com.zmkn.module.kmongo.util.KMongoUtils.bsonToJson
 import com.zmkn.module.kmongo.util.KMongoUtils.customCodecRegistry
 import com.zmkn.module.kmongo.util.KMongoUtils.documentToJson
 import com.zmkn.module.kmongo.util.KMongoUtils.encodeToString
 import com.zmkn.module.kmongo.util.KMongoUtils.getCollectionName
+import com.zmkn.module.kmongo.util.KMongoUtils.objectMapper
 import com.zmkn.service.LoggerService
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import model.Account
+import model.Name
 import model.User
 import org.bson.Document
 import org.bson.types.ObjectId
@@ -364,5 +367,33 @@ class KMongoTest {
     fun testGetCollectionName() {
         val collectionName = getCollectionName(Account::class)
         println(collectionName)
+    }
+
+    @Test
+    @Disabled
+    fun testDocumentCopy() {
+        val json = "{\"_id\": {\"\$oid\": \"67d11287d0f1c354bbad4c1e\"}, \"name\": \"name123456\"}"
+        println(json)
+        val document = KMongoUtils.jsonToDocument(json)
+        println(document)
+        println(document.copy())
+    }
+
+    //    @Disabled
+    @Test
+    fun testDecodeFromDocument() {
+        val json = "{\"_id\": {\"\$oid\": \"67d11287d0f1c354bbad4c1e\"}, \"name\": \"name123456\"}"
+        println(json)
+        val document = KMongoUtils.jsonToDocument(json)
+        println(document)
+        println(document["_id"] is ObjectId)
+        val json2 = KMongoUtils.encodeDocumentToString(document)
+        println(json2)
+        val document2 = objectMapper.readValue(json2, Document::class.java)
+        println(document2)
+        println(document2["_id"] is ObjectId)
+        val json3 = objectMapper.writeValueAsString(document2)
+        println(json3)
+        println(KMongoUtils.decodeFromDocument(Name::class, document))
     }
 }
