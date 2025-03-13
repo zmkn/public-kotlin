@@ -237,8 +237,13 @@ suspend inline fun <reified T : Any> CoroutineCollection<T>.findOneAndReplaceAsS
     return findOneAndReplaceAsString(T::class, filter, replacement, options, clientSession)
 }
 
+@Suppress("UNCHECKED_CAST")
 suspend fun <T : Any> CoroutineCollection<T>.findOneAndReplaceAsString(schema: KClass<T>, filter: String, replacement: String, options: FindOneAndReplaceOptions = FindOneAndReplaceOptions(), clientSession: ClientSession? = null): String? {
-    val replacementDocument = decodeFromString(schema, replacement)
+    val replacementDocument = if (schema == Document::class) {
+        jsonToDocument(replacement) as T
+    } else {
+        decodeFromString(schema, replacement)
+    }
     return if (clientSession == null) {
         findOneAndReplace(filter, replacementDocument, options)
     } else {

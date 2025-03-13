@@ -130,6 +130,7 @@ class KMongoTest {
     }
 
     @Test
+    @Disabled
     fun testAggregateByDocument() = runBlocking {
         logger.error("testAggregateByDocument---Start")
         val userCollectionName = getCollectionName(User::class)
@@ -216,17 +217,18 @@ class KMongoTest {
         logger.error("testFindOneAndUpdate---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testFindOneAndReplace() = runBlocking {
         logger.error("testFindOneAndReplace---Start")
-        val collection = kMongo.getCollection("user", User::class)
-        val filter = "{\"_id\": {\"\$oid\": \"677398c1295a1b7ee5dee99e\"}}"
-        val filter1 = Filters.eq("_id", ObjectId("677398c1295a1b7ee5dee99e"))
+        val collection = kMongo.getCollection("user")
+        val filter = "{\"_id\": \"67d266b14fe9e00f42d3edc1\"}"
+        val filter1 = Filters.eq("_id", ObjectId("67d266b14fe9e00f42d3edc1"))
         println(filter1)
         println(filter)
         println(bsonToJson(filter1))
         val user = User(
-            id = "677398c1295a1b7ee5dee99e".toId(),
+            id = "67d266b14fe9e00f42d3edc1".toId(),
             accountId = newId(),
             nickName = "aaa",
             profilePictureUrl = "taobao.com",
@@ -324,21 +326,23 @@ class KMongoTest {
         logger.error("testBulkWriteByDocument---End")
     }
 
-    //        @Test
+    @Test
+    @Disabled
     fun testProjection() = runBlocking {
         logger.error("kMongoText---Start")
         val collection = kMongo.getCollection("user", User::class)
         println(excludeId().json)
-        val result = collection.projectionAsStringList(User::class, """{"id":0,"accountId":1,"nickName":1}""")
+        val result = collection.projectionAsStringList(User::class, """{"id":0,"accountId":1,"nickName":1}""", """{}""")
         logger.error(result)
         logger.error("kMongoText---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testProjectionByDocument() = runBlocking {
         logger.error("testProjectionByDocument---Start")
         val collection = kMongo.getCollection("user")
-        val result = collection.projectionAsStringList(Document::class, """{"_id":0,"accountId":1,"nickName":1}""")
+        val result = collection.projectionAsStringList(Document::class, """{"_id":0,"accountId":1,"nickName":1}""", """{}""")
         logger.error(result)
         logger.error("testProjectionByDocument---End")
     }
