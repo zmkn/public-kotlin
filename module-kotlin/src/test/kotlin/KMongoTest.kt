@@ -2,11 +2,13 @@ import com.mongodb.MongoNamespace
 import com.mongodb.client.model.DropIndexOptions
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.RenameCollectionOptions
+import com.mongodb.client.model.UnwindOptions
 import com.mongodb.client.result.InsertOneResult
 import com.mongodb.client.result.UpdateResult
 import com.zmkn.module.kmongo.KMongo
 import com.zmkn.module.kmongo.extension.*
 import com.zmkn.module.kmongo.util.KMongoUtils.bsonToJson
+import com.zmkn.module.kmongo.util.KMongoUtils.customCodecRegistry
 import com.zmkn.module.kmongo.util.KMongoUtils.documentToJson
 import com.zmkn.module.kmongo.util.KMongoUtils.encodeToString
 import com.zmkn.module.kmongo.util.KMongoUtils.getCollectionName
@@ -22,6 +24,7 @@ import org.bson.types.ObjectId
 import org.junit.jupiter.api.Disabled
 import org.litote.kmongo.*
 import org.litote.kmongo.id.WrappedObjectId
+import org.litote.kmongo.util.KMongoUtil
 import kotlin.test.Test
 
 class KMongoTest {
@@ -126,11 +129,31 @@ class KMongoTest {
         logger.error("testAggregate---End")
     }
 
-    //    @Test
+    @Test
     fun testAggregateByDocument() = runBlocking {
         logger.error("testAggregateByDocument---Start")
-        val collection = kMongo.getCollection("user")
-        val result = collection.aggregate(Document::class, listOf("{\$limit:2}"))
+        val userCollectionName = getCollectionName(User::class)
+        val bsonList = listOf(
+            match(
+                Account::id eq WrappedObjectId("67d11287d0f1c354bbad4c1e"),
+            ),
+            lookup(
+                from = userCollectionName,
+                localField = Account::userId.path(),
+                foreignField = User::id.path(),
+                newAs = "userId"
+            ),
+            unwind("\$userId", UnwindOptions().preserveNullAndEmptyArrays(true)),
+        )
+        println(bsonList)
+        val pipeline = bsonList.map {
+            bsonToJson(it)
+        }
+        println(pipeline)
+        val bsonList2 = KMongoUtil.toBsonList(pipeline.toTypedArray(), customCodecRegistry)
+        println(bsonList2)
+        val collection = kMongo.getCollection(Account::class, Document::class)
+        val result = collection.aggregate(Document::class, pipeline)
         logger.error(result.toStringList(Document::class))
         logger.error("testAggregateByDocument---End")
     }
@@ -333,6 +356,7 @@ class KMongoTest {
     }
 
     @Test
+    @Disabled
     fun testGetCollectionName() {
         val collectionName = getCollectionName(Account::class)
         println(collectionName)

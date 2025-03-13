@@ -14,17 +14,22 @@ class KMongo(connectionString: String, databaseName: String) {
 
     val database: CoroutineDatabase = _database
 
-    fun <T : Any> getCollection(kClass: KClass<T>): CoroutineCollection<T> {
-        val collectionName = getCollectionName(kClass)
-        return getCollection(collectionName, kClass)
+    fun <T : Any> getCollection(collectionName: String, collectionTypeKClass: KClass<T>): CoroutineCollection<T> {
+        return _database.database.getCollection(collectionName, collectionTypeKClass.java).coroutine
+    }
+
+    fun <T : Any> getCollection(collectionNameKClass: KClass<*>, collectionTypeKClass: KClass<T>): CoroutineCollection<T> {
+        val collectionName = getCollectionName(collectionNameKClass)
+        return getCollection(collectionName, collectionTypeKClass)
     }
 
     fun getCollection(collectionName: String): CoroutineCollection<Document> {
         return _database.database.getCollection(collectionName).coroutine
     }
 
-    fun <T : Any> getCollection(collectionName: String, kClass: KClass<T>): CoroutineCollection<T> {
-        return _database.database.getCollection(collectionName, kClass.java).coroutine
+    fun getCollection(collectionNameKClass: KClass<*>): CoroutineCollection<Document> {
+        val collectionName = getCollectionName(collectionNameKClass)
+        return getCollection(collectionName)
     }
 
     suspend fun <T : Any> collectionExists(kClass: KClass<T>): Boolean {

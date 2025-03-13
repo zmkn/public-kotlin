@@ -32,7 +32,7 @@ object KMongoUtils {
         registerCustomCodec()
     }
 
-    private val _internalDefaultRegistry: CodecRegistry by lazy(PUBLICATION) {
+    val customCodecRegistry: CodecRegistry by lazy(PUBLICATION) {
         CodecRegistries.fromCodecs()
         ClassMappingType.codecRegistry(defaultCodecRegistry)
     }
@@ -100,7 +100,7 @@ object KMongoUtils {
         return bsonToJson(
             bson.toBsonDocument(
                 Document::class.java,
-                _internalDefaultRegistry
+                customCodecRegistry
             )
         )
     }
