@@ -1,21 +1,13 @@
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.mongodb.MongoNamespace
-import com.mongodb.client.model.DropIndexOptions
-import com.mongodb.client.model.Filters
-import com.mongodb.client.model.RenameCollectionOptions
-import com.mongodb.client.model.UnwindOptions
+import com.mongodb.client.model.*
 import com.mongodb.client.result.InsertOneResult
 import com.mongodb.client.result.UpdateResult
+import com.zmkn.extension.filter
 import com.zmkn.module.kmongo.KMongo
 import com.zmkn.module.kmongo.extension.*
 import com.zmkn.module.kmongo.util.KMongoUtils
-import com.zmkn.module.kmongo.util.KMongoUtils.bsonToJson
-import com.zmkn.module.kmongo.util.KMongoUtils.customCodecRegistry
-import com.zmkn.module.kmongo.util.KMongoUtils.documentToJson
-import com.zmkn.module.kmongo.util.KMongoUtils.encodeToString
-import com.zmkn.module.kmongo.util.KMongoUtils.getCollectionName
-import com.zmkn.module.kmongo.util.KMongoUtils.objectMapper
 import com.zmkn.service.LoggerService
-import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
@@ -26,7 +18,6 @@ import org.bson.Document
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Disabled
 import org.litote.kmongo.*
-import org.litote.kmongo.id.WrappedObjectId
 import org.litote.kmongo.util.KMongoUtil
 import kotlin.test.Test
 
@@ -48,73 +39,81 @@ class KMongoTest {
         val map: LinkedHashMap<String, Int> = linkedMapOf("a" to 1),
     )
 
-    //    @Test
+    @Test
+    @Disabled
     fun testDropCollection() = runBlocking {
         logger.error("testDropCollection---Start")
-        val collection = kMongo.getCollection("user", User::class)
+        val collection = kMongo.getCollection(User::class)
         collection.dropCollection()
         logger.error("testDropCollection---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testRenameCollection() = runBlocking {
         logger.error("testRenameCollection---Start")
-        val collection = kMongo.getCollection("user", User::class)
+        val collection = kMongo.getCollection(User::class)
         collection.renameCollection(MongoNamespace(kMongo.database.name, "user1"), RenameCollectionOptions(), null)
         logger.error("testRenameCollection---End")
     }
 
-    //        @Test
+    @Test
+    @Disabled
     fun testDropIndex() = runBlocking {
         logger.error("testDropIndex---Start")
-        val collection = kMongo.getCollection("user", User::class)
+        val collection = kMongo.getCollection(User::class)
         val result = collection.dropIndex("a", DropIndexOptions(), null)
         logger.error(result)
         logger.error("testDropIndex---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testDistinct() = runBlocking {
         logger.error("testDistinct---Start")
-        val collection = kMongo.getCollection("user", User::class)
-        val result = collection.distinctByField(User::class, "createdAt")
+        val collection = kMongo.getCollection(User::class)
+        val result = collection.distinctByField(Document::class, "createdAt")
         logger.error(result.toList())
         logger.error("testDistinct---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testListIndexes() = runBlocking {
         logger.error("kMongoText---Start")
-        val collection = kMongo.getCollection("user", User::class)
+        val collection = kMongo.getCollection(User::class)
         val listIndexes = collection.listIndexes(null)
         logger.error(listIndexes.toStringList())
         logger.error("kMongoText---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testFind() = runBlocking {
         logger.error("kMongoText---Start")
-        val collection = kMongo.getCollection("user", User::class)
+        val collection = kMongo.getCollection(User::class)
         val result = collection.find("""{}""")
         logger.error(result.toList())
+        logger.error(result.toStringList())
         logger.error("kMongoText---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testFindOne() = runBlocking {
         logger.error("testFindOne---Start")
-        val id = "67a4397dba298a37b00f5419"
-        val collection = kMongo.getCollection("user", User::class)
-        val bson = User::id eq WrappedObjectId(id)
-        logger.error(bson)
-        val user = collection.collection.find(bson).awaitFirstOrNull()
+        val id = "67d11f7cff643220b30f9c50"
+        val collection = kMongo.getCollection("user")
+        val bson = User::id eq ObjectId(id)
+        val bsonJson = KMongoUtils.bsonToJson(bson)
+        logger.error(bsonJson)
+        val user = collection.findOneAsString(Document::class, bsonJson)
         logger.error(user)
-//        val result = collection.findOneAsString(User::class, "{ \"${User::id.path()}\": { \"\$oid\": \"$id\" } }")
-//        logger.error(result)
         logger.error("testFindOne---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testFindOneByDocument() = runBlocking {
         logger.error("testFindOneByDocument---Start")
         val collection = kMongo.getCollection("user")
@@ -123,12 +122,14 @@ class KMongoTest {
         logger.error("testFindOneByDocument---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testAggregate() = runBlocking {
         logger.error("testAggregate---Start")
-        val collection = kMongo.getCollection("user", User::class)
-        val result = collection.aggregate(User::class, listOf("{\$limit:2}"))
-        logger.error(result.toList())
+        val collection = kMongo.getCollection("user")
+        val result = collection.aggregate(Document::class, listOf("{\$limit:2}"))
+//        println(result.toList())
+        logger.error(result.toStringList())
         logger.error("testAggregate---End")
     }
 
@@ -136,10 +137,10 @@ class KMongoTest {
     @Disabled
     fun testAggregateByDocument() = runBlocking {
         logger.error("testAggregateByDocument---Start")
-        val userCollectionName = getCollectionName(User::class)
+        val userCollectionName = KMongoUtils.getCollectionName(User::class)
         val bsonList = listOf(
             match(
-                Account::id eq WrappedObjectId("67d11287d0f1c354bbad4c1e"),
+                Account::id eq ObjectId("67d11287d0f1c354bbad4c1e"),
             ),
             lookup(
                 from = userCollectionName,
@@ -151,10 +152,10 @@ class KMongoTest {
         )
         println(bsonList)
         val pipeline = bsonList.map {
-            bsonToJson(it)
+            KMongoUtils.bsonToJson(it)
         }
         println(pipeline)
-        val bsonList2 = KMongoUtil.toBsonList(pipeline.toTypedArray(), customCodecRegistry)
+        val bsonList2 = KMongoUtil.toBsonList(pipeline.toTypedArray(), KMongoUtils.customCodecRegistry)
         println(bsonList2)
         val collection = kMongo.getCollection(Account::class, Document::class)
         val result = collection.aggregate(Document::class, pipeline)
@@ -162,34 +163,36 @@ class KMongoTest {
         logger.error("testAggregateByDocument---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testInsertOne() = runBlocking {
         logger.error("kMongoText---Start")
-        val collection = kMongo.getCollection("user", User::class)
+        val collection = kMongo.getCollection(User::class)
         val user = User(
-            accountId = newId(),
+            accountId = ObjectId(),
             nickName = "xz",
             profilePictureUrl = "qq.com",
             status = "DISABLED",
             phoneNumbers = emptyList(),
         )
         println(user)
-        val userJson = encodeToString(user)
+        val userJson = KMongoUtils.encodeToString(user)
         println(userJson)
         println(user.json)
         println("start mongodb insert")
-        val result = collection.insertOne(User::class, userJson)
+        val result = collection.insertOne(Document::class, userJson)
         logger.error(result)
         logger.error("kMongoText---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testInsertOneByDocument() = runBlocking {
         logger.error("kMongoText---Start")
         val collection = kMongo.getCollection("user")
         val user = Document(
             mapOf(
-                "accountId" to ObjectId().toString(),
+                "accountId" to ObjectId(),
                 "nickName" to "xz",
                 "profilePictureUrl" to "qq.com",
                 "status" to "DISABLED",
@@ -197,25 +200,43 @@ class KMongoTest {
             )
         )
         println(user)
-        val userJson = documentToJson(user)
+        val userJson = KMongoUtils.documentToJson(user)
         println(userJson)
         val result = collection.insertOne(Document::class, userJson)
         logger.error(result)
         logger.error("kMongoText---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testFindOneAndUpdate() = runBlocking {
         logger.error("testFindOneAndUpdate---Start")
-        val collection = kMongo.getCollection("user", User::class)
-        val filter = "{\"_id\": {\"\$oid\": \"677398c1295a1b7ee5dee99e\"}}"
-        val filter1 = Filters.eq("_id", ObjectId("677398c1295a1b7ee5dee99e"))
-        println(filter1)
+        val collection = kMongo.getCollection(User::class)
+        val filterBson = User::id eq ObjectId("67a41a362722ff2ddd47a7e8")
+        val filter = KMongoUtils.bsonToJson(filterBson)
         println(filter)
-        println(bsonToJson(filter1))
-        val update = "{\$set: { \"nickName\": \"xxxx\" }}"
+        val user = User(
+            accountId = ObjectId(),
+            nickName = "testFindOneAndUpdate",
+            profilePictureUrl = "qq.com",
+            status = "DISABLED",
+            phoneNumbers = emptyList(),
+        )
+        val defaultDataSetObjectNode = KMongoUtils.objectMapper.valueToTree<ObjectNode>(user).filter {
+            it != User::id.path() && it != User::createdAt.path()
+        }
+        val userSetJson = KMongoUtils.objectMapper.writeValueAsString(defaultDataSetObjectNode)
+        val userSetOnInsertObjectNode = KMongoUtils.objectMapper.valueToTree<ObjectNode>(user).filter {
+            it == User::createdAt.path()
+        }
+        val userSetOnInsertJson = KMongoUtils.objectMapper.writeValueAsString(userSetOnInsertObjectNode)
+        val update = "{ \$set: $userSetJson, \$setOnInsert: $userSetOnInsertJson }"
         println(update)
-        val result = collection.findOneAndUpdateAsString(filter, update)
+        val result = collection.findOneAndUpdateAsString(
+            filter,
+            update,
+            FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER),
+        )
         logger.error(result)
         logger.error("testFindOneAndUpdate---End")
     }
@@ -229,50 +250,52 @@ class KMongoTest {
         val filter1 = Filters.eq("_id", ObjectId("67d266b14fe9e00f42d3edc1"))
         println(filter1)
         println(filter)
-        println(bsonToJson(filter1))
+        println(KMongoUtils.bsonToJson(filter1))
         val user = User(
-            id = "67d266b14fe9e00f42d3edc1".toId(),
-            accountId = newId(),
+            id = ObjectId("67d266b14fe9e00f42d3edc1"),
+            accountId = ObjectId(),
             nickName = "aaa",
             profilePictureUrl = "taobao.com",
             status = "DISABLED",
             phoneNumbers = emptyList(),
         )
-        val replacement = encodeToString(user)
+        val replacement = KMongoUtils.encodeToString(user)
         println(replacement)
         val result = collection.findOneAndReplaceAsString(filter, replacement)
         logger.error(result)
         logger.error("testFindOneAndReplace---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testFindOneAndDelete() = runBlocking {
         logger.error("kMongoText---Start")
-        val collection = kMongo.getCollection("user", User::class)
+        val collection = kMongo.getCollection(User::class)
         val filter = "{\"_id\": {\"\$oid\": \"6773ac7ce872ed3293b09fe1\"}}"
         val filter1 = Filters.eq("_id", ObjectId("6773ac7ce872ed3293b09fe1"))
         println(filter1)
         println(filter)
-        println(bsonToJson(filter1))
+        println(KMongoUtils.bsonToJson(filter1))
         val result = collection.findOneAndDeleteAsString(filter)
         logger.error(result)
         logger.error("kMongoText---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testSave() = runBlocking {
         logger.error("testSave---Start")
-        val collection = kMongo.getCollection("user", User::class)
+        val collection = kMongo.getCollection(User::class)
         val user = User(
-            id = "67739a2cbbc61977be08b47c".toId(),
-            accountId = newId(),
+            id = ObjectId("67739a2cbbc61977be08b47c"),
+            accountId = ObjectId(),
             nickName = "kz",
             profilePictureUrl = "taobao.com",
             status = "DISABLED",
             phoneNumbers = emptyList(),
         )
         println(user)
-        val userJson = encodeToString(user)
+        val userJson = KMongoUtils.encodeToString(user)
         println(userJson)
         println(user.json)
         println("start mongodb save")
@@ -286,19 +309,20 @@ class KMongoTest {
         logger.error("testSave---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testBulkWrite() = runBlocking {
         logger.error("testBulkWrite---Start")
-        val collection = kMongo.getCollection("user", User::class)
+        val collection = kMongo.getCollection(User::class)
         val user = User(
-            accountId = newId(),
+            accountId = ObjectId(),
             nickName = "testBulkWrite",
             profilePictureUrl = "baidu.com",
             status = "DISABLED",
             phoneNumbers = emptyList(),
         )
         println(user)
-        val userJson = encodeToString(user)
+        val userJson = KMongoUtils.encodeToString(user)
         println(userJson)
         println(user.json)
         val requests = listOf("""{ insertOne : $userJson }""")
@@ -308,19 +332,20 @@ class KMongoTest {
         logger.error("testBulkWrite---End")
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testBulkWriteByDocument() = runBlocking {
         logger.error("testBulkWriteByDocument---Start")
         val collection = kMongo.getCollection("user")
         val user = User(
-            accountId = newId(),
+            accountId = ObjectId(),
             nickName = "testBulkWrite",
             profilePictureUrl = "baidu.com",
             status = "DISABLED",
             phoneNumbers = emptyList(),
         )
         println(user)
-        val userJson = encodeToString(user)
+        val userJson = KMongoUtils.encodeToString(user)
         println(userJson)
         val requests = listOf("""{ insertOne : $userJson }""")
         println(requests)
@@ -333,9 +358,9 @@ class KMongoTest {
     @Disabled
     fun testProjection() = runBlocking {
         logger.error("kMongoText---Start")
-        val collection = kMongo.getCollection("user", User::class)
+        val collection = kMongo.getCollection(User::class)
         println(excludeId().json)
-        val result = collection.projectionAsStringList(User::class, """{"id":0,"accountId":1,"nickName":1}""", """{}""")
+        val result = collection.projectionAsStringList(Document::class, """{"_id":0,"accountId":1,"nickName":1}""", """{}""")
         logger.error(result)
         logger.error("kMongoText---End")
     }
@@ -344,7 +369,7 @@ class KMongoTest {
     @Disabled
     fun testProjectionByDocument() = runBlocking {
         logger.error("testProjectionByDocument---Start")
-        val collection = kMongo.getCollection("user")
+        val collection = kMongo.getCollection(User::class)
         val result = collection.projectionAsStringList(Document::class, """{"_id":0,"accountId":1,"nickName":1}""", """{}""")
         logger.error(result)
         logger.error("testProjectionByDocument---End")
@@ -358,14 +383,14 @@ class KMongoTest {
             setValue(Account::accountUpdatedAt, Clock.System.now()),
         )
         println(updateBson)
-        val updateJson = bsonToJson(updateBson)
+        val updateJson = KMongoUtils.bsonToJson(updateBson)
         println(updateJson)
     }
 
     @Test
     @Disabled
     fun testGetCollectionName() {
-        val collectionName = getCollectionName(Account::class)
+        val collectionName = KMongoUtils.getCollectionName(Account::class)
         println(collectionName)
     }
 
@@ -379,21 +404,20 @@ class KMongoTest {
         println(document.copy())
     }
 
-    //    @Disabled
     @Test
+//    @Disabled
     fun testDecodeFromDocument() {
-        val json = "{\"_id\": {\"\$oid\": \"67d11287d0f1c354bbad4c1e\"}, \"name\": \"name123456\"}"
+        val name = Name(
+            name = "name111",
+        )
+        val json = KMongoUtils.encodeToString(name)
         println(json)
         val document = KMongoUtils.jsonToDocument(json)
         println(document)
         println(document["_id"] is ObjectId)
-        val json2 = KMongoUtils.encodeDocumentToString(document)
-        println(json2)
-        val document2 = objectMapper.readValue(json2, Document::class.java)
-        println(document2)
-        println(document2["_id"] is ObjectId)
-        val json3 = objectMapper.writeValueAsString(document2)
-        println(json3)
         println(KMongoUtils.decodeFromDocument(Name::class, document))
+        val json2 = KMongoUtils.documentToJson(document)
+        println(json2)
+        println(KMongoUtils.decodeFromString(Name::class, json2))
     }
 }

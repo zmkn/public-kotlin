@@ -395,7 +395,7 @@ fun <T : Any> CoroutineCollection<T>.projection(
                         if (it.path() == "_id") {
                             existId = true
                         }
-                        newProjectionMap[it.path()] = value as Int
+                        newProjectionMap[it.path()] = value
                         Pair(
                             it.path(),
                             it.returnType.classifier as KClass<*>

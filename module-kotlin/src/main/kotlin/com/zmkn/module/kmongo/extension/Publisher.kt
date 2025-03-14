@@ -1,5 +1,6 @@
 package com.zmkn.module.kmongo.extension
 
+import com.zmkn.module.kmongo.util.KMongoUtils.documentToJson
 import com.zmkn.module.kmongo.util.KMongoUtils.encodeToString
 import com.zmkn.module.kmongo.util.KMongoUtils.objectMapper
 import org.bson.Document
@@ -18,7 +19,7 @@ suspend inline fun <reified T : Any> Publisher<T>.toStringList(): List<String> {
 suspend fun <T : Any> Publisher<T>.toStringList(schema: KClass<T>): List<String> {
     return toList().map {
         if (it is Document) {
-            it.toJson()
+            documentToJson(it)
         } else {
             encodeToString(schema, it)
         }

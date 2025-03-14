@@ -1,16 +1,19 @@
 package model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.litote.kmongo.Id
+import org.bson.types.ObjectId
 
 @Serializable
 data class Name(
     @Contextual
     @SerialName("_id")
     @JsonProperty("_id")
-    val id: Id<Name>,
+    val id: ObjectId = ObjectId(),
     val name: String,
+    val createdAt: Instant = Clock.System.now(),
 )

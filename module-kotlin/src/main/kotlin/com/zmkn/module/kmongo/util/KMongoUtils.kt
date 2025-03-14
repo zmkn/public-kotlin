@@ -140,21 +140,13 @@ object KMongoUtils {
         return Document.parse(json, decoder)
     }
 
-    fun encodeDocumentToString(document: Document): String {
-        return objectMapper.writeValueAsString(document)
-    }
-
-    fun decodeDocumentFromString(jsonString: String): Document {
-        return objectMapper.readValue(jsonString, Document::class.java)
-    }
-
     inline fun <reified T> encodeToString(value: T): String {
         return encodeToString(T::class.starProjectedType, value)
     }
 
     fun <T> encodeToString(kType: KType, value: T): String {
         return if (kType == Document::class.starProjectedType) {
-            encodeDocumentToString(value as Document)
+            documentToJson(value as Document)
         } else {
             json.encodeToString(json.serializersModule.serializer(kType), value)
         }
@@ -172,7 +164,7 @@ object KMongoUtils {
     @OptIn(InternalSerializationApi::class)
     fun <T> decodeFromString(kType: KType, @FormatLanguage("json", "", "") jsonString: String): T {
         return if (kType == Document::class.starProjectedType) {
-            decodeDocumentFromString(jsonString) as T
+            jsonToDocument(jsonString) as T
         } else {
             json.decodeFromString(json.serializersModule.serializer(kType), jsonString) as T
         }
@@ -184,7 +176,7 @@ object KMongoUtils {
     }
 
     fun <T : Any> decodeFromDocument(schema: KClass<T>, document: Document): T {
-        val json = encodeDocumentToString(document)
+        val json = documentToJson(document)
         return decodeFromString(schema, json)
     }
 }

@@ -6,22 +6,21 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.litote.kmongo.Id
-import org.litote.kmongo.newId
+import org.bson.types.ObjectId
 
 @Serializable
 data class Account(
     @Contextual
     @SerialName("_id")
     @JsonProperty("_id")
-    val id: Id<Account> = newId(),
+    val id: ObjectId = ObjectId(),
     @Contextual
-    val notificationGroupId: Id<String>,
+    val notificationGroupId: ObjectId,
     val account: String,
     val phoneNumber: String,
     val status: String,
     @Contextual
-    val userId: Id<User>,
+    val userId: ObjectId,
     val passwordStatus: String,
     val accountUpdatedAt: Instant? = null,
     val password: String? = null,
