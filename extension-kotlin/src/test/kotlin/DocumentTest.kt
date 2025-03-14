@@ -25,12 +25,12 @@ class DocumentTest {
                     .append("document", Document().append("aa2", "aaaaaa222"))
                     .append("list", listOf("l2", 4, "l8"))
             )
-            .append("list", listOf(3, "4a", "5b"))
+            .append("list", setOf(3, "4a", "5b"))
         println(document2)
         println(document2.get("list"))
         val document3 = document.assign(document2)
         println(document3)
-        println(document.filter {
+        println(document3.filter {
             it.key != "list"
         })
     }

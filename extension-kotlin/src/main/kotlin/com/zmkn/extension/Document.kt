@@ -2,12 +2,12 @@ package com.zmkn.extension
 
 import org.bson.Document
 
-private fun documentListMerge(original: List<*>, vararg documentsList: List<*>): MutableList<Any?> {
+private fun documentIterableMerge(original: Iterable<*>, vararg documentsList: Iterable<*>): Iterable<Any?> {
     val newList = mutableListOf<Any?>()
     original.forEach { document ->
         val element = when (document) {
             is Document -> document.deepCopy()
-            is List<*> -> documentListMerge(document)
+            is Iterable<*> -> documentIterableMerge(document)
             else -> document
         }
         newList.add(element)
@@ -32,7 +32,7 @@ fun Document.deepCopy(): Document {
                 newDocument.append(key, value.deepCopy())
             }
 
-            is List<*> -> {
+            is Iterable<*> -> {
                 val newList = mutableListOf<Any?>()
                 for (item in value) {
                     if (item is Document) {
@@ -75,11 +75,11 @@ fun Document.assign(vararg documents: Document): Document {
                         } else {
                             newDocument[propertyName] = propertyValue.deepCopy()
                         }
-                    } else if (propertyValue is List<*>) {
-                        if (existingProperty != null && existingProperty is List<*>) {
-                            newDocument[propertyName] = documentListMerge(existingProperty, propertyValue)
+                    } else if (propertyValue is Iterable<*>) {
+                        if (existingProperty != null && existingProperty is Iterable<*>) {
+                            newDocument[propertyName] = documentIterableMerge(existingProperty, propertyValue)
                         } else {
-                            newDocument[propertyName] = documentListMerge(propertyValue)
+                            newDocument[propertyName] = documentIterableMerge(propertyValue)
                         }
                     } else {
                         newDocument[propertyName] = propertyValue
