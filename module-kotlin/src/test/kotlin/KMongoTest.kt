@@ -396,16 +396,6 @@ class KMongoTest {
 
     @Test
     @Disabled
-    fun testDocumentCopy() {
-        val json = "{\"_id\": {\"\$oid\": \"67d11287d0f1c354bbad4c1e\"}, \"name\": \"name123456\"}"
-        println(json)
-        val document = KMongoUtils.jsonToDocument(json)
-        println(document)
-        println(document.copy())
-    }
-
-    @Test
-//    @Disabled
     fun testDecodeFromDocument() {
         val name = Name(
             name = "name111",

@@ -156,6 +156,19 @@ object KMongoUtils {
         return encodeToString(schema.starProjectedType, value)
     }
 
+    inline fun <reified T> encodeToDocument(value: T): Document {
+        return encodeToDocument(T::class.starProjectedType, value)
+    }
+
+    fun <T> encodeToDocument(kType: KType, value: T): Document {
+        val json = encodeToString(kType, value)
+        return jsonToDocument(json)
+    }
+
+    fun <T : Any> encodeToDocument(schema: KClass<T>, value: T): Document {
+        return encodeToDocument(schema.starProjectedType, value)
+    }
+
     inline fun <reified T> decodeFromString(jsonString: String): T {
         return decodeFromString(T::class.starProjectedType, jsonString)
     }
@@ -175,8 +188,16 @@ object KMongoUtils {
         return decodeFromString(schema.starProjectedType, jsonString)
     }
 
-    fun <T : Any> decodeFromDocument(schema: KClass<T>, document: Document): T {
+    fun <T> decodeFromDocument(kType: KType, document: Document): T {
         val json = documentToJson(document)
-        return decodeFromString(schema, json)
+        return decodeFromString(kType, json)
+    }
+
+    fun <T : Any> decodeFromDocument(schema: KClass<T>, document: Document): T {
+        return decodeFromDocument(schema.starProjectedType, document)
+    }
+
+    inline fun <reified T> decodeFromDocument(document: Document): T {
+        return decodeFromDocument(T::class.starProjectedType, document)
     }
 }

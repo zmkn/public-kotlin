@@ -20,9 +20,9 @@ fun ObjectNode.assign(vararg objectNodes: ObjectNode): ObjectNode {
         objectNodes.forEach { objectNode ->
             val properties = objectNode.properties()
             properties.forEach { property ->
-                val propertyName = property.key
                 val propertyValue = property.value
                 if (propertyValue != null) {
+                    val propertyName = property.key
                     val existingProperty = newObjectNode.get(propertyName)
                     if (propertyValue.isObject) {
                         if (existingProperty != null && existingProperty.isObject) {
