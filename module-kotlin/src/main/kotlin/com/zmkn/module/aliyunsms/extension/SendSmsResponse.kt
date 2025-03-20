@@ -1,9 +1,9 @@
-package com.zmkn.module.alisms.extension
+package com.zmkn.module.aliyunsms.extension
 
-import com.zmkn.module.alisms.model.SendSmsResponse
-import com.aliyun.dysmsapi20170525.models.SendSmsResponse as AliSmsSendSmsResponse
+import com.zmkn.module.aliyunsms.model.SendSmsResponse
+import com.aliyun.dysmsapi20170525.models.SendSmsResponse as AliyunSmsSendSmsResponse
 
-fun AliSmsSendSmsResponse.toSendSmsResponse(): SendSmsResponse {
+fun AliyunSmsSendSmsResponse.toSendSmsResponse(): SendSmsResponse {
     val body = body!!
     val message = body.message
     val status = if (statusCode == 200) {

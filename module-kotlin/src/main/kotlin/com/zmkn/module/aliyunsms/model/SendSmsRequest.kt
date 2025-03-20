@@ -1,4 +1,4 @@
-package com.zmkn.module.alisms.model
+package com.zmkn.module.aliyunsms.model
 
 data class SendSmsRequest(
     val phoneNumber: String,

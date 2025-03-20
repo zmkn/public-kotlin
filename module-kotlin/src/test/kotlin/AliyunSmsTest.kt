@@ -1,12 +1,12 @@
-import com.zmkn.module.alisms.AliSms
-import com.zmkn.module.alisms.model.Config
-import com.zmkn.module.alisms.model.SendSmsRequest
+import com.zmkn.module.aliyunsms.AliyunSms
+import com.zmkn.module.aliyunsms.model.Config
+import com.zmkn.module.aliyunsms.model.SendSmsRequest
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Disabled
 import kotlin.test.Test
 
-class AliSms {
-    val aliSms = AliSms(
+class AliyunSmsTest {
+    val aliyunSms = AliyunSms(
         Config(
             id = "",
             secret = "",
@@ -16,7 +16,7 @@ class AliSms {
     @Test
     @Disabled
     fun testSent() = runBlocking {
-        val response = aliSms.send(
+        val response = aliyunSms.send(
             SendSmsRequest(
                 phoneNumber = "16601190129",
                 signName = "灵祇",

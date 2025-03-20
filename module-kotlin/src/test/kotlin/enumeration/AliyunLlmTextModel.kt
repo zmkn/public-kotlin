@@ -1,9 +1,9 @@
 package enumeration
 
-enum class AliLlmTextModel(
+enum class AliyunLlmTextModel(
     val code: String,
-    val types: List<AliLlmModelType>,
-    val outputType: AliLlmModelOutputType,
+    val types: List<AliyunLlmModelType>,
+    val outputType: AliyunLlmModelOutputType,
     val title: String,
     val free: Boolean,
     val tokenTotal: Int,
@@ -12,8 +12,8 @@ enum class AliLlmTextModel(
 ) {
     QwenMax(
         "qwen-max",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Max",
         false,
         32768,
@@ -22,8 +22,8 @@ enum class AliLlmTextModel(
     ),
     QwenMaxLatest(
         "qwen-max-latest",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Max-Latest",
         false,
         32768,
@@ -32,8 +32,8 @@ enum class AliLlmTextModel(
     ),
     QwenPlus(
         "qwen-plus",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Plus",
         false,
         131072,
@@ -42,8 +42,8 @@ enum class AliLlmTextModel(
     ),
     QwenPlusLatest(
         "qwen-plus-latest",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Plus-Latest",
         false,
         131072,
@@ -52,8 +52,8 @@ enum class AliLlmTextModel(
     ),
     QwenTurbo(
         "qwen-turbo",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Turbo",
         false,
         131072,
@@ -62,8 +62,8 @@ enum class AliLlmTextModel(
     ),
     QwenTurboLatest(
         "qwen-turbo-latest",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Turbo-Latest",
         false,
         1000000,
@@ -72,8 +72,8 @@ enum class AliLlmTextModel(
     ),
     QwenLong(
         "qwen-long",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "Qwen-Long",
         false,
         10000000,
@@ -82,8 +82,8 @@ enum class AliLlmTextModel(
     ),
     QwenVlMax(
         "qwen-vl-max",
-        listOf(AliLlmModelType.InputImage, AliLlmModelType.InputVideo),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.InputImage, AliyunLlmModelType.InputVideo),
+        AliyunLlmModelOutputType.Text,
         "通义千问VL-Max",
         false,
         32000,
@@ -92,8 +92,8 @@ enum class AliLlmTextModel(
     ),
     QwenVlMaxLatest(
         "qwen-vl-max-latest",
-        listOf(AliLlmModelType.InputImage, AliLlmModelType.InputVideo),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.InputImage, AliyunLlmModelType.InputVideo),
+        AliyunLlmModelOutputType.Text,
         "通义千问VL-Max-Latest",
         false,
         32000,
@@ -102,8 +102,8 @@ enum class AliLlmTextModel(
     ),
     QwenVlPlus(
         "qwen-vl-plus",
-        listOf(AliLlmModelType.InputImage),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.InputImage),
+        AliyunLlmModelOutputType.Text,
         "通义千问VL-Plus",
         false,
         32000,
@@ -112,8 +112,8 @@ enum class AliLlmTextModel(
     ),
     QwenVlPlusLatest(
         "qwen-vl-plus-latest",
-        listOf(AliLlmModelType.InputImage),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.InputImage),
+        AliyunLlmModelOutputType.Text,
         "通义千问VL-Plus-Latest",
         false,
         32000,
@@ -122,8 +122,8 @@ enum class AliLlmTextModel(
     ),
     QwenVlOcr(
         "qwen-vl-ocr",
-        listOf(AliLlmModelType.ImageOcr),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.ImageOcr),
+        AliyunLlmModelOutputType.Text,
         "通义千问VL-OCR",
         false,
         34096,
@@ -132,8 +132,8 @@ enum class AliLlmTextModel(
     ),
     QwenVlOcrLatest(
         "qwen-vl-ocr-latest",
-        listOf(AliLlmModelType.ImageOcr),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.ImageOcr),
+        AliyunLlmModelOutputType.Text,
         "通义千问VL-OCR-Latest",
         false,
         34096,
@@ -142,8 +142,8 @@ enum class AliLlmTextModel(
     ),
     QwenMathPlus(
         "qwen-math-plus",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Math-Plus",
         false,
         4096,
@@ -152,8 +152,8 @@ enum class AliLlmTextModel(
     ),
     QwenMathPlusLatest(
         "qwen-math-plus-latest",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Math-Plus-Latest",
         false,
         4096,
@@ -162,8 +162,8 @@ enum class AliLlmTextModel(
     ),
     QwenMathTurbo(
         "qwen-math-turbo",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Math-Turbo",
         false,
         4096,
@@ -172,8 +172,8 @@ enum class AliLlmTextModel(
     ),
     QwenMathTurboLatest(
         "qwen-math-turbo-latest",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Math-Turbo-Latest",
         false,
         4096,
@@ -182,8 +182,8 @@ enum class AliLlmTextModel(
     ),
     QwenCoderPlus(
         "qwen-coder-plus",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Coder-Plus",
         false,
         131072,
@@ -192,8 +192,8 @@ enum class AliLlmTextModel(
     ),
     QwenCoderPlusLatest(
         "qwen-coder-plus-latest",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Coder-Plus-Latest",
         false,
         131072,
@@ -202,8 +202,8 @@ enum class AliLlmTextModel(
     ),
     QwenCoderTurbo(
         "qwen-coder-turbo",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Coder-Turbo",
         false,
         131072,
@@ -212,8 +212,8 @@ enum class AliLlmTextModel(
     ),
     QwenCoderTurboLatest(
         "qwen-coder-turbo-latest",
-        listOf(AliLlmModelType.Text),
-        AliLlmModelOutputType.Text,
+        listOf(AliyunLlmModelType.Text),
+        AliyunLlmModelOutputType.Text,
         "通义千问-Coder-Turbo-Latest",
         false,
         131072,
@@ -223,7 +223,7 @@ enum class AliLlmTextModel(
     ;
 
     companion object {
-        fun byCode(code: String): AliLlmTextModel {
+        fun byCode(code: String): AliyunLlmTextModel {
             return when (code) {
                 QwenMax.code -> QwenMax
                 QwenMaxLatest.code -> QwenMaxLatest
@@ -246,7 +246,7 @@ enum class AliLlmTextModel(
                 QwenCoderPlusLatest.code -> QwenCoderPlusLatest
                 QwenCoderTurbo.code -> QwenCoderTurbo
                 QwenCoderTurboLatest.code -> QwenCoderTurboLatest
-                else -> throw IllegalArgumentException("AliLlmModel code [$code] not recognized.")
+                else -> throw IllegalArgumentException("AliyunLlmModel code [$code] not recognized.")
             }
         }
     }
