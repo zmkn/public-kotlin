@@ -29,4 +29,5 @@ dependencies {
         exclude(group = "org.slf4j", module = "slf4j-simple")
     }
     api(libs.aliyun.dysmsapi) // 阿里云短信平台支持库
+    api(libs.aliyun.sdk.oss) // 阿里云 OSS 平台支持库
 }

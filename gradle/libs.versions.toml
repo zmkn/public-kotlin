@@ -25,6 +25,7 @@ snakeyamlEngine = "[2.8,3.0)"
 dashscopeSdkJava = "[2.16,3.0)"
 victoolsJsonschemaGenerator = "[4.37,5.0)"
 aliyunDysmsapi = "[3.1,4.0)"
+aliyunSdkOss = "[3.18,4.0)"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -72,3 +73,4 @@ snakeyaml-engine = { group = "org.snakeyaml", name = "snakeyaml-engine", version
 dashscope-sdk-java = { group = "com.alibaba", name = "dashscope-sdk-java", version.ref = "dashscopeSdkJava" }
 victools-jsonschema-generator = { group = "com.github.victools", name = "jsonschema-generator", version.ref = "victoolsJsonschemaGenerator" }
 aliyun-dysmsapi = { group = "com.aliyun", name = "dysmsapi20170525", version.ref = "aliyunDysmsapi" }
+aliyun-sdk-oss = { group = "com.aliyun.oss", name = "aliyun-sdk-oss", version.ref = "aliyunSdkOss" }
