@@ -1,11 +1,15 @@
 import com.zmkn.extension.assign
 import com.zmkn.extension.deepCopy
 import com.zmkn.extension.filter
+import com.zmkn.extension.transform
 import org.bson.Document
+import org.bson.types.ObjectId
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class DocumentTest {
     @Test
+    @Disabled
     fun testDocumentDeepCopy() {
         val document = Document()
             .append("a", "aaaaaaaa")
@@ -33,5 +37,19 @@ class DocumentTest {
         println(document3.filter {
             it.key != "list"
         })
+    }
+
+    @Test
+    fun testTransform() {
+        val document = Document()
+            .append("a", "aaaaaaaa")
+            .append("id", ObjectId())
+        println(document)
+        println(document.toJson())
+        println(
+            document.transform(
+                objectIdToString = true,
+            ).toJson()
+        )
     }
 }

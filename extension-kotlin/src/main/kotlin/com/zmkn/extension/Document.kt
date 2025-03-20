@@ -1,6 +1,7 @@
 package com.zmkn.extension
 
 import org.bson.Document
+import org.bson.types.ObjectId
 
 private fun documentIterableMerge(original: Iterable<*>, vararg documentsList: Iterable<*>): Iterable<Any?> {
     val newList = mutableListOf<Any?>()
@@ -60,6 +61,14 @@ fun Document.filter(predicate: (property: Map.Entry<String, Any?>) -> Boolean): 
     return newDocument
 }
 
+fun <R> Document.map(transform: (property: Map.Entry<String, Any?>) -> R): Document {
+    val newDocument = Document()
+    forEach {
+        newDocument.append(it.key, transform(it))
+    }
+    return newDocument
+}
+
 fun Document.assign(vararg documents: Document): Document {
     val newDocument = deepCopy()
     if (documents.isNotEmpty()) {
@@ -89,4 +98,20 @@ fun Document.assign(vararg documents: Document): Document {
         }
     }
     return newDocument
+}
+
+fun Document.transform(
+    objectIdToString: Boolean = true,
+): Document {
+    return map {
+        if (objectIdToString) {
+            if (it.value is ObjectId) {
+                it.value.toString()
+            } else {
+                it.value
+            }
+        } else {
+            it.value
+        }
+    }
 }
