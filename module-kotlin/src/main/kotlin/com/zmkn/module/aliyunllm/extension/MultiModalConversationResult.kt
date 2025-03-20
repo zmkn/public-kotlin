@@ -1,10 +1,10 @@
-package com.zmkn.module.alillm.extension
+package com.zmkn.module.aliyunllm.extension
 
-import com.alibaba.dashscope.aigc.generation.GenerationResult
-import com.zmkn.module.alillm.enumeration.ResponseMessageChoiceFinishReason
-import com.zmkn.module.alillm.model.ResponseMessage
+import com.alibaba.dashscope.aigc.multimodalconversation.MultiModalConversationResult
+import com.zmkn.module.aliyunllm.enumeration.ResponseMessageChoiceFinishReason
+import com.zmkn.module.aliyunllm.model.ResponseMessage
 
-fun GenerationResult.toResponseMessage(): ResponseMessage {
+fun MultiModalConversationResult.toResponseMessage(): ResponseMessage {
     val choices =
         output.choices.map { choice ->
             ResponseMessage.Choice(

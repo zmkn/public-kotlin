@@ -1,7 +1,7 @@
-package com.zmkn.module.alillm.model
+package com.zmkn.module.aliyunllm.model
 
-import com.zmkn.module.alillm.enumeration.MessageRole
-import com.zmkn.module.alillm.enumeration.ResponseMessageChoiceFinishReason
+import com.zmkn.module.aliyunllm.enumeration.MessageRole
+import com.zmkn.module.aliyunllm.enumeration.ResponseMessageChoiceFinishReason
 
 data class ResponseMessage(
     val requestId: String,

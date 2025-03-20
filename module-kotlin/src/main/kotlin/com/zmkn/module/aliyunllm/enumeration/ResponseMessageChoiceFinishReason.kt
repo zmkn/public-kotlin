@@ -1,4 +1,4 @@
-package com.zmkn.module.alillm.enumeration
+package com.zmkn.module.aliyunllm.enumeration
 
 enum class ResponseMessageChoiceFinishReason(val value: String) {
     STOP("stop"),

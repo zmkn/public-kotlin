@@ -1,13 +1,13 @@
 import com.alibaba.dashscope.utils.JsonUtils
-import com.zmkn.module.alillm.AliLlm
-import com.zmkn.module.alillm.enumeration.ResponseMessageChoiceFinishReason
-import com.zmkn.module.alillm.extension.toGenerationParamOptionsMessage
-import com.zmkn.module.alillm.extension.toMultiModalConversationParamOptionsMessage
-import com.zmkn.module.alillm.model.GenerationParamOptions
-import com.zmkn.module.alillm.model.MultiModalConversationParamOptions
-import com.zmkn.module.alillm.model.MultiModalConversationParamOptions.Message
-import com.zmkn.module.alillm.model.MultiModalMessageContent
-import com.zmkn.module.alillm.model.ResponseMessage
+import com.zmkn.module.aliyunllm.AliyunLlm
+import com.zmkn.module.aliyunllm.enumeration.ResponseMessageChoiceFinishReason
+import com.zmkn.module.aliyunllm.extension.toGenerationParamOptionsMessage
+import com.zmkn.module.aliyunllm.extension.toMultiModalConversationParamOptionsMessage
+import com.zmkn.module.aliyunllm.model.GenerationParamOptions
+import com.zmkn.module.aliyunllm.model.MultiModalConversationParamOptions
+import com.zmkn.module.aliyunllm.model.MultiModalConversationParamOptions.Message
+import com.zmkn.module.aliyunllm.model.MultiModalMessageContent
+import com.zmkn.module.aliyunllm.model.ResponseMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emitAll
@@ -31,8 +31,8 @@ class GetTimeTool {
     }
 }
 
-class AliLlmTest {
-    private val _aliLlm = AliLlm(listOf("11111111", ""))
+class AliyunLlmTest {
+    private val _aliyunLlm = AliyunLlm(listOf("11111111", ""))
 
     private suspend fun createStreamMessageAndTools(messages: List<GenerationParamOptions.Message>, tools: List<GenerationParamOptions.Tool>? = null): Flow<ResponseMessage> {
         println("开始-createStreamMessageAndTools")
@@ -43,7 +43,7 @@ class AliLlmTest {
                 messages = messages,
                 tools = tools,
             )
-        return _aliLlm.createStreamMessage(options).transform { result ->
+        return _aliyunLlm.createStreamMessage(options).transform { result ->
             val choice = result.choices[0]
             val message = choice.message
             val toolCalls = message.toolCalls
@@ -60,7 +60,7 @@ class AliLlmTest {
                         println(whether)
                         newMessages.add(
                             GenerationParamOptions.Message(
-                                role = com.zmkn.module.alillm.enumeration.MessageRole.TOOL,
+                                role = com.zmkn.module.aliyunllm.enumeration.MessageRole.TOOL,
                                 content = whether,
                                 toolCallId = toolCall.id,
                             )
@@ -71,7 +71,7 @@ class AliLlmTest {
                         println(time)
                         newMessages.add(
                             GenerationParamOptions.Message(
-                                role = com.zmkn.module.alillm.enumeration.MessageRole.TOOL,
+                                role = com.zmkn.module.aliyunllm.enumeration.MessageRole.TOOL,
                                 content = time,
                                 toolCallId = toolCall.id,
                             )
@@ -92,7 +92,7 @@ class AliLlmTest {
                 model = "qwen-vl-max-latest",
                 messages = messages
             )
-        return _aliLlm.createStreamMultiModalMessage(options)
+        return _aliyunLlm.createStreamMultiModalMessage(options)
     }
 
     //    @Test
@@ -100,11 +100,11 @@ class AliLlmTest {
         createStreamMessageAndTools(
             listOf(
                 GenerationParamOptions.Message(
-                    role = com.zmkn.module.alillm.enumeration.MessageRole.SYSTEM,
+                    role = com.zmkn.module.aliyunllm.enumeration.MessageRole.SYSTEM,
                     content = "你是灵祇，一个全能的AI助手。"
                 ),
                 GenerationParamOptions.Message(
-                    role = com.zmkn.module.alillm.enumeration.MessageRole.USER,
+                    role = com.zmkn.module.aliyunllm.enumeration.MessageRole.USER,
                     content = "你是谁"
                 )
             )
@@ -121,11 +121,11 @@ class AliLlmTest {
         createStreamMessageAndTools(
             listOf(
                 GenerationParamOptions.Message(
-                    role = com.zmkn.module.alillm.enumeration.MessageRole.SYSTEM,
+                    role = com.zmkn.module.aliyunllm.enumeration.MessageRole.SYSTEM,
                     content = "你是灵祇，一个全能的AI助手。"
                 ),
                 GenerationParamOptions.Message(
-                    role = com.zmkn.module.alillm.enumeration.MessageRole.USER,
+                    role = com.zmkn.module.aliyunllm.enumeration.MessageRole.USER,
                     content = "北京天气怎么样"
                 )
             ),
@@ -133,12 +133,12 @@ class AliLlmTest {
                 GenerationParamOptions.Tool(
                     name = "get_current_weather",
                     description = "获取指定地区的天气",
-                    schema = AliLlm.generateSchema(GetWeatherTool::class.java),
+                    schema = AliyunLlm.generateSchema(GetWeatherTool::class.java),
                 ),
                 GenerationParamOptions.Tool(
                     name = "get_current_time",
                     description = "获取当前时刻的时间",
-                    schema = AliLlm.generateSchema(GetTimeTool::class.java),
+                    schema = AliyunLlm.generateSchema(GetTimeTool::class.java),
                 ),
             )
         ).collectLatest { messages ->
@@ -151,13 +151,13 @@ class AliLlmTest {
         val messages =
             mutableListOf(
                 Message(
-                    role = com.zmkn.module.alillm.enumeration.MessageRole.SYSTEM,
+                    role = com.zmkn.module.aliyunllm.enumeration.MessageRole.SYSTEM,
                     contents = listOf(
                         MultiModalMessageContent.Text("你是灵祇，一个全能的AI助手。")
                     )
                 ),
                 Message(
-                    role = com.zmkn.module.alillm.enumeration.MessageRole.USER,
+                    role = com.zmkn.module.aliyunllm.enumeration.MessageRole.USER,
                     contents = listOf(
                         MultiModalMessageContent.Image("https://dashscope.oss-cn-beijing.aliyuncs.com/images/dog_and_girl.jpeg"),
                         MultiModalMessageContent.Image("https://dashscope.oss-cn-beijing.aliyuncs.com/images/tiger.png"),
@@ -172,7 +172,7 @@ class AliLlmTest {
                 messages.add(choice.message.toMultiModalConversationParamOptionsMessage())
                 messages.add(
                     Message(
-                        role = com.zmkn.module.alillm.enumeration.MessageRole.USER,
+                        role = com.zmkn.module.aliyunllm.enumeration.MessageRole.USER,
                         contents = listOf(
                             MultiModalMessageContent.Text("为第一张图写一段小故事"),
                         )

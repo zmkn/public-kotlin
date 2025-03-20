@@ -1,6 +1,6 @@
-package com.zmkn.module.alillm.extension
+package com.zmkn.module.aliyunllm.extension
 
-import com.zmkn.module.alillm.model.MultiModalMessageContent
+import com.zmkn.module.aliyunllm.model.MultiModalMessageContent
 
 fun MultiModalMessageContent.toMap(): Map<String, Any> = when (this) {
     is MultiModalMessageContent.Text -> mapOf("text" to text)

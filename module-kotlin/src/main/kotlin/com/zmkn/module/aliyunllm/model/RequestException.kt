@@ -1,7 +1,7 @@
-package com.zmkn.module.alillm.model
+package com.zmkn.module.aliyunllm.model
 
 import com.alibaba.dashscope.exception.ApiException
-import com.zmkn.module.alillm.enumeration.ResponseCode
+import com.zmkn.module.aliyunllm.enumeration.ResponseCode
 
 class RequestException(e: Throwable) : RuntimeException(e) {
     val responseCode: ResponseCode =

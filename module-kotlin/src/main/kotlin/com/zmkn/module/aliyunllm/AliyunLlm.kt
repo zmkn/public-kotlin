@@ -1,4 +1,4 @@
-package com.zmkn.module.alillm
+package com.zmkn.module.aliyunllm
 
 import com.alibaba.dashscope.aigc.generation.Generation
 import com.alibaba.dashscope.aigc.generation.GenerationParam
@@ -13,10 +13,10 @@ import com.alibaba.dashscope.tools.FunctionDefinition
 import com.alibaba.dashscope.tools.ToolFunction
 import com.alibaba.dashscope.utils.JsonUtils
 import com.github.victools.jsonschema.generator.*
-import com.zmkn.module.alillm.enumeration.MessageRole
-import com.zmkn.module.alillm.enumeration.ResponseCode
-import com.zmkn.module.alillm.extension.*
-import com.zmkn.module.alillm.model.*
+import com.zmkn.module.aliyunllm.enumeration.MessageRole
+import com.zmkn.module.aliyunllm.enumeration.ResponseCode
+import com.zmkn.module.aliyunllm.extension.*
+import com.zmkn.module.aliyunllm.model.*
 import io.reactivex.Flowable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 import java.lang.reflect.Type
 
-class AliLlm(
+class AliyunLlm(
     private val apiKeys: List<String>
 ) {
     init {

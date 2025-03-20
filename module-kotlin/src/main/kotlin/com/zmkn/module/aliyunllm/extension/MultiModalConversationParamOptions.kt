@@ -1,8 +1,8 @@
-package com.zmkn.module.alillm.extension
+package com.zmkn.module.aliyunllm.extension
 
 import com.alibaba.dashscope.aigc.multimodalconversation.AudioParameters
-import com.zmkn.module.alillm.model.MultiModalConversationParamOptions
-import com.zmkn.module.alillm.model.MultiModalConversationParamOptions.AudioParameters.Voice.*
+import com.zmkn.module.aliyunllm.model.MultiModalConversationParamOptions
+import com.zmkn.module.aliyunllm.model.MultiModalConversationParamOptions.AudioParameters.Voice.*
 
 fun MultiModalConversationParamOptions.AudioParameters.toAudioParameters(): AudioParameters = AudioParameters.builder().also { audioParameters ->
     voice?.let {

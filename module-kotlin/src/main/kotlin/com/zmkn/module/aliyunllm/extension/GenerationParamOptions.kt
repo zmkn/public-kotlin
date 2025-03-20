@@ -1,8 +1,8 @@
-package com.zmkn.module.alillm.extension
+package com.zmkn.module.aliyunllm.extension
 
 import com.alibaba.dashscope.aigc.generation.SearchOptions
 import com.alibaba.dashscope.tools.ToolCallFunction
-import com.zmkn.module.alillm.model.GenerationParamOptions
+import com.zmkn.module.aliyunllm.model.GenerationParamOptions
 
 fun GenerationParamOptions.Message.ToolCall.toToolCallBase() = ToolCallFunction().also {
     it.id = id

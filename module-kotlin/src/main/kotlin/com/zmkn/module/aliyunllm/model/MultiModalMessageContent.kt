@@ -1,4 +1,4 @@
-package com.zmkn.module.alillm.model
+package com.zmkn.module.aliyunllm.model
 
 sealed class MultiModalMessageContent {
     data class Text(val text: String) : MultiModalMessageContent()

@@ -1,10 +1,10 @@
-package com.zmkn.module.alillm.extension
+package com.zmkn.module.aliyunllm.extension
 
-import com.zmkn.module.alillm.model.GenerationParamOptions
-import com.zmkn.module.alillm.model.GenerationParamOptions.Message.ToolCall
-import com.zmkn.module.alillm.model.MultiModalConversationParamOptions
-import com.zmkn.module.alillm.model.MultiModalMessageContent
-import com.zmkn.module.alillm.model.ResponseMessage
+import com.zmkn.module.aliyunllm.model.GenerationParamOptions
+import com.zmkn.module.aliyunllm.model.GenerationParamOptions.Message.ToolCall
+import com.zmkn.module.aliyunllm.model.MultiModalConversationParamOptions
+import com.zmkn.module.aliyunllm.model.MultiModalMessageContent
+import com.zmkn.module.aliyunllm.model.ResponseMessage
 
 fun ResponseMessage.Choice.Message.toGenerationParamOptionsMessage(): GenerationParamOptions.Message {
     var toolCallId: String? = null

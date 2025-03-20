@@ -1,4 +1,4 @@
-package com.zmkn.module.alillm.enumeration
+package com.zmkn.module.aliyunllm.enumeration
 
 enum class MessageRole(val value: String) {
     SYSTEM("system"),

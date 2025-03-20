@@ -1,7 +1,7 @@
-package com.zmkn.module.alillm.extension
+package com.zmkn.module.aliyunllm.extension
 
 import com.alibaba.dashscope.aigc.generation.GenerationUsage
-import com.zmkn.module.alillm.model.ResponseMessage
+import com.zmkn.module.aliyunllm.model.ResponseMessage
 
 fun GenerationUsage.toResponseMessageUsage(): ResponseMessage.Usage = ResponseMessage.Usage(
     inputTokens = inputTokens,
