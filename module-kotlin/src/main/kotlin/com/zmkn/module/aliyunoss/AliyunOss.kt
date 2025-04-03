@@ -40,7 +40,8 @@ class AliyunOss(config: Config) {
         filePath: String,
         inputStream: InputStream,
         metadata: ObjectMetadata? = null,
-        progressListener: ProgressListener? = null, // 设置进度条监听器。
+        // 设置进度条监听器。
+        progressListener: ProgressListener? = null,
     ): PutObjectResult {
         val putObjectRequest = PutObjectRequest(_bucketName, filePath, inputStream)
         if (metadata != null) {
@@ -56,7 +57,8 @@ class AliyunOss(config: Config) {
         filePath: String,
         file: File,
         metadata: ObjectMetadata? = null,
-        progressListener: ProgressListener? = null, // 设置进度条监听器。
+        // 设置进度条监听器。
+        progressListener: ProgressListener? = null,
     ): PutObjectResult {
         val putObjectRequest = PutObjectRequest(_bucketName, filePath, file)
         if (metadata != null) {
@@ -70,12 +72,17 @@ class AliyunOss(config: Config) {
 
     fun uploadSync(
         filePath: String,
-        localFilePath: String, // 本地文件的完整路径
-        partSize: Long = 1024 * 100, // 指定上传的分片大小，单位为字节，取值范围为100 KB~5 GB。默认值为100 KB。
-        taskNum: Int = 5, // 指定上传并发线程数，默认值为5。
-        enableCheckpoint: Boolean = true, // 开启断点续传，默认开启。
+        // 本地文件的完整路径
+        localFilePath: String,
+        // 指定上传的分片大小，单位为字节，取值范围为100 KB~5 GB。默认值为100 KB。
+        partSize: Long = 1024 * 100,
+        // 指定上传并发线程数，默认值为5。
+        taskNum: Int = 5,
+        // 开启断点续传，默认开启。
+        enableCheckpoint: Boolean = true,
         metadata: ObjectMetadata? = null,
-        progressListener: ProgressListener? = null, // 设置进度条监听器。
+        // 设置进度条监听器。
+        progressListener: ProgressListener? = null,
     ): UploadFileResult {
         val uploadFileRequest = UploadFileRequest(_bucketName, filePath, localFilePath, partSize, taskNum, enableCheckpoint)
         if (metadata != null) {
@@ -136,12 +143,17 @@ class AliyunOss(config: Config) {
 
     suspend fun upload(
         filePath: String,
-        localFilePath: String, // 本地文件的完整路径
-        partSize: Long = 1024 * 100, // 指定上传的分片大小，单位为字节，取值范围为100 KB~5 GB。默认值为100 KB。
-        taskNum: Int = 5, // 指定上传并发线程数，默认值为5。
-        enableCheckpoint: Boolean = true, // 开启断点续传，默认开启。
+        // 本地文件的完整路径
+        localFilePath: String,
+        // 指定上传的分片大小，单位为字节，取值范围为100 KB~5 GB。默认值为100 KB。
+        partSize: Long = 1024 * 100,
+        // 指定上传并发线程数，默认值为5。
+        taskNum: Int = 5,
+        // 开启断点续传，默认开启。
+        enableCheckpoint: Boolean = true,
         metadata: ObjectMetadata? = null,
-        progressListener: ProgressListener? = null, // 设置进度条监听器。
+        // 设置进度条监听器。
+        progressListener: ProgressListener? = null,
     ) = withContext(Dispatchers.IO) {
         uploadSync(filePath, localFilePath, partSize, taskNum, enableCheckpoint, metadata, progressListener)
     }
