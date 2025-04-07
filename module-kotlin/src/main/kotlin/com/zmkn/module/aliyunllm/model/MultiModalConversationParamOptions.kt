@@ -31,10 +31,14 @@ data class MultiModalConversationParamOptions(
     val incrementalOutput: Boolean? = null,
     // 用于控制模型在生成文本时是否使用互联网搜索结果进行参考。
     val enableSearch: Boolean? = null,
-    // 模型输出格式包括“文本”和“音频”，默认值：["text"]
-    val modalities: List<String>? = null,
+    // 模型输出格式包括“text”和“audio”，默认值：["text"]
+    val modalities: List<Modality>? = null,
     // 音频输出参数
     val audio: AudioParameters? = null,
+    // OCR选项
+    val ocrOptions: OcrOptions? = null,
+    // voice of tts
+    val voice: AudioParameters.Voice? = null,
 ) {
     init {
         require(messages.isNotEmpty()) { "Property 'messages' must not be empty." }
@@ -55,6 +59,13 @@ data class MultiModalConversationParamOptions(
         }
     }
 
+    enum class Modality(val value: String) {
+        TEXT("text"),
+        AUDIO("audio");
+
+        override fun toString() = value
+    }
+
     data class Message(
         val role: MessageRole,
         val contents: List<MultiModalMessageContent>,
@@ -69,5 +80,23 @@ data class MultiModalConversationParamOptions(
             ETHAN("Ethan"),
             CHELSIE("Chelsie")
         }
+    }
+
+    data class OcrOptions(
+        val task: Task,
+        val taskConfig: TaskConfig? = null,
+    ) {
+        enum class Task(val value: String) {
+            KEY_INFORMATION_EXTRACTION("KEY_INFORMATION_EXTRACTION"),
+            TEXT_RECOGNITION("TEXT_RECOGNITION"),
+            TABLE_PARSING("TABLE_PARSING"),
+            DOCUMENT_PARSING("DOCUMENT_PARSING"),
+            FORMULA_RECOGNITION("FORMULA_RECOGNITION"),
+            MULTI_LAN("MULTI_LAN")
+        }
+
+        data class TaskConfig(
+            val resultSchema: List<Pair<String, String>>,
+        )
     }
 }

@@ -13,6 +13,7 @@ fun GenerationParamOptions.Message.ToolCall.toToolCallBase() = ToolCallFunction(
 fun GenerationParamOptions.Message.ToolCall.Function.toToolCallBaseFunction() = ToolCallFunction().CallFunction().also {
     it.name = name
     it.arguments = arguments
+    it.output = output
 }
 
 fun GenerationParamOptions.SearchOptions.toSearchOptions(): SearchOptions = SearchOptions.builder().also { searchOptions ->

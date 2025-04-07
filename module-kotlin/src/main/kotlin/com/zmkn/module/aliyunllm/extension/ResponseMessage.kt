@@ -2,11 +2,9 @@ package com.zmkn.module.aliyunllm.extension
 
 import com.zmkn.module.aliyunllm.model.GenerationParamOptions
 import com.zmkn.module.aliyunllm.model.GenerationParamOptions.Message.ToolCall
-import com.zmkn.module.aliyunllm.model.MultiModalConversationParamOptions
-import com.zmkn.module.aliyunllm.model.MultiModalMessageContent
 import com.zmkn.module.aliyunllm.model.ResponseMessage
 
-fun ResponseMessage.Choice.Message.toGenerationParamOptionsMessage(): GenerationParamOptions.Message {
+fun ResponseMessage.Output.Choice.Message.toGenerationParamOptionsMessage(): GenerationParamOptions.Message {
     var toolCallId: String? = null
     var toolCalls: List<ToolCall>? = null
     if (!this.toolCalls.isNullOrEmpty()) {
@@ -23,24 +21,14 @@ fun ResponseMessage.Choice.Message.toGenerationParamOptionsMessage(): Generation
     )
 }
 
-fun ResponseMessage.Choice.Message.ToolCall.toToolCallBase(): ToolCall = ToolCall(
+fun ResponseMessage.Output.Choice.Message.ToolCall.toToolCallBase(): ToolCall = ToolCall(
     id = id,
     type = type,
     function = function.toGenerationParamOptionsMessageToolCallFunction()
 )
 
-fun ResponseMessage.Choice.Message.ToolCall.Function.toGenerationParamOptionsMessageToolCallFunction(): ToolCall.Function = ToolCall.Function(
+fun ResponseMessage.Output.Choice.Message.ToolCall.Function.toGenerationParamOptionsMessageToolCallFunction(): ToolCall.Function = ToolCall.Function(
     name = name,
-    arguments = arguments
+    arguments = arguments,
+    output = output,
 )
-
-fun ResponseMessage.Choice.Message.toMultiModalConversationParamOptionsMessage(): MultiModalConversationParamOptions.Message {
-    val contents = mutableListOf<MultiModalMessageContent>()
-    if (content.isNotEmpty()) {
-        contents.add(MultiModalMessageContent.Text(content))
-    }
-    return MultiModalConversationParamOptions.Message(
-        role = role,
-        contents = contents
-    )
-}

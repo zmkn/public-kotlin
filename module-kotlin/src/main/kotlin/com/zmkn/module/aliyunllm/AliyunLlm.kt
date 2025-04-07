@@ -148,10 +148,20 @@ class AliyunLlm(
                     enableSearch(it)
                 }
                 options.modalities?.also {
-                    modalities(it)
+                    modalities(
+                        it.map { modality ->
+                            modality.value
+                        }
+                    )
                 }
                 options.audio?.also {
                     audio(it.toAudioParameters())
+                }
+                options.ocrOptions?.also {
+                    ocrOptions(it.toOcrOptions())
+                }
+                options.voice?.also {
+                    voice(it.toAudioParametersVoice())
                 }
             }.build()
     }
@@ -181,14 +191,14 @@ class AliyunLlm(
     private fun createStreamMultiModalMessage(
         apiKeyIndex: Int,
         options: MultiModalConversationParamOptions
-    ): Flow<ResponseMessage> {
+    ): Flow<MultiModalResponseMessage> {
         val multiModalConversation = MultiModalConversation()
         val param = createMultiModalConversationParam(apiKeyIndex, options)
         val result: Flowable<MultiModalConversationResult> = multiModalConversation.streamCall(param)
         return result
             .asFlow()
             .map {
-                it.toResponseMessage()
+                it.toMultiModalResponseMessage()
             }.catch { e ->
                 val requestException = RequestException(e)
                 val responseCode = requestException.responseCode
@@ -202,7 +212,7 @@ class AliyunLlm(
 
     fun createStreamMessage(options: GenerationParamOptions): Flow<ResponseMessage> = createStreamMessage(0, options)
 
-    fun createStreamMultiModalMessage(options: MultiModalConversationParamOptions): Flow<ResponseMessage> = createStreamMultiModalMessage(0, options)
+    fun createStreamMultiModalMessage(options: MultiModalConversationParamOptions): Flow<MultiModalResponseMessage> = createStreamMultiModalMessage(0, options)
 
     companion object {
         private val schemaGeneratorConfigBuilder = SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_2020_12, OptionPreset.PLAIN_JSON)

@@ -65,6 +65,7 @@ data class GenerationParamOptions(
             data class Function(
                 val name: String,
                 val arguments: String,
+                val output: String,
             )
         }
     }

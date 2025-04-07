@@ -3,16 +3,15 @@ import com.zmkn.module.aliyunllm.AliyunLlm
 import com.zmkn.module.aliyunllm.enumeration.ResponseMessageChoiceFinishReason
 import com.zmkn.module.aliyunllm.extension.toGenerationParamOptionsMessage
 import com.zmkn.module.aliyunllm.extension.toMultiModalConversationParamOptionsMessage
-import com.zmkn.module.aliyunllm.model.GenerationParamOptions
-import com.zmkn.module.aliyunllm.model.MultiModalConversationParamOptions
+import com.zmkn.module.aliyunllm.model.*
 import com.zmkn.module.aliyunllm.model.MultiModalConversationParamOptions.Message
-import com.zmkn.module.aliyunllm.model.MultiModalMessageContent
-import com.zmkn.module.aliyunllm.model.ResponseMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -32,19 +31,20 @@ class GetTimeTool {
 }
 
 class AliyunLlmTest {
-    private val _aliyunLlm = AliyunLlm(listOf("11111111", ""))
+    private val _aliyunLlm = AliyunLlm(listOf("", ""))
 
     private suspend fun createStreamMessageAndTools(messages: List<GenerationParamOptions.Message>, tools: List<GenerationParamOptions.Tool>? = null): Flow<ResponseMessage> {
         println("开始-createStreamMessageAndTools")
         println(messages)
         val options =
             GenerationParamOptions(
-                model = "qwen-plus",
+                model = "qwq-32b",
                 messages = messages,
                 tools = tools,
             )
         return _aliyunLlm.createStreamMessage(options).transform { result ->
-            val choice = result.choices[0]
+            val output = result.output
+            val choice = output.choices[0]
             val message = choice.message
             val toolCalls = message.toolCalls
             if (toolCalls.isNullOrEmpty()) {
@@ -84,39 +84,45 @@ class AliyunLlmTest {
         }
     }
 
-    private fun createStreamMultiModalMessage(messages: List<Message>): Flow<ResponseMessage> {
+    private fun createStreamMultiModalMessage(messages: List<Message>): Flow<MultiModalResponseMessage> {
         println("开始-createStreamMultiModalMessage")
         println(messages)
         val options =
             MultiModalConversationParamOptions(
-                model = "qwen-vl-max-latest",
-                messages = messages
+                model = "qwen-omni-turbo",
+                messages = messages,
+                modalities = listOf(MultiModalConversationParamOptions.Modality.TEXT),
+                audio = MultiModalConversationParamOptions.AudioParameters(
+                    voice = MultiModalConversationParamOptions.AudioParameters.Voice.CHERRY
+                ),
             )
         return _aliyunLlm.createStreamMultiModalMessage(options)
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testCreateStreamMessage() = runBlocking {
         createStreamMessageAndTools(
             listOf(
                 GenerationParamOptions.Message(
                     role = com.zmkn.module.aliyunllm.enumeration.MessageRole.SYSTEM,
-                    content = "你是灵祇，一个全能的AI助手。"
+                    content = "你是灵祇，一个全能的AI助手。请简短的回答。"
                 ),
                 GenerationParamOptions.Message(
                     role = com.zmkn.module.aliyunllm.enumeration.MessageRole.USER,
-                    content = "你是谁"
+                    content = "请用最少的话回答。你是谁？"
                 )
             )
         ).collect {
             println(it.requestId)
             println(it.usage)
-            println(it.choices)
+            println(it.output)
             println(JsonUtils.toJson(it))
         }
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testCreateStreamMessageAndTools() = runBlocking {
         createStreamMessageAndTools(
             listOf(
@@ -146,14 +152,15 @@ class AliyunLlmTest {
         }
     }
 
-    //    @Test
+    @Test
+    @Disabled
     fun testCreateStreamMultiModalMessage() = runBlocking {
         val messages =
             mutableListOf(
                 Message(
                     role = com.zmkn.module.aliyunllm.enumeration.MessageRole.SYSTEM,
                     contents = listOf(
-                        MultiModalMessageContent.Text("你是灵祇，一个全能的AI助手。")
+                        MultiModalMessageContent.Text("你是灵祇，一个全能的AI助手。请简短的回答。")
                     )
                 ),
                 Message(
@@ -161,13 +168,14 @@ class AliyunLlmTest {
                     contents = listOf(
                         MultiModalMessageContent.Image("https://dashscope.oss-cn-beijing.aliyuncs.com/images/dog_and_girl.jpeg"),
                         MultiModalMessageContent.Image("https://dashscope.oss-cn-beijing.aliyuncs.com/images/tiger.png"),
-                        MultiModalMessageContent.Text("这些是什么?"),
+                        MultiModalMessageContent.Text("请用最少的话回答。这些是什么?"),
                     )
                 )
             )
         createStreamMultiModalMessage(messages).transform {
             emit(it)
-            val choice = it.choices[0]
+            val output = it.output
+            val choice = output.choices[0]
             if (choice.finishReason == ResponseMessageChoiceFinishReason.STOP) {
                 messages.add(choice.message.toMultiModalConversationParamOptionsMessage())
                 messages.add(

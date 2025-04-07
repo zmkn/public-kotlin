@@ -6,7 +6,7 @@ import com.zmkn.module.aliyunllm.enumeration.ResponseMessageChoiceFinishReason
 data class ResponseMessage(
     val requestId: String,
     val usage: Usage,
-    val choices: List<Choice>,
+    val output: Output,
 ) {
     data class Usage(
         val inputTokens: Int,
@@ -14,24 +14,43 @@ data class ResponseMessage(
         val totalTokens: Int?,
     )
 
-    data class Choice(
-        val finishReason: ResponseMessageChoiceFinishReason?,
-        val message: Message,
+    data class Output(
+        val choices: List<Choice>,
+        val searchInfo: SearchInfo?,
     ) {
-        data class Message(
-            val role: MessageRole,
-            val content: String,
-            val toolCalls: List<ToolCall>?,
+        data class SearchInfo(
+            val searchResults: List<SearchResult>,
         ) {
-            data class ToolCall(
-                val id: String,
-                val type: String,
-                val function: Function,
+            data class SearchResult(
+                val index: Int,
+                val siteName: String,
+                val icon: String,
+                val title: String,
+                val url: String,
+            )
+        }
+
+        data class Choice(
+            val finishReason: ResponseMessageChoiceFinishReason?,
+            val message: Message,
+        ) {
+            data class Message(
+                val role: MessageRole,
+                val content: String,
+                val reasoningContent: String?,
+                val toolCalls: List<ToolCall>?,
             ) {
-                data class Function(
-                    val name: String,
-                    val arguments: String,
-                )
+                data class ToolCall(
+                    val id: String,
+                    val type: String,
+                    val function: Function,
+                ) {
+                    data class Function(
+                        val name: String,
+                        val arguments: String,
+                        val output: String,
+                    )
+                }
             }
         }
     }
