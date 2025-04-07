@@ -30,6 +30,6 @@ fun GenerationParamOptions.SearchOptions.toSearchOptions(): SearchOptions = Sear
         searchOptions.forcedSearch(it)
     }
     searchStrategy?.also {
-        searchOptions.searchStrategy(it)
+        searchOptions.searchStrategy(it.value)
     }
 }.build()

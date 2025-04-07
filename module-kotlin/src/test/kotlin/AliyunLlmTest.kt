@@ -41,6 +41,12 @@ class AliyunLlmTest {
                 model = "qwq-32b",
                 messages = messages,
                 tools = tools,
+                enableSearch = true,
+                searchOptions = GenerationParamOptions.SearchOptions(
+                    enableSource = true,
+                    forcedSearch = true,
+                    searchStrategy = GenerationParamOptions.SearchOptions.SearchStrategy.STANDARD,
+                )
             )
         return _aliyunLlm.createStreamMessage(options).transform { result ->
             val output = result.output
@@ -100,7 +106,6 @@ class AliyunLlmTest {
     }
 
     @Test
-    @Disabled
     fun testCreateStreamMessage() = runBlocking {
         createStreamMessageAndTools(
             listOf(
@@ -110,7 +115,7 @@ class AliyunLlmTest {
                 ),
                 GenerationParamOptions.Message(
                     role = com.zmkn.module.aliyunllm.enumeration.MessageRole.USER,
-                    content = "请用最少的话回答。你是谁？"
+                    content = "请用最少的话回答。kotlin开发中，如何收集一个 flow"
                 )
             )
         ).collect {

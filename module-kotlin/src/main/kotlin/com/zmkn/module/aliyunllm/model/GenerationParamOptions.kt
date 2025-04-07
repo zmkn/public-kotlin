@@ -99,6 +99,25 @@ data class GenerationParamOptions(
         // 是否强制开启搜索
         val forcedSearch: Boolean? = null,
         // 搜索互联网信息的数量。standard：在请求时搜索5条互联网信息; pro：在请求时搜索10条互联网信息。 默认值为standard
-        val searchStrategy: String? = null,
-    )
+        val searchStrategy: SearchStrategy? = null,
+    ) {
+        enum class SearchStrategy(val value: String) {
+            STANDARD("standard"),
+            PRO("pro");
+
+            override fun toString(): String {
+                return value
+            }
+
+            companion object {
+                fun fromValue(value: String): SearchStrategy {
+                    return when (value) {
+                        STANDARD.value -> STANDARD
+                        PRO.value -> PRO
+                        else -> throw IllegalArgumentException("SearchStrategy value is not allowed.")
+                    }
+                }
+            }
+        }
+    }
 }
