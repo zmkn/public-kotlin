@@ -10,7 +10,7 @@ fun MultiModalMessage.toMultiModalResponseMessageOutputChoiceMessage(): MultiMod
         role = MessageRole.fromValue(role),
         content = content.mapNotNull { map ->
             map.mapValues { (_, value) ->
-                JsonUtils.toJson(value)
+                value as? String ?: JsonUtils.toJson(value)
             }
         },
         reasoningContent = reasoningContent,
