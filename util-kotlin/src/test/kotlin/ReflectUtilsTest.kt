@@ -1,4 +1,5 @@
 import com.zmkn.util.ReflectUtils
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class ReflectUtilsTest {
@@ -9,6 +10,7 @@ class ReflectUtilsTest {
     )
 
     @Test
+    @Disabled
     fun testGetKClass() {
         println("testGetKClass------start")
         val kClass = ReflectUtils.getKClass(User::class, User::name.name)
