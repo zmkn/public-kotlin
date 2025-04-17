@@ -4,6 +4,7 @@
 build/
 bin/
 config/
+temp/
 *.iml
 /local.properties
 
