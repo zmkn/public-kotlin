@@ -4,6 +4,7 @@ import com.zmkn.util.FileUtils
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.io.FileOutputStream
@@ -16,7 +17,7 @@ class AliyunLlmAudioTest {
     }
 
     @Test
-//    @Disabled
+    @Disabled
     fun testCreateStreamSpeechSynthesizer() = runBlocking {
         println("开始-testCreateStreamSpeechSynthesizer")
         val fos = FileOutputStream(audioFile)
