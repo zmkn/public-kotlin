@@ -28,6 +28,7 @@ dependencies {
         // 排除 slf4j-simple 依赖库
         exclude(group = "org.slf4j", module = "slf4j-simple")
     }
+    api(libs.apache.commons.pool2) // 阿里百炼 Dashscope CosyVoice 服务依赖库
     api(libs.aliyun.dysmsapi) // 阿里云短信平台支持库
     api(libs.aliyun.sdk.oss) // 阿里云 OSS 平台支持库
 }

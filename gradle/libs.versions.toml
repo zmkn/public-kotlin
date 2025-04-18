@@ -23,6 +23,7 @@ jsonwebtoken = "[0.12,1.0)"
 bouncycastle = "[1.78,2.0)"
 snakeyamlEngine = "[2.8,3.0)"
 dashscopeSdkJava = "[2.16,3.0)"
+apacheCommonsPool2 = "[2.12,3.0)"
 victoolsJsonschemaGenerator = "[4.37,5.0)"
 aliyunDysmsapi = "[3.1,4.0)"
 aliyunSdkOss = "[3.18,4.0)"
@@ -71,6 +72,7 @@ bouncycastle-bcprov-jdk18on = { group = "org.bouncycastle", name = "bcprov-jdk18
 bouncycastle-bcpkix-jdk18on = { group = "org.bouncycastle", name = "bcpkix-jdk18on", version.ref = "bouncycastle" }
 snakeyaml-engine = { group = "org.snakeyaml", name = "snakeyaml-engine", version.ref = "snakeyamlEngine" }
 dashscope-sdk-java = { group = "com.alibaba", name = "dashscope-sdk-java", version.ref = "dashscopeSdkJava" }
+apache-commons-pool2 = { group = "org.apache.commons", name = "commons-pool2", version.ref = "apacheCommonsPool2" }
 victools-jsonschema-generator = { group = "com.github.victools", name = "jsonschema-generator", version.ref = "victoolsJsonschemaGenerator" }
 aliyun-dysmsapi = { group = "com.aliyun", name = "dysmsapi20170525", version.ref = "aliyunDysmsapi" }
 aliyun-sdk-oss = { group = "com.aliyun.oss", name = "aliyun-sdk-oss", version.ref = "aliyunSdkOss" }

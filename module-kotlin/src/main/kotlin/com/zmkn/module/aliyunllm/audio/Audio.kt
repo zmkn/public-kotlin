@@ -9,6 +9,7 @@ import com.zmkn.module.aliyunllm.audio.enumeration.ResponseCode
 import com.zmkn.module.aliyunllm.audio.extension.toResponseSpeechSynthesis
 import com.zmkn.module.aliyunllm.audio.extension.toSpeechSynthesisAudioFormat
 import com.zmkn.module.aliyunllm.audio.extension.toSpeechSynthesisTextType
+import com.zmkn.module.aliyunllm.audio.model.AudioOptions
 import com.zmkn.module.aliyunllm.audio.model.RequestException
 import com.zmkn.module.aliyunllm.audio.model.ResponseSpeechSynthesis
 import com.zmkn.module.aliyunllm.audio.model.SpeechSynthesisParamOptions
@@ -21,8 +22,13 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
 
 class Audio(
-    private val apiKeys: List<String>
+    private val apiKeys: List<String>,
+    private val audioOptions: AudioOptions = AudioOptions(),
 ) : Base(apiKeys) {
+    private val _speechSynthesizerObjectPool = SpeechSynthesizerObjectPool(
+        objectPoolSize = audioOptions.objectPoolSize,
+    )
+
     private fun createSpeechSynthesisParam(
         apiKeyIndex: Int,
         options: SpeechSynthesisParamOptions
@@ -66,6 +72,7 @@ class Audio(
             val resultCallback = object : ResultCallback<SpeechSynthesisResult>() {
                 override fun onEvent(result: SpeechSynthesisResult) {
                     if (result.usage != null || result.audioFrame != null) {
+                        println("aaaaaaaaaa")
                         trySend(result.toResponseSpeechSynthesis())
                     }
                 }
@@ -96,12 +103,14 @@ class Audio(
                     }
                 }
             }
-            SpeechSynthesizer(param, resultCallback).also { synthesizer ->
-                AudioUtils.formatSpeechSynthesizerTexts(options.texts).forEach { text ->
-                    synthesizer.streamingCall(text)
-                }
-                synthesizer.streamingComplete()
+            val speechSynthesizer = _speechSynthesizerObjectPool.synthesizerPool.borrowObject()
+            speechSynthesizer.updateParamAndCallback(param, resultCallback)
+            AudioUtils.formatSpeechSynthesizerTexts(options.texts).forEach { text ->
+                speechSynthesizer.streamingCall(text)
             }
+            speechSynthesizer.streamingComplete()
+            println("qqqqqqqqqqqqqqq")
+            _speechSynthesizerObjectPool.synthesizerPool.returnObject(speechSynthesizer)
         }
         awaitClose()
     }
