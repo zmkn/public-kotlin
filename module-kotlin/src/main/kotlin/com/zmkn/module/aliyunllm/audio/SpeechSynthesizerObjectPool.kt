@@ -5,14 +5,14 @@ import org.apache.commons.pool2.impl.GenericObjectPool
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig
 
 class SpeechSynthesizerObjectPool(
-    private val objectPoolSize: Int = 500,
+    private val size: Int,
 ) {
-    val synthesizerPool: GenericObjectPool<SpeechSynthesizer> by lazy {
+    val pool: GenericObjectPool<SpeechSynthesizer> by lazy {
         val speechSynthesizerObjectFactory = SpeechSynthesizerObjectFactory()
         val config = GenericObjectPoolConfig<SpeechSynthesizer>()
-        config.maxTotal = objectPoolSize
-        config.maxIdle = objectPoolSize
-        config.minIdle = objectPoolSize
+        config.maxTotal = size
+        config.maxIdle = size
+        config.minIdle = size
         GenericObjectPool(speechSynthesizerObjectFactory, config)
     }
 }

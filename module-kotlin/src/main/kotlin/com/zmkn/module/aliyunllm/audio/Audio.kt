@@ -2,7 +2,6 @@ package com.zmkn.module.aliyunllm.audio
 
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisResult
 import com.alibaba.dashscope.audio.ttsv2.SpeechSynthesisParam
-import com.alibaba.dashscope.audio.ttsv2.SpeechSynthesizer
 import com.alibaba.dashscope.common.ResultCallback
 import com.zmkn.module.aliyunllm.Base
 import com.zmkn.module.aliyunllm.audio.enumeration.ResponseCode
@@ -24,22 +23,44 @@ import kotlinx.coroutines.launch
 class Audio : Base {
     constructor(
         apiKeys: List<String>,
+        speechSynthesizerObjectPoolSize: Int?,
         apiOptions: ApiOptions?,
     ) : super(
         apiKeys = apiKeys,
         apiOptions = apiOptions,
     ) {
         _apiKeys = apiKeys
+        _speechSynthesizerObjectPool = SpeechSynthesizerObjectPool(speechSynthesizerObjectPoolSize ?: OBJECT_POOL_SIZE)
     }
+
+    constructor(
+        apiKeys: List<String>,
+        objectPoolSize: Int?,
+    ) : this(
+        apiKeys = apiKeys,
+        speechSynthesizerObjectPoolSize = objectPoolSize,
+        apiOptions = null,
+    )
+
+    constructor(
+        apiKeys: List<String>,
+        apiOptions: ApiOptions?,
+    ) : this(
+        apiKeys = apiKeys,
+        speechSynthesizerObjectPoolSize = null,
+        apiOptions = apiOptions,
+    )
 
     constructor(
         apiKeys: List<String>,
     ) : this(
         apiKeys = apiKeys,
+        speechSynthesizerObjectPoolSize = null,
         apiOptions = null,
     )
 
     private val _apiKeys: List<String>
+    private val _speechSynthesizerObjectPool: SpeechSynthesizerObjectPool
 
     private fun createSpeechSynthesisParam(
         apiKeyIndex: Int,
@@ -114,15 +135,20 @@ class Audio : Base {
                     }
                 }
             }
-            SpeechSynthesizer(param, resultCallback).also { synthesizer ->
-                AudioUtils.formatSpeechSynthesizerTexts(options.texts).forEach { text ->
-                    synthesizer.streamingCall(text)
-                }
-                synthesizer.streamingComplete()
+            val speechSynthesizer = _speechSynthesizerObjectPool.pool.borrowObject()
+            speechSynthesizer.updateParamAndCallback(param, resultCallback)
+            AudioUtils.formatSpeechSynthesizerTexts(options.texts).forEach { text ->
+                speechSynthesizer.streamingCall(text)
             }
+            speechSynthesizer.streamingComplete()
+            _speechSynthesizerObjectPool.pool.returnObject(speechSynthesizer)
         }
         awaitClose()
     }
 
     fun createStreamSpeechSynthesizer(options: SpeechSynthesisParamOptions) = createStreamSpeechSynthesizer(0, options)
+
+    companion object {
+        const val OBJECT_POOL_SIZE: Int = 500
+    }
 }
