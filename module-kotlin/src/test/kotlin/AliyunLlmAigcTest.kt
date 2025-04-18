@@ -39,7 +39,7 @@ class AliyunLlmAigcTest {
         println(messages)
         val options =
             GenerationParamOptions(
-                model = "qwen-plus",
+                model = "qwq-plus",
                 messages = messages,
                 tools = tools,
                 enableSearch = false,

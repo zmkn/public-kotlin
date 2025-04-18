@@ -77,7 +77,11 @@ class Audio(
                 override fun onError(e: Exception) {
                     val requestException = RequestException(e)
                     val responseCode = requestException.responseCode
-                    if (responseCode.statusCode == ResponseCode.INVALID_API_KEY.statusCode && responseCode.code == ResponseCode.INVALID_API_KEY.code && apiKeyIndex + 1 < apiKeys.size) {
+                    if (
+                        ((responseCode.statusCode == ResponseCode.INVALID_API_KEY.statusCode && responseCode.code == ResponseCode.INVALID_API_KEY.code)
+                                || (responseCode.statusCode == ResponseCode.MODEL_ACCESS_DENIED.statusCode && responseCode.code == ResponseCode.MODEL_ACCESS_DENIED.code))
+                        && apiKeyIndex + 1 < apiKeys.size
+                    ) {
                         launch(Dispatchers.IO) {
                             createStreamSpeechSynthesizer(apiKeyIndex + 1, options)
                                 .catch {
