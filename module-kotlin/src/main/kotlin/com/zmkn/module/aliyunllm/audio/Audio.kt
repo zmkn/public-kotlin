@@ -20,25 +20,20 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
 
-class Audio : Base {
+class Audio(
+    private val apiKeys: List<String>,
+    speechSynthesizerObjectPoolSize: Int?,
+    apiOptions: ApiOptions?,
+) : Base(
+    apiKeys = apiKeys,
+    apiOptions = apiOptions,
+) {
     constructor(
         apiKeys: List<String>,
         speechSynthesizerObjectPoolSize: Int?,
-        apiOptions: ApiOptions?,
-    ) : super(
-        apiKeys = apiKeys,
-        apiOptions = apiOptions,
-    ) {
-        _apiKeys = apiKeys
-        _speechSynthesizerObjectPool = SpeechSynthesizerObjectPool(speechSynthesizerObjectPoolSize ?: OBJECT_POOL_SIZE)
-    }
-
-    constructor(
-        apiKeys: List<String>,
-        objectPoolSize: Int?,
     ) : this(
         apiKeys = apiKeys,
-        speechSynthesizerObjectPoolSize = objectPoolSize,
+        speechSynthesizerObjectPoolSize = speechSynthesizerObjectPoolSize,
         apiOptions = null,
     )
 
@@ -59,8 +54,7 @@ class Audio : Base {
         apiOptions = null,
     )
 
-    private val _apiKeys: List<String>
-    private val _speechSynthesizerObjectPool: SpeechSynthesizerObjectPool
+    private val _speechSynthesizerObjectPool: SpeechSynthesizerObjectPool = SpeechSynthesizerObjectPool(speechSynthesizerObjectPoolSize ?: OBJECT_POOL_SIZE)
 
     private fun createSpeechSynthesisParam(
         apiKeyIndex: Int,
@@ -119,7 +113,7 @@ class Audio : Base {
                     if (
                         ((responseCode.statusCode == ResponseCode.INVALID_API_KEY.statusCode && responseCode.code == ResponseCode.INVALID_API_KEY.code)
                                 || (responseCode.statusCode == ResponseCode.MODEL_ACCESS_DENIED.statusCode && responseCode.code == ResponseCode.MODEL_ACCESS_DENIED.code))
-                        && apiKeyIndex + 1 < _apiKeys.size
+                        && apiKeyIndex + 1 < apiKeys.size
                     ) {
                         launch(Dispatchers.IO) {
                             createStreamSpeechSynthesizer(apiKeyIndex + 1, options)

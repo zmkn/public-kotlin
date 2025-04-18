@@ -26,26 +26,13 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 
-class Aigc : Base {
-    constructor(
-        apiKeys: List<String>,
-        apiOptions: ApiOptions?,
-    ) : super(
-        apiKeys = apiKeys,
-        apiOptions = apiOptions,
-    ) {
-        _apiKeys = apiKeys
-    }
-
-    constructor(
-        apiKeys: List<String>,
-    ) : this(
-        apiKeys = apiKeys,
-        apiOptions = null,
-    )
-
-    private val _apiKeys: List<String>
-
+class Aigc(
+    private val apiKeys: List<String>,
+    apiOptions: ApiOptions? = null,
+) : Base(
+    apiKeys = apiKeys,
+    apiOptions = apiOptions,
+) {
     private fun createGenerationParam(
         apiKeyIndex: Int,
         options: GenerationParamOptions
@@ -188,7 +175,7 @@ class Aigc : Base {
             }.catch { e ->
                 val requestException = RequestException(e)
                 val responseCode = requestException.responseCode
-                if (responseCode.statusCode == ResponseCode.INVALID_API_KEY.statusCode && responseCode.code == ResponseCode.INVALID_API_KEY.code && apiKeyIndex + 1 < _apiKeys.size) {
+                if (responseCode.statusCode == ResponseCode.INVALID_API_KEY.statusCode && responseCode.code == ResponseCode.INVALID_API_KEY.code && apiKeyIndex + 1 < apiKeys.size) {
                     emitAll(createStreamMessage(apiKeyIndex + 1, options))
                 } else {
                     throw requestException
@@ -210,7 +197,7 @@ class Aigc : Base {
             }.catch { e ->
                 val requestException = RequestException(e)
                 val responseCode = requestException.responseCode
-                if (responseCode.statusCode == ResponseCode.INVALID_API_KEY.statusCode && responseCode.code == ResponseCode.INVALID_API_KEY.code && apiKeyIndex + 1 < _apiKeys.size) {
+                if (responseCode.statusCode == ResponseCode.INVALID_API_KEY.statusCode && responseCode.code == ResponseCode.INVALID_API_KEY.code && apiKeyIndex + 1 < apiKeys.size) {
                     emitAll(createStreamMultiModalMessage(apiKeyIndex + 1, options))
                 } else {
                     throw requestException
