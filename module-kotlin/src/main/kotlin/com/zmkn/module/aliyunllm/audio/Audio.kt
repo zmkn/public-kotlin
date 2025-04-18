@@ -9,11 +9,11 @@ import com.zmkn.module.aliyunllm.audio.enumeration.ResponseCode
 import com.zmkn.module.aliyunllm.audio.extension.toResponseSpeechSynthesis
 import com.zmkn.module.aliyunllm.audio.extension.toSpeechSynthesisAudioFormat
 import com.zmkn.module.aliyunllm.audio.extension.toSpeechSynthesisTextType
-import com.zmkn.module.aliyunllm.audio.model.AudioOptions
 import com.zmkn.module.aliyunllm.audio.model.RequestException
 import com.zmkn.module.aliyunllm.audio.model.ResponseSpeechSynthesis
 import com.zmkn.module.aliyunllm.audio.model.SpeechSynthesisParamOptions
 import com.zmkn.module.aliyunllm.audio.util.AudioUtils
+import com.zmkn.module.aliyunllm.model.ApiOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -21,13 +21,25 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
 
-class Audio(
-    private val apiKeys: List<String>,
-    private val audioOptions: AudioOptions = AudioOptions(),
-) : Base(apiKeys) {
-    private val _speechSynthesizerObjectPool = SpeechSynthesizerObjectPool(
-        objectPoolSize = audioOptions.objectPoolSize,
+class Audio : Base {
+    constructor(
+        apiKeys: List<String>,
+        apiOptions: ApiOptions?,
+    ) : super(
+        apiKeys = apiKeys,
+        apiOptions = apiOptions,
+    ) {
+        _apiKeys = apiKeys
+    }
+
+    constructor(
+        apiKeys: List<String>,
+    ) : this(
+        apiKeys = apiKeys,
+        apiOptions = null,
     )
+
+    private val _apiKeys: List<String>
 
     private fun createSpeechSynthesisParam(
         apiKeyIndex: Int,
@@ -66,13 +78,12 @@ class Audio(
     private fun createStreamSpeechSynthesizer(
         apiKeyIndex: Int,
         options: SpeechSynthesisParamOptions
-    ): Flow<ResponseSpeechSynthesis> = channelFlow<ResponseSpeechSynthesis> {
+    ): Flow<ResponseSpeechSynthesis> = channelFlow {
         launch(Dispatchers.IO) {
             val param = createSpeechSynthesisParam(apiKeyIndex, options)
             val resultCallback = object : ResultCallback<SpeechSynthesisResult>() {
                 override fun onEvent(result: SpeechSynthesisResult) {
                     if (result.usage != null || result.audioFrame != null) {
-                        println("aaaaaaaaaa")
                         trySend(result.toResponseSpeechSynthesis())
                     }
                 }
@@ -87,7 +98,7 @@ class Audio(
                     if (
                         ((responseCode.statusCode == ResponseCode.INVALID_API_KEY.statusCode && responseCode.code == ResponseCode.INVALID_API_KEY.code)
                                 || (responseCode.statusCode == ResponseCode.MODEL_ACCESS_DENIED.statusCode && responseCode.code == ResponseCode.MODEL_ACCESS_DENIED.code))
-                        && apiKeyIndex + 1 < apiKeys.size
+                        && apiKeyIndex + 1 < _apiKeys.size
                     ) {
                         launch(Dispatchers.IO) {
                             createStreamSpeechSynthesizer(apiKeyIndex + 1, options)
@@ -103,14 +114,12 @@ class Audio(
                     }
                 }
             }
-            val speechSynthesizer = _speechSynthesizerObjectPool.synthesizerPool.borrowObject()
-            speechSynthesizer.updateParamAndCallback(param, resultCallback)
-            AudioUtils.formatSpeechSynthesizerTexts(options.texts).forEach { text ->
-                speechSynthesizer.streamingCall(text)
+            SpeechSynthesizer(param, resultCallback).also { synthesizer ->
+                AudioUtils.formatSpeechSynthesizerTexts(options.texts).forEach { text ->
+                    synthesizer.streamingCall(text)
+                }
+                synthesizer.streamingComplete()
             }
-            speechSynthesizer.streamingComplete()
-            println("qqqqqqqqqqqqqqq")
-            _speechSynthesizerObjectPool.synthesizerPool.returnObject(speechSynthesizer)
         }
         awaitClose()
     }
