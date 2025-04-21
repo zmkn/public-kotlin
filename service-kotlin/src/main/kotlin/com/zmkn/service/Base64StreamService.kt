@@ -6,9 +6,11 @@ import java.util.*
 import kotlin.apply
 
 class Base64StreamService(outputFile: File) {
-    constructor(outputFilePath: String) : this(File(outputFilePath).apply {
-        parentFile.mkdirs()
-    })
+    constructor(outputFilePath: String) : this(
+        File(outputFilePath).apply {
+            parentFile.mkdirs()
+        }
+    )
 
     private val _decoder: Base64.Decoder = Base64.getDecoder()
     private val _outputStream = FileOutputStream(outputFile)

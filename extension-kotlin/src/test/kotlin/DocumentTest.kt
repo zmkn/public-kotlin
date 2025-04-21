@@ -14,7 +14,8 @@ class DocumentTest {
         val document = Document()
             .append("a", "aaaaaaaa")
             .append(
-                "document", Document()
+                "document",
+                Document()
                     .append("a1", "a111")
                     .append("document", Document().append("aa1", "a1111111111"))
                     .append("list", listOf("l1", 2, "l3"))
@@ -24,7 +25,8 @@ class DocumentTest {
         println(document.deepCopy())
         val document2 = Document()
             .append(
-                "document", Document()
+                "document",
+                Document()
                     .append("a1", "aaaaa1")
                     .append("document", Document().append("aa2", "aaaaaa222"))
                     .append("list", listOf("l2", 4, "l8"))
@@ -34,9 +36,11 @@ class DocumentTest {
         println(document2.get("list"))
         val document3 = document.assign(document2)
         println(document3)
-        println(document3.filter {
-            it.key != "list"
-        })
+        println(
+            document3.filter {
+                it.key != "list"
+            }
+        )
     }
 
     @Test

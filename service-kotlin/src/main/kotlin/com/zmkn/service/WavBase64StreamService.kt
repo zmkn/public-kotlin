@@ -9,7 +9,6 @@ import javax.sound.sampled.AudioFileFormat
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioInputStream
 import javax.sound.sampled.AudioSystem
-import kotlin.apply
 
 class WavBase64StreamService(
     private val outputFile: File,
@@ -18,9 +17,12 @@ class WavBase64StreamService(
     constructor(
         outputFilePath: String,
         audioFormat: AudioFormat,
-    ) : this(File(outputFilePath).apply {
-        parentFile.mkdirs()
-    }, audioFormat)
+    ) : this(
+        File(outputFilePath).apply {
+            parentFile.mkdirs()
+        },
+        audioFormat
+    )
 
     constructor(outputFile: File) : this(outputFile, defaultAudioFormat)
 
@@ -62,11 +64,16 @@ class WavBase64StreamService(
 
     companion object {
         val defaultAudioFormat = AudioFormat(
-            24000f,     // 采样率
-            16,         // 采样位数
-            1,          // 声道数
-            true,       // 是否带符号
-            false       // 是否小端编码
+            // 采样率
+            24000f,
+            // 采样位数
+            16,
+            // 声道数
+            1,
+            // 是否带符号
+            true,
+            // 是否小端编码
+            false
         )
     }
 }
