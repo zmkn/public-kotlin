@@ -12,7 +12,7 @@ import org.bson.types.ObjectId
 data class Name(
     @Contextual
     @SerialName("_id")
-    @JsonProperty("_id")
+    @param:JsonProperty("_id")
     val id: ObjectId = ObjectId(),
     val name: String,
     val createdAt: Instant = Clock.System.now(),

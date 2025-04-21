@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 data class User(
     @Contextual
     @SerialName("_id")
-    @JsonProperty("_id")
+    @param:JsonProperty("_id")
     val id: String = "",
     @Contextual
     val accountId: String,

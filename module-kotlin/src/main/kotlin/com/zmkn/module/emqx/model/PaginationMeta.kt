@@ -10,6 +10,6 @@ data class PaginationMeta(
     val limit: Int = 100,
     val count: Int = 0,
     @SerialName("hasnext")
-    @JsonProperty("hasnext")
+    @param:JsonProperty("hasnext")
     val hasNext: Boolean,
 )

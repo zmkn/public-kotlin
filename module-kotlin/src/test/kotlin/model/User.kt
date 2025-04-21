@@ -12,7 +12,7 @@ import org.bson.types.ObjectId
 data class User(
     @Contextual
     @SerialName("_id")
-    @JsonProperty("_id")
+    @param:JsonProperty("_id")
     val id: ObjectId = ObjectId(),
     @Contextual
     val accountId: ObjectId,

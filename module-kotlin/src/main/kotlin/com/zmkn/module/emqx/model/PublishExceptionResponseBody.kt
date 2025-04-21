@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PublishExceptionResponseBody(
     @SerialName("reason_code")
-    @JsonProperty("reason_code")
+    @param:JsonProperty("reason_code")
     val reasonCode: Int,
     val message: String,
 )

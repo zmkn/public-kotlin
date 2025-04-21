@@ -12,7 +12,7 @@ import org.bson.types.ObjectId
 data class Account(
     @Contextual
     @SerialName("_id")
-    @JsonProperty("_id")
+    @param:JsonProperty("_id")
     val id: ObjectId = ObjectId(),
     @Contextual
     val notificationGroupId: ObjectId,
