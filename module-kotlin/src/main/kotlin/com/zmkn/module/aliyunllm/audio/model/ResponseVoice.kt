@@ -1,10 +1,12 @@
 package com.zmkn.module.aliyunllm.audio.model
 
 data class ResponseVoice(
-    val voiceId: String,
+    val voiceId: String? = null,
     val status: Status,
     val gmtCreate: String? = null,
     val gmtModified: String? = null,
+    val targetModel: String? = null,
+    val resourceLink: String? = null,
 ) {
     enum class Status(val value: String) {
         OK("OK"),

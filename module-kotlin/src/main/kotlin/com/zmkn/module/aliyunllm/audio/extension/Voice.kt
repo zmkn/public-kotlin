@@ -12,4 +12,6 @@ fun Voice.toResponseVoice(): ResponseVoice = ResponseVoice(
     },
     gmtCreate = gmtCreate,
     gmtModified = gmtModified,
+    targetModel = targetModel,
+    resourceLink = resourceLink,
 )

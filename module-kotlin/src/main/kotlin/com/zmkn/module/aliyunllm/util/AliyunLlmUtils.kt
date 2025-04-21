@@ -3,8 +3,18 @@ package com.zmkn.module.aliyunllm.util
 import com.alibaba.dashscope.utils.Constants
 import com.zmkn.module.aliyunllm.extension.toConnectionConfigurations
 import com.zmkn.module.aliyunllm.model.ApiOptions
+import java.net.URI
 
 object AliyunLlmUtils {
+    fun isUrl(str: String): Boolean {
+        return try {
+            val uri = URI(str)
+            uri.scheme != null && uri.host != null
+        } catch (_: Exception) {
+            false
+        }
+    }
+
     fun setApiConfigurations(apiOptions: ApiOptions) {
         apiOptions.version?.also {
             Constants.apiVersion = it

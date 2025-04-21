@@ -39,6 +39,12 @@ enum class ResponseCode(
         "请求输入的模型不能为空",
         "Required parameter 'model' missing from request."
     ),
+    BAD_REQUEST_RESOURCE_NOT_EXIST(
+        400,
+        "BadRequest.ResourceNotExist",
+        "请求的资源不存在",
+        "The Required resource not exist."
+    ),
     INVALID_URL(400, "InvalidURL", "请求的URL错误", "Invalid URL provided in your request."),
     ARREARAGE(
         400,
@@ -178,6 +184,7 @@ enum class ResponseCode(
                 code == BAD_REQUEST_EMPTY_INPUT.code && statusCode == BAD_REQUEST_EMPTY_INPUT.statusCode -> BAD_REQUEST_EMPTY_INPUT
                 code == BAD_REQUEST_EMPTY_PARAMETERS.code && statusCode == BAD_REQUEST_EMPTY_PARAMETERS.statusCode -> BAD_REQUEST_EMPTY_PARAMETERS
                 code == BAD_REQUEST_EMPTY_MODEL.code && statusCode == BAD_REQUEST_EMPTY_MODEL.statusCode -> BAD_REQUEST_EMPTY_MODEL
+                code == BAD_REQUEST_RESOURCE_NOT_EXIST.code && statusCode == BAD_REQUEST_RESOURCE_NOT_EXIST.statusCode -> BAD_REQUEST_RESOURCE_NOT_EXIST
                 code == INVALID_URL.code && statusCode == INVALID_URL.statusCode -> INVALID_URL
                 code == ARREARAGE.code && statusCode == ARREARAGE.statusCode -> ARREARAGE
                 code == UNSUPPORTED_OPERATION.code && statusCode == UNSUPPORTED_OPERATION.statusCode -> UNSUPPORTED_OPERATION
