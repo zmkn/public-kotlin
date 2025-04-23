@@ -52,7 +52,7 @@ class Voice(
         )
     }
 
-    private suspend fun queryAll(
+    private suspend fun queryAllVoices(
         apiKeyIndex: Int,
         prefix: String,
         pageIndex: Int,
@@ -69,7 +69,7 @@ class Voice(
         )
     }
 
-    private suspend fun queryById(
+    private suspend fun queryVoice(
         apiKeyIndex: Int,
         id: String,
     ): ResponseVoice? = withContext(Dispatchers.IO) {
@@ -114,7 +114,7 @@ class Voice(
         )
     }
 
-    private suspend fun deleteById(
+    private suspend fun deleteVoice(
         apiKeyIndex: Int,
         id: String,
     ): Boolean = withContext(Dispatchers.IO) {
@@ -137,18 +137,18 @@ class Voice(
 
     suspend fun createVoice(options: VoiceEnrollmentCreateOptions) = createVoice(0, options)
 
-    suspend fun queryAll(
+    suspend fun queryAllVoices(
         prefix: String,
         pageIndex: Int,
         pageSize: Int,
-    ) = queryAll(0, prefix, pageIndex, pageSize)
+    ) = queryAllVoices(0, prefix, pageIndex, pageSize)
 
-    suspend fun queryById(id: String) = queryById(0, id)
+    suspend fun queryVoice(id: String) = queryVoice(0, id)
 
     suspend fun updateVoice(
         id: String,
         url: String,
     ) = updateVoice(0, id, url)
 
-    suspend fun deleteById(id: String) = deleteById(0, id)
+    suspend fun deleteVoice(id: String) = deleteVoice(0, id)
 }

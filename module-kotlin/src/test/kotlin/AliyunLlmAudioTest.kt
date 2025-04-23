@@ -78,40 +78,40 @@ class AliyunLlmAudioTest {
 
     @Test
     @Disabled
-    fun testQueryAll() = runBlocking {
-        println("开始-testQueryAll")
-        val list = _voice.queryAll("aaa1", 0, 10)
+    fun testQueryAllVoices() = runBlocking {
+        println("开始-testQueryAllVoices")
+        val list = _voice.queryAllVoices("aaa1", 0, 10)
         println(list)
-        println("结束-testQueryAll")
+        println("结束-testQueryAllVoices")
     }
 
     @Test
     @Disabled
-    fun testQueryById() = runBlocking {
-        println("开始-testQueryById")
-        val voice = _voice.queryById("cosyvoice-v1-aaa1-3aff2904a86c400bbd4e77eca17b7da7")
+    fun testQueryVoice() = runBlocking {
+        println("开始-testQueryVoice")
+        val voice = _voice.queryVoice("cosyvoice-v1-aaa1-3aff2904a86c400bbd4e77eca17b7da7")
         println(voice)
-        println("结束-testQueryById")
+        println("结束-testQueryVoice")
     }
 
     @Test
     @Disabled
     fun testUpdateVoice() = runBlocking {
-        println("开始-testQueryById")
+        println("开始-testUpdateVoice")
         val result = _voice.updateVoice(
             id = "cosyvoice-v1-aaa1-3aff2904a86c400bbd4e77eca17b7da7",
             url = "http://hz.joyfulboy.cn/voice/001.mp3",
         )
         println(result)
-        println("结束-testQueryById")
+        println("结束-testUpdateVoice")
     }
 
     @Test
     @Disabled
-    fun testDeleteById() = runBlocking {
-        println("开始-testDeleteById")
-        val result = _voice.deleteById("cosyvoice-v1-aaa1-3aff2904a86c400bbd4e77eca17b7da7")
+    fun testDeleteVoice() = runBlocking {
+        println("开始-testDeleteVoice")
+        val result = _voice.deleteVoice("cosyvoice-v1-aaa1-3aff2904a86c400bbd4e77eca17b7da7")
         println(result)
-        println("结束-testDeleteById")
+        println("结束-testDeleteVoice")
     }
 }
