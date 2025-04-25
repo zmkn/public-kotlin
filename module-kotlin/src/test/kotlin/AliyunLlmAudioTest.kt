@@ -67,8 +67,8 @@ class AliyunLlmAudioTest {
         println("开始-testCreateVoice")
         val responseVoice = _voice.createVoice(
             VoiceEnrollmentCreateOptions(
-                model = "cosyvoice-v1",
-                prefix = "aaa1",
+                model = "cosyvoice-v2",
+                prefix = "lingqi",
                 url = "http://hz.joyfulboy.cn/voice/001.mp3",
             )
         )
@@ -80,7 +80,7 @@ class AliyunLlmAudioTest {
     @Disabled
     fun testQueryAllVoices() = runBlocking {
         println("开始-testQueryAllVoices")
-        val list = _voice.queryAllVoices("aaa1", 0, 10)
+        val list = _voice.queryAllVoices("lingqi", 0, 10)
         println(list)
         println("结束-testQueryAllVoices")
     }
@@ -110,7 +110,7 @@ class AliyunLlmAudioTest {
     @Disabled
     fun testDeleteVoice() = runBlocking {
         println("开始-testDeleteVoice")
-        val result = _voice.deleteVoice("cosyvoice-v1-aaa1-3aff2904a86c400bbd4e77eca17b7da7")
+        val result = _voice.deleteVoice("cosyvoice-v1-aaa1-ce39a5e71a104ac1a8572ff9baed2f6b")
         println(result)
         println("结束-testDeleteVoice")
     }

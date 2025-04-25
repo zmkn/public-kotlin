@@ -10,6 +10,7 @@ data class ResponseVoice(
 ) {
     enum class Status(val value: String) {
         OK("OK"),
+        DEPLOYING("DEPLOYING"),
         UNDEPLOYED("UNDEPLOYED");
 
         override fun toString(): String {
@@ -20,6 +21,7 @@ data class ResponseVoice(
             fun fromValue(value: String): Status {
                 return when (value) {
                     OK.value -> OK
+                    DEPLOYING.value -> DEPLOYING
                     UNDEPLOYED.value -> UNDEPLOYED
                     else -> throw IllegalArgumentException("Status value is not allowed.")
                 }
