@@ -38,12 +38,12 @@ class AliyunLlmAudioTest {
     fun testCreateStreamSpeechSynthesizer() = runBlocking {
         println("开始-testCreateStreamSpeechSynthesizer")
         val fos = FileOutputStream(audioFile)
-        val texts = listOf("韩立出身贫苦，为光大门楣，童年参加了七玄门的考核，因身具灵根，可修炼《长春功》而被七玄门神秘的墨大夫收为弟子。期间韩立捡到逆天小瓶，可用于无限催熟植物。墨大夫本想待韩立修炼长春诀有小成后对其进行夺舍，结果失败，韩立也被其暗算下毒，必须找墨大夫家人以求解药从此得知修仙界存在。")
+        val texts = listOf("韩立几经努力，结成金丹，期间偶得噬金虫。结识紫灵得金雷竹。此时谣言传出，称乱星海之掌控者“天星双圣”修炼走火入魔，乱星海乱象渐起。不久后又逢三百年一次的“虚天殿”开启，韩立有幸进入探宝，机缘巧合之下获得乱星海第一秘宝虚天鼎，为乱星海所有势力觊觎，乃传送至外星海，杀妖取丹，取丹炼药，服药炼气。悠悠数十载过，而后搜寻药材，不幸遭遇妖修，被胁迫帮助炼器，后于韩立精心设计下，暗算众妖修，灭杀毒蛟并获得逆天法宝风雷翅，而后为躲避妖修追杀，坐传送阵偷回内海。巧遇故友元瑶施展逆天大法，为其护法过程中遭遇六道传人，在快将其击败时遭遇百年一遇的绝灵之气，为鬼雾传送至阴魂之地，一番波折险死脱身后被传送至无边海，终回天南。")
         val options =
             SpeechSynthesisParamOptions(
-                model = "cosyvoice-v1",
+                model = "cosyvoice-v2",
                 texts = texts,
-                voice = "longcheng",
+                voice = "longwan_v2",
                 pitchRate = 1.0f,
             )
         _audio.createStreamSpeechSynthesizer(options).catch {
