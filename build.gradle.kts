@@ -34,11 +34,6 @@ val projectInfo = mapOf(
         "description" to "Models from Zmkn",
         "tags" to listOf("kotlin", "model")
     ),
-    "method-kotlin" to mapOf(
-        "name" to "Kotlin Method",
-        "description" to "Methods from Zmkn",
-        "tags" to listOf("kotlin", "method")
-    ),
     "public-kotlin" to mapOf(
         "name" to "Kotlin Public",
         "description" to "Public from Zmkn",
@@ -518,10 +513,10 @@ allprojects {
 
     configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
         jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(22))
+            languageVersion.set(JavaLanguageVersion.of(24))
         }
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_22)
+            jvmTarget.set(JvmTarget.JVM_24)
         }
     }
 
@@ -582,7 +577,6 @@ allprojects {
 dependencies {
     api(project(":util-kotlin"))
     api(project(":model-kotlin"))
-    api(project(":method-kotlin"))
     api(project(":module-kotlin"))
     api(project(":service-kotlin"))
     api(project(":constant-kotlin"))

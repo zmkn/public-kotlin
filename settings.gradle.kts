@@ -20,10 +20,9 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "public-kotlin"
-include(":util-kotlin", ":model-kotlin", ":method-kotlin", ":module-kotlin", ":service-kotlin", ":constant-kotlin", ":extension-kotlin", ":enumeration-kotlin")
+include(":util-kotlin", ":model-kotlin", ":module-kotlin", ":service-kotlin", ":constant-kotlin", ":extension-kotlin", ":enumeration-kotlin")
 project(":util-kotlin").name = "util-kotlin"
 project(":model-kotlin").name = "model-kotlin"
-project(":method-kotlin").name = "method-kotlin"
 project(":module-kotlin").name = "module-kotlin"
 project(":service-kotlin").name = "service-kotlin"
 project(":constant-kotlin").name = "constant-kotlin"
