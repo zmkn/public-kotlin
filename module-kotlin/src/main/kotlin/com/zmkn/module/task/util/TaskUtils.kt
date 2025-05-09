@@ -21,8 +21,8 @@ object TaskUtils {
 
     fun create(
         name: String,
-        desc: String?,
-        delayMillis: Long?,
+        desc: String? = null,
+        delayMillis: Long? = null,
         block: suspend (coroutineScope: CoroutineScope) -> Any?
     ): String {
         val id = generateTaskId()
@@ -61,37 +61,54 @@ object TaskUtils {
         }
     }
 
-    fun create(
+    fun createInterval(
         name: String,
-        delayMillis: Long,
+        desc: String? = null,
+        period: Long,
+        immediate: Boolean = true,
         block: suspend (coroutineScope: CoroutineScope) -> Any?
-    ): String = create(
-        name = name,
-        desc = null,
-        delayMillis = delayMillis,
-        block = block,
-    )
+    ): String {
+        val id = generateTaskId()
+        return _supervisorScope.launch {
+            try {
+                if (immediate) {
+                    block(this)
+                }
+                while (isActive) {
+                    delay(period)
+                    block(this)
+                }
+            } catch (e: Exception) {
+                _jobs[id]?.also {
+                    if (!it.job.isCancelled) {
+                        _jobs[id] = it.copy(
+                            status = TaskStatus.FAILED,
+                            result = e,
+                        )
+                    }
+                }
+            }
+        }.let {
+            _jobs[id] = Task(
+                id = id,
+                job = it,
+                name = name,
+                status = TaskStatus.NORMAL,
+                desc = desc,
+                result = null,
+            )
+            id
+        }
+    }
 
-    fun create(
-        name: String,
-        desc: String,
-        block: suspend (coroutineScope: CoroutineScope) -> Any?
-    ): String = create(
-        name = name,
-        desc = desc,
-        delayMillis = null,
-        block = block,
-    )
-
-    fun create(
-        name: String,
-        block: suspend (coroutineScope: CoroutineScope) -> Any?
-    ): String = create(
-        name = name,
-        desc = null,
-        delayMillis = null,
-        block = block,
-    )
+    fun success(id: String) {
+        _jobs[id]?.also {
+            it.job.cancel()
+            _jobs[id] = it.copy(
+                status = TaskStatus.SUCCEEDED
+            )
+        }
+    }
 
     fun cancel(id: String) {
         _jobs[id]?.also {
