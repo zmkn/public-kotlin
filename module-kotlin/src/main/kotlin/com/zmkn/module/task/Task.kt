@@ -2,13 +2,7 @@ package com.zmkn.module.task
 
 import com.zmkn.module.task.enumeration.TaskStatus
 import com.zmkn.util.RandomUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 data class Task(
     val id: String,
@@ -18,9 +12,11 @@ data class Task(
     val desc: String? = null,
     val result: Any? = null,
 ) {
-    fun success() = success(id)
+    fun success(result: Any? = null) = success(id, result)
 
-    fun cancel() = cancel(id)
+    fun failure(result: Any? = null) = failure(id, result)
+
+    fun cancel(result: Any? = null) = cancel(id, result)
 
     fun remove() = remove(id)
 
@@ -86,7 +82,7 @@ data class Task(
             desc: String? = null,
             period: Long,
             immediate: Boolean = true,
-            block: suspend (task: Task) -> Any?
+            block: suspend (task: Task) -> Unit
         ): String {
             val id = generateTaskId()
             return _supervisorScope.launch {
@@ -122,20 +118,41 @@ data class Task(
             }
         }
 
-        fun success(id: String) {
+        fun success(
+            id: String,
+            result: Any? = null,
+        ) {
             _jobs[id]?.also {
                 it.job.cancel()
                 _jobs[id] = it.copy(
-                    status = TaskStatus.SUCCEEDED
+                    status = TaskStatus.SUCCEEDED,
+                    result = result,
                 )
             }
         }
 
-        fun cancel(id: String) {
+        fun failure(
+            id: String,
+            result: Any? = null,
+        ) {
             _jobs[id]?.also {
                 it.job.cancel()
                 _jobs[id] = it.copy(
-                    status = TaskStatus.CANCELED
+                    status = TaskStatus.FAILED,
+                    result = result,
+                )
+            }
+        }
+
+        fun cancel(
+            id: String,
+            result: Any? = null,
+        ) {
+            _jobs[id]?.also {
+                it.job.cancel()
+                _jobs[id] = it.copy(
+                    status = TaskStatus.CANCELED,
+                    result = result,
                 )
             }
         }

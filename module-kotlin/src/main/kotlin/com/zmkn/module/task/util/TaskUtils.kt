@@ -24,7 +24,7 @@ object TaskUtils {
         desc: String? = null,
         period: Long,
         immediate: Boolean = true,
-        block: suspend (task: Task) -> Any?
+        block: suspend (task: Task) -> Unit
     ) = Task.createInterval(
         name = name,
         desc = desc,
@@ -33,9 +33,29 @@ object TaskUtils {
         block = block,
     )
 
-    fun success(id: String) = Task.success(id)
+    fun success(
+        id: String,
+        result: Any? = null,
+    ) = Task.success(
+        id = id,
+        result = result,
+    )
 
-    fun cancel(id: String) = Task.cancel(id)
+    fun failure(
+        id: String,
+        result: Any? = null,
+    ) = Task.failure(
+        id = id,
+        result = result,
+    )
+
+    fun cancel(
+        id: String,
+        result: Any? = null,
+    ) = Task.cancel(
+        id = id,
+        result = result,
+    )
 
     fun remove(id: String) = Task.remove(id)
 
