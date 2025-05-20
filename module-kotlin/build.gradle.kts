@@ -15,6 +15,7 @@ dependencies {
     api(libs.kotlinx.datetime.bson.codec) // Kotlinx datetime codec for bson
     api(libs.bson.kotlin.serializers.module) // Bson serializers module for kotlin
     api(libs.bson.jackson.module) // Bson module for jackson
+    api(libs.zmkn.srcc.nacos.kotlin) // Nacos 工具库
     api(libs.kmongo.coroutine) // MongoDB 支持库
     api(libs.kmongo.coroutine.serialization) // KMongo KotlinX serialization 支持库
     api(libs.kmongo.id) // KMongo Id 支持库
