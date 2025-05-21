@@ -10,8 +10,8 @@ import okhttp3.Request
 class NacosNameResolveInterceptRequestListener(
     private val scheme: String,
     private val algorithm: NacosNameResolveAlgorithm = NacosNameResolveAlgorithm.WEIGHTED,
-    private val isEphemeral: Boolean = false,
     private val metadata: Map<String, String> = mapOf(),
+    private val isEphemeral: Boolean? = null,
 ) : InterceptRequestListener {
     override fun handler(chain: Interceptor.Chain, request: Request): Request {
         val originalUrl = request.url
@@ -21,14 +21,14 @@ class NacosNameResolveInterceptRequestListener(
             when (algorithm) {
                 NacosNameResolveAlgorithm.WEIGHTED -> NacosNameResolverUtils.getWeightedInstance(
                     serviceName = serviceName,
-                    isEphemeral = isEphemeral,
                     metadata = metadata,
+                    isEphemeral = isEphemeral,
                 )
 
                 NacosNameResolveAlgorithm.ROUND_ROBIN -> NacosNameResolverUtils.getRoundRobinInstance(
                     serviceName = serviceName,
-                    isEphemeral = isEphemeral,
                     metadata = metadata,
+                    isEphemeral = isEphemeral,
                 )
             }?.let {
                 val newUrl = originalUrl.newBuilder()
