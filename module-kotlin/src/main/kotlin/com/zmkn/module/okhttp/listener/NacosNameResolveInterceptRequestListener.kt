@@ -15,9 +15,9 @@ class NacosNameResolveInterceptRequestListener(
 ) : InterceptRequestListener {
     override fun handler(chain: Interceptor.Chain, request: Request): Request {
         val originalUrl = request.url
-        val originalScheme = originalUrl.scheme
-        return if (originalScheme == NacosNameResolver.DEFAULT_SCHEME) {
-            val serviceName = originalUrl.host
+        val originalHost = originalUrl.host
+        return if (originalHost.endsWith(".${NacosNameResolver.DEFAULT_SCHEME}")) {
+            val serviceName = originalHost.removeSuffix(".${NacosNameResolver.DEFAULT_SCHEME}")
             when (algorithm) {
                 NacosNameResolveAlgorithm.WEIGHTED -> NacosNameResolverUtils.getWeightedInstance(
                     serviceName = serviceName,

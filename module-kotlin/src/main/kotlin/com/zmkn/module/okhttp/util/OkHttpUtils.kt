@@ -13,6 +13,7 @@ import okhttp3.MultipartBody.Part
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.net.URI
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
@@ -48,6 +49,27 @@ object OkHttpUtils {
         return !url.startsWith("/")
     }
 
+    fun convertToStandardSchemeWithSubdomain(
+        url: String,
+        newScheme: String = "http",
+    ): String {
+        val uri = URI.create(url)
+        val scheme = uri.scheme
+        return if (scheme != "http" && scheme != "https") {
+            URI(
+                newScheme,
+                uri.userInfo,
+                "${uri.host}.$scheme",
+                uri.port,
+                uri.path,
+                uri.query,
+                uri.fragment,
+            ).toString()
+        } else {
+            url
+        }
+    }
+
     fun createFullUrl(
         baseUrl: String,
         url: String,
@@ -56,6 +78,8 @@ object OkHttpUtils {
             "$baseUrl$url"
         } else {
             url
+        }.let {
+            convertToStandardSchemeWithSubdomain(it)
         }
     }
 
