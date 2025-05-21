@@ -1,5 +1,6 @@
 package com.zmkn.module.runtime.util
 
+import com.zmkn.extension.addWithNegativeIndex
 import com.zmkn.module.runtime.listener.OnShutdownListener
 
 object RuntimeUtils {
@@ -33,7 +34,7 @@ object RuntimeUtils {
     fun addShutdownListener(
         index: Int,
         onShutdownListener: OnShutdownListener,
-    ) = _onShutdownListeners.add(index, onShutdownListener)
+    ) = _onShutdownListeners.addWithNegativeIndex(index, onShutdownListener)
 
     fun addFirstShutdownListener(onShutdownListener: OnShutdownListener) = _onShutdownListeners.addFirst(onShutdownListener)
 
