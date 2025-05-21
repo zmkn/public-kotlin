@@ -1,5 +1,5 @@
 package com.zmkn.module.runtime.listener
 
-interface OnShutdownListener {
+fun interface OnShutdownListener {
     fun onShutdown()
 }
