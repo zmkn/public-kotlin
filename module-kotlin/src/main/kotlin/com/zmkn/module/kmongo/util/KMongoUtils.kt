@@ -20,6 +20,7 @@ import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.configuration.CodecRegistry
 import org.bson.conversions.Bson
 import org.bson.json.JsonWriterSettings
+import org.litote.kmongo.SetTo
 import org.litote.kmongo.id.jackson.IdJacksonModule
 import org.litote.kmongo.id.serialization.IdKotlinXSerializationModule
 import org.litote.kmongo.serialization.SerializationClassMappingTypeService
@@ -28,7 +29,9 @@ import org.litote.kmongo.util.KMongoUtil.defaultCodecRegistry
 import org.litote.kmongo.util.ObjectMappingConfiguration
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
+import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.starProjectedType
 
 object KMongoUtils {
@@ -199,5 +202,33 @@ object KMongoUtils {
 
     inline fun <reified T> decodeFromDocument(document: Document): T {
         return decodeFromDocument(T::class.starProjectedType, document)
+    }
+
+    fun <T : Any> generateSetToList(
+        model: T,
+        excludedFields: Collection<String> = setOf(),
+        allowedNull: Boolean = false,
+    ): List<SetTo<*>> {
+        return model::class.memberProperties.filterIsInstance<KProperty1<T, Any?>>()
+            .let {
+                if (excludedFields.isEmpty()) {
+                    it
+                } else {
+                    it.filter { property ->
+                        !excludedFields.contains(property.name)
+                    }
+                }
+            }
+            .let {
+                if (allowedNull) {
+                    it
+                } else {
+                    it.filter { property ->
+                        property.get(model) != null
+                    }
+                }
+            }.map { property ->
+                SetTo(property, property.get(model))
+            }
     }
 }
