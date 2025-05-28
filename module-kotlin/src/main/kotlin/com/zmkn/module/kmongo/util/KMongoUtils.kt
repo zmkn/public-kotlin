@@ -144,7 +144,7 @@ object KMongoUtils {
     }
 
     inline fun <reified T> encodeToString(value: T): String {
-        return encodeToString(T::class.starProjectedType, value)
+        return json.encodeToString(value)
     }
 
     fun <T> encodeToString(kType: KType, value: T): String {
@@ -160,7 +160,8 @@ object KMongoUtils {
     }
 
     inline fun <reified T> encodeToDocument(value: T): Document {
-        return encodeToDocument(T::class.starProjectedType, value)
+        val json = encodeToString(value)
+        return jsonToDocument(json)
     }
 
     fun <T> encodeToDocument(kType: KType, value: T): Document {
@@ -173,7 +174,7 @@ object KMongoUtils {
     }
 
     inline fun <reified T> decodeFromString(jsonString: String): T {
-        return decodeFromString(T::class.starProjectedType, jsonString)
+        return json.decodeFromString(jsonString)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -201,7 +202,7 @@ object KMongoUtils {
     }
 
     inline fun <reified T> decodeFromDocument(document: Document): T {
-        return decodeFromDocument(T::class.starProjectedType, document)
+        return json.decodeFromString(documentToJson(document))
     }
 
     fun <T : Any> generateSetToList(
