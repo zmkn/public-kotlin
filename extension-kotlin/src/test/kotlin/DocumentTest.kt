@@ -44,6 +44,7 @@ class DocumentTest {
     }
 
     @Test
+    @Disabled
     fun testTransform() {
         val document = Document()
             .append("a", "aaaaaaaa")

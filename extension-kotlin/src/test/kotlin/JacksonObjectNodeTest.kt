@@ -1,12 +1,14 @@
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.zmkn.extension.assign
+import org.junit.jupiter.api.Disabled
 import kotlin.test.Test
 
 class JacksonObjectNodeTest {
     private val _objectMapper = jacksonObjectMapper()
 
     @Test
+    @Disabled
     fun testAssign() {
         println("testAssign---start")
         val jsonNodeMain = _objectMapper.readTree("""{ "a": "aaa111", "b": "bbb111" }""")

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.protobuf.*
-import kotlin.Any
+import kotlin.reflect.KProperty1
 import com.google.protobuf.Any as ProtobufAny
 
 private val objectMapper = ObjectMapper().apply {
@@ -59,4 +59,23 @@ fun Any?.toProtobufAny(): ProtobufAny {
         null -> ProtobufAny.pack(Empty.newBuilder().build())
         else -> ProtobufAny.newBuilder().build()
     }
+}
+
+/**
+ * 通过属性名获取对象属性值
+ * @param propertyName 属性名称
+ * @return 属性值，未找到时返回 null
+ */
+fun Any.getPropertyValue(propertyName: String): Any? {
+    return (this::class.findProperty(propertyName) as? KProperty1<Any, *>)?.get(this)
+}
+
+/**
+ * 通过属性名获取对象属性值（带类型转换）
+ * @param propertyName 属性名称
+ * @return 属性值，未找到或类型不匹配时返回 null
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T> Any.getPropertyValueAs(propertyName: String): T? {
+    return getPropertyValue(propertyName) as? T
 }

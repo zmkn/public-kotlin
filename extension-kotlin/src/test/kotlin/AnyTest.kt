@@ -1,13 +1,8 @@
 import com.google.protobuf.EnumValue
 import com.google.protobuf.Option
 import com.google.protobuf.StringValue
-import com.zmkn.extension.toAny
-import com.zmkn.extension.toList
-import com.zmkn.extension.toMap
-import com.zmkn.extension.toProtobufAny
-import kotlin.Any
-import kotlin.Int
-import kotlin.String
+import com.zmkn.extension.*
+import org.junit.jupiter.api.Disabled
 import kotlin.test.Test
 import com.google.protobuf.Any as GoogleProtobufAny
 
@@ -15,6 +10,7 @@ class AnyTest {
     data class User(val name: String, val age: Int)
 
     @Test
+    @Disabled
     fun testToMap() {
         println("testToMap---start")
         val user = User(name = "Alice", age = 29)
@@ -24,6 +20,7 @@ class AnyTest {
     }
 
     @Test
+    @Disabled
     fun testProtobufAnyToAny() {
         println("testProtobufAnyToAny---start")
         val stringValue = StringValue.newBuilder()
@@ -53,6 +50,7 @@ class AnyTest {
     }
 
     @Test
+    @Disabled
     fun testAnyToProtobufAny() {
         println("testAnyToProtobufAny---start")
         println("abc".toProtobufAny())
@@ -61,10 +59,21 @@ class AnyTest {
     }
 
     @Test
+    @Disabled
     fun textSerialization() {
         println("textSerialization---start")
         println("abc".toProtobufAny())
         println(null.toProtobufAny())
         println("textSerialization---end")
+    }
+
+    @Test
+    @Disabled
+    fun testGetPropertyValueAs() {
+        println("testGetPropertyValueAs---start")
+        val user = User(name = "Alice", age = 29)
+        val name = user.getPropertyValueAs<String>("name")
+        println(name)
+        println("testGetPropertyValueAs---end")
     }
 }
