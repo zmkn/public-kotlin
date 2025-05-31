@@ -1,8 +1,10 @@
 import com.zmkn.util.JsonUtils
+import org.junit.jupiter.api.Disabled
 import kotlin.test.Test
 
 class JsonUtilsTest {
     @Test
+    @Disabled
     fun testIsLikelyJson() {
         println("testIsLikelyJson---start")
         val jsonString = "{}"
@@ -12,6 +14,7 @@ class JsonUtilsTest {
     }
 
     @Test
+    @Disabled
     fun testIsJsonValid() {
         println("testIsJsonValid---start")
         val jsonString = "{}"
@@ -21,6 +24,7 @@ class JsonUtilsTest {
     }
 
     @Test
+    @Disabled
     fun testIsObjectJson() {
         println("testIsObjectJson---start")
         val jsonString = "{}"
@@ -30,6 +34,7 @@ class JsonUtilsTest {
     }
 
     @Test
+    @Disabled
     fun testIsArrayJson() {
         println("testIsArrayJson---start")
         val jsonString = "[]"

@@ -51,6 +51,7 @@ bson-jackson-module = { group = "com.zmkn.jackson", name = "bson-jackson-module"
 kotlinx-datetime-jackson-module = { group = "com.zmkn.jackson", name = "kotlinx-datetime-jackson-module", version.ref = "kotlinxDatetimeJacksonModule" }
 zmkn-srcc-nacos-kotlin = { group = "com.zmkn.srcc", name = "nacos-kotlin", version.ref = "zmknSrcc" }
 mongodb-bson = { group = "org.mongodb", name = "bson", version.ref = "mongodb" }
+mongodb-driver-core = { group = "org.mongodb", name = "mongodb-driver-core", version.ref = "mongodb" }
 mongodb-driver-reactivestreams = { group = "org.mongodb", name = "mongodb-driver-reactivestreams", version.ref = "mongodb" }
 mongodb-driver-sync = { group = "org.mongodb", name = "mongodb-driver-sync", version.ref = "mongodb" }
 mongodb-driver-legacy = { group = "org.mongodb", name = "mongodb-driver-legacy", version.ref = "mongodb" }
