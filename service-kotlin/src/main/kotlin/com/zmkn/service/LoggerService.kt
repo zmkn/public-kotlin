@@ -7,8 +7,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class LoggerService private constructor(config: Config) {
-    private val _level = getLevel() ?: config.level
+class LoggerService private constructor(private val config: Config) {
+    private val _level: Level get() = getLevel() ?: config.level
     private val _stackIndex = STACK_INDEX + (getStackOffset() ?: config.stackOffset)
 
     private fun getAnsiColor(level: Level): AnsiColor {
