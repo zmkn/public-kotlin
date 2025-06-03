@@ -1,15 +1,10 @@
-import com.zmkn.service.LoggerService
 import com.zmkn.service.MorphiaService
-import dev.morphia.query.FindOptions
-import dev.morphia.query.Sort.descending
 import dev.morphia.query.filters.Filters
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import database.entity.User as UserModel
 
 class MorphiaServiceText {
-    private val logger = LoggerService.getInstance()
-
     //    @Test
     fun test() = runBlocking {
         val user = ""
@@ -18,11 +13,11 @@ class MorphiaServiceText {
         val database = "usercenter"
         val replicaName = "rs0"
         val connectionString = "mongodb://$user:$password@${hosts.joinToString(",")}/$database?authSource=$database&replicaSet=$replicaName"
-        logger.error(connectionString)
+        println(connectionString)
         val morphiaService = MorphiaService(connectionString, database)
         val datastore = morphiaService.datastore
         val userList = morphiaService.async {
-            logger.error("async1111")
+            println("async1111")
             val userData = listOf(
                 UserModel(nickName = "hz"),
                 UserModel(nickName = "kz"),
@@ -30,37 +25,34 @@ class MorphiaServiceText {
             )
 //            datastore.save(userData)
             val userQuery = datastore.find(UserModel::class.java)
-            logger.error(userQuery)
+            println(userQuery)
             val userList = userQuery.iterator().toList()
-            logger.error(userList)
+            println(userList)
             val filterUserList = userQuery
                 .filter(
                     Filters
                         .gte("mobilePhone", "134")
                 )
-                .iterator(
-                    FindOptions()
-                        .sort(descending("mobilePhone"))
-                )
+                .iterator()
                 .toList()
-            logger.error(filterUserList)
+            println(filterUserList)
         }
 
         morphiaService.launch {
-            logger.error("async222")
+            println("async222")
             val userQuery = datastore.find(UserModel::class.java)
-            logger.error(userQuery)
+            println(userQuery)
             val filterUserList = userQuery
                 .filter(
                     Filters
                         .gte("mobilePhone", "138")
                 )
                 .toList()
-            logger.error(filterUserList)
+            println(filterUserList)
         }
-        logger.error("bbbbbbbbb")
+        println("bbbbbbbbb")
         delay(10000)
-        logger.error("close")
+        println("close")
         morphiaService.close()
     }
 }
