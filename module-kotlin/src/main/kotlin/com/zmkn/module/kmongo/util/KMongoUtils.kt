@@ -6,7 +6,7 @@ import com.mongodb.client.model.Filters
 import com.zmkn.bson.codec.datetime.DatetimeBsonCodec
 import com.zmkn.jackson.module.bson.BsonJacksonModule
 import com.zmkn.kotlin.serializers.module.bson.BsonKotlinSerializersModule
-import com.zmkn.service.JacksonService
+import com.zmkn.serialization.jackson.Jackson
 import com.zmkn.service.SerializationService
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.internal.FormatLanguage
@@ -56,7 +56,7 @@ object KMongoUtils {
         }
     }.json
 
-    val objectMapper: ObjectMapper = JacksonService(initializer = {
+    val objectMapper: ObjectMapper = Jackson(initializer = {
         disable(SerializationFeature.INDENT_OUTPUT)
     }).objectMapper.registerModule(BsonJacksonModule.all).registerModule(IdJacksonModule())
 

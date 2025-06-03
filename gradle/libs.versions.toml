@@ -10,8 +10,8 @@ protobuf = "[4.30,4.31)"
 bsonKotlinSerializersModule = "1.0.1-SNAPSHOT"
 kotlinxDatetimeBsonCodec = "1.0.1-SNAPSHOT"
 bsonJacksonModule = "1.0.1-SNAPSHOT"
-kotlinxDatetimeJacksonModule = "1.0.1-SNAPSHOT"
 zmknSrcc = "1.0.0-SNAPSHOT"
+zmknSerialization = "1.0.0-SNAPSHOT"
 mongodb = "5.2.1"
 morphia = "3.0.0-SNAPSHOT"
 kmongo = "[5.1,6.0)"
@@ -48,8 +48,8 @@ protobuf-java-util = { group = "com.google.protobuf", name = "protobuf-java-util
 bson-kotlin-serializers-module = { group = "com.zmkn.kotlin.serializers", name = "bson-kotlin-serializers-module", version.ref = "bsonKotlinSerializersModule" }
 kotlinx-datetime-bson-codec = { group = "com.zmkn.bson", name = "kotlinx-datetime-bson-codec", version.ref = "kotlinxDatetimeBsonCodec" }
 bson-jackson-module = { group = "com.zmkn.jackson", name = "bson-jackson-module", version.ref = "bsonJacksonModule" }
-kotlinx-datetime-jackson-module = { group = "com.zmkn.jackson", name = "kotlinx-datetime-jackson-module", version.ref = "kotlinxDatetimeJacksonModule" }
 zmkn-srcc-nacos-kotlin = { group = "com.zmkn.srcc", name = "nacos-kotlin", version.ref = "zmknSrcc" }
+zmkn-serialization-jackson-kotlin = { group = "com.zmkn.serialization", name = "jackson-kotlin", version.ref = "zmknSerialization" }
 mongodb-bson = { group = "org.mongodb", name = "bson", version.ref = "mongodb" }
 mongodb-driver-core = { group = "org.mongodb", name = "mongodb-driver-core", version.ref = "mongodb" }
 mongodb-driver-reactivestreams = { group = "org.mongodb", name = "mongodb-driver-reactivestreams", version.ref = "mongodb" }
@@ -67,7 +67,6 @@ ehcache = { group = "org.ehcache", name = "ehcache", version.ref = "ehcache" }
 javax-jaxb-api = { group = "javax.xml.bind", name = "jaxb-api", version.ref = "jaxbApi" }
 glassfish-jaxb-runtime = { group = "org.glassfish.jaxb", name = "jaxb-runtime", version.ref = "jaxbRuntime" }
 jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
-jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
 jsonwebtoken-jjwt-api = { group = "io.jsonwebtoken", name = "jjwt-api", version.ref = "jsonwebtoken" }
 jsonwebtoken-jjwt-impl = { group = "io.jsonwebtoken", name = "jjwt-impl", version.ref = "jsonwebtoken" }
 jsonwebtoken-jjwt-jackson = { group = "io.jsonwebtoken", name = "jjwt-jackson", version.ref = "jsonwebtoken" }

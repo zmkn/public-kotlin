@@ -1,5 +1,6 @@
 package com.zmkn.service
 
+import com.zmkn.serialization.jackson.Jackson
 import org.snakeyaml.engine.v2.api.Dump
 import org.snakeyaml.engine.v2.api.DumpSettings
 import org.snakeyaml.engine.v2.api.Load
@@ -8,7 +9,7 @@ import org.snakeyaml.engine.v2.common.ScalarStyle
 import java.io.*
 
 class YamlService {
-    private val _objectMapper = JacksonService.objectMapper
+    private val _objectMapper = Jackson.objectMapper
 
     private val _loadSettings: LoadSettings
     private val _load: Load
