@@ -18,6 +18,7 @@ object JwtUtils {
         issuedAt: Date,
         notBefore: Date = issuedAt,
         expiration: Date,
+        headers: Map<String, Any> = mapOf(),
         audiences: Collection<String> = setOf(),
         claims: Map<String, Any> = mapOf(),
         privateKey: PrivateKey,
@@ -30,6 +31,7 @@ object JwtUtils {
             .issuedAt(issuedAt) // 设置 JWT 的创建时间
             .notBefore(notBefore) // 设置 JWT 的生效时间
             .expiration(expiration) // 设置 JWT 的过期时间
+            .header().add(headers).and() // 设置 JWT 的头
             .audience().add(audiences).and() // 设置 JWT 的受众
             .claims(claims) // 设置 JWT 的自定义的声明
             .signWith(privateKey, alg)
