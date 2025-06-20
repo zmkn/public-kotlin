@@ -34,6 +34,10 @@ data class Task(
             return _jobs[id]
         }
 
+        fun setTask(id: String, task: Task) {
+            _jobs[id] = task
+        }
+
         fun create(
             name: String,
             desc: String? = null,
@@ -41,25 +45,31 @@ data class Task(
             block: suspend (task: Task) -> Any?
         ): String {
             val id = generateTaskId()
-            return _supervisorScope.launch {
-                try {
-                    val task = getTask(id)!!
-                    delayMillis?.let {
-                        delay(it)
-                    }
-                    val result = block(task)
-                    _jobs[id]?.also {
-                        _jobs[id] = it.copy(
-                            status = TaskStatus.SUCCEEDED,
-                            result = result,
+            return _supervisorScope.launch(start = CoroutineStart.LAZY) {
+                val task = getTask(id)
+                if (task == null) {
+                    throw IllegalArgumentException("Task with id $id not found.")
+                } else {
+                    try {
+                        if (delayMillis != null && delayMillis > 0) {
+                            delay(delayMillis)
+                        }
+                        val result = block(task)
+                        setTask(
+                            id = id,
+                            task = task.copy(
+                                status = TaskStatus.SUCCEEDED,
+                                result = result,
+                            )
                         )
-                    }
-                } catch (e: Exception) {
-                    _jobs[id]?.also {
-                        if (!it.job.isCancelled) {
-                            _jobs[id] = it.copy(
-                                status = TaskStatus.FAILED,
-                                result = e,
+                    } catch (e: Exception) {
+                        if (!task.job.isCancelled) {
+                            setTask(
+                                id = id,
+                                task = task.copy(
+                                    status = TaskStatus.FAILED,
+                                    result = e,
+                                )
                             )
                         }
                     }
@@ -73,6 +83,7 @@ data class Task(
                     desc = desc,
                     result = null,
                 )
+                it.start()
                 id
             }
         }
