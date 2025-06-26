@@ -8,8 +8,6 @@ import com.zmkn.module.kmongo.KMongo
 import com.zmkn.module.kmongo.extension.*
 import com.zmkn.module.kmongo.util.KMongoUtils
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Clock
-import kotlinx.serialization.Serializable
 import model.Account
 import model.Name
 import model.User
@@ -19,6 +17,8 @@ import org.junit.jupiter.api.Disabled
 import org.litote.kmongo.*
 import org.litote.kmongo.util.KMongoUtil
 import kotlin.test.Test
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class KMongoTest {
     private val user = ""
@@ -30,11 +30,6 @@ class KMongoTest {
     private val kMongo: KMongo by lazy {
         KMongo(connectionString, database)
     }
-
-    @Serializable
-    data class IndexInfo(
-        val map: LinkedHashMap<String, Int> = linkedMapOf("a" to 1),
-    )
 
     @Test
     @Disabled
@@ -124,7 +119,7 @@ class KMongoTest {
     fun testAggregate() = runBlocking {
         println("testAggregate---Start")
         val collection = kMongo.getCollection("user")
-        val result = collection.aggregate(Document::class, listOf("{\$limit:2}"))
+        val result = collection.aggregate(Document::class, listOf($$"{$limit:2}"))
 //        println(result.toList())
         println(result.toStringList())
         println("testAggregate---End")
@@ -145,7 +140,7 @@ class KMongoTest {
                 foreignField = User::id.path(),
                 newAs = "userId"
             ),
-            unwind("\$userId", UnwindOptions().preserveNullAndEmptyArrays(true)),
+            unwind($$"$userId", UnwindOptions().preserveNullAndEmptyArrays(true)),
         )
         println(bsonList)
         val pipeline = bsonList.map {
@@ -160,6 +155,7 @@ class KMongoTest {
         println("testAggregateByDocument---End")
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testInsertOne() = runBlocking {
@@ -204,6 +200,7 @@ class KMongoTest {
         println("kMongoText---End")
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testFindOneAndUpdate() = runBlocking {
@@ -227,7 +224,7 @@ class KMongoTest {
             it == User::createdAt.path()
         }
         val userSetOnInsertJson = KMongoUtils.objectMapper.writeValueAsString(userSetOnInsertObjectNode)
-        val update = "{ \$set: $userSetJson, \$setOnInsert: $userSetOnInsertJson }"
+        val update = $$"{ $set: $$userSetJson, $setOnInsert: $$userSetOnInsertJson }"
         println(update)
         val result = collection.findOneAndUpdateAsString(
             filter,
@@ -238,6 +235,7 @@ class KMongoTest {
         println("testFindOneAndUpdate---End")
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testFindOneAndReplace() = runBlocking {
@@ -268,7 +266,7 @@ class KMongoTest {
     fun testFindOneAndDelete() = runBlocking {
         println("kMongoText---Start")
         val collection = kMongo.getCollection(User::class)
-        val filter = "{\"_id\": {\"\$oid\": \"6773ac7ce872ed3293b09fe1\"}}"
+        val filter = $$"{\"_id\": {\"$oid\": \"6773ac7ce872ed3293b09fe1\"}}"
         val filter1 = Filters.eq("_id", ObjectId("6773ac7ce872ed3293b09fe1"))
         println(filter1)
         println(filter)
@@ -278,6 +276,7 @@ class KMongoTest {
         println("kMongoText---End")
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testSave() = runBlocking {
@@ -306,6 +305,7 @@ class KMongoTest {
         println("testSave---End")
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testBulkWrite() = runBlocking {
@@ -329,6 +329,7 @@ class KMongoTest {
         println("testBulkWrite---End")
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testBulkWriteByDocument() = runBlocking {
@@ -372,6 +373,7 @@ class KMongoTest {
         println("testProjectionByDocument---End")
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testBsonToJson() {
@@ -391,6 +393,7 @@ class KMongoTest {
         println(collectionName)
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testDecodeFromDocument() {

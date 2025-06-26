@@ -151,11 +151,7 @@ class YamlService {
         }
         val yamlDataList = yamlInputStreams.map { yamlInputStream ->
             val yamlData = load(yamlInputStream)
-            if (yamlData is Map<*, *>) {
-                yamlData
-            } else {
-                throw IOException("Read YAML data exception, it is not map type.")
-            }
+            yamlData as? Map<*, *> ?: throw IOException("Read YAML data exception, it is not map type.")
         }
         val yamlData = if (yamlDataList.size > 1) {
             merge(yamlDataList[0], *yamlDataList.drop(1).toTypedArray())
@@ -191,11 +187,7 @@ class YamlService {
         }
         val yamlDataList = yamlInputStreams.map { yamlInputStream ->
             val yamlData = load(yamlInputStream)
-            if (yamlData is Iterable<*>) {
-                yamlData
-            } else {
-                throw IOException("Read YAML data exception, it is not iterable type.")
-            }
+            yamlData as? Iterable<*> ?: throw IOException("Read YAML data exception, it is not iterable type.")
         }
         val yamlListData = if (yamlDataList.size > 1) {
             merge(yamlDataList[0], *yamlDataList.drop(1).toTypedArray())

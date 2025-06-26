@@ -7,11 +7,12 @@ import com.zmkn.module.aliyunllm.model.ApiOptions
 import com.zmkn.util.FileUtils
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Clock
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class AliyunLlmAudioTest {
     private val _voice = Voice(
@@ -30,6 +31,7 @@ class AliyunLlmAudioTest {
         ),
     )
 
+    @OptIn(ExperimentalTime::class)
     val audioFile = File(FileUtils.getProjectRootDirectory("temp", "${Clock.System.now().epochSeconds}.mp3")).apply {
         parentFile.mkdirs()
     }

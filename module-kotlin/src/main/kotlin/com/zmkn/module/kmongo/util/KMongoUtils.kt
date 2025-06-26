@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.mongodb.client.model.Filters
 import com.zmkn.bson.codec.datetime.DatetimeBsonCodec
+import com.zmkn.bson.codec.time.TimeBsonCodec
 import com.zmkn.jackson.module.bson.BsonJacksonModule
 import com.zmkn.kotlin.serializers.module.bson.BsonKotlinSerializersModule
+import com.zmkn.kotlin.serializers.module.time.TimeKotlinSerializersModule
 import com.zmkn.serialization.jackson.Jackson
 import com.zmkn.service.SerializationService
 import kotlinx.serialization.InternalSerializationApi
@@ -51,6 +53,7 @@ object KMongoUtils {
     val json = SerializationService {
         prettyPrint = false
         serializersModule = SerializersModule {
+            include(TimeKotlinSerializersModule.all)
             include(BsonKotlinSerializersModule.all)
             include(IdKotlinXSerializationModule)
         }
@@ -66,6 +69,9 @@ object KMongoUtils {
         // 注册自定义 Codec 编解码器
         ObjectMappingConfiguration.apply {
             DatetimeBsonCodec.all.forEach {
+                addCustomCodec(it)
+            }
+            TimeBsonCodec.all.forEach {
                 addCustomCodec(it)
             }
         }

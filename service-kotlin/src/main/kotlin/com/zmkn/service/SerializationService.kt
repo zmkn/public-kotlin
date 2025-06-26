@@ -1,7 +1,9 @@
 package com.zmkn.service
 
+import com.zmkn.kotlin.serializers.module.time.TimeKotlinSerializersModule
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
+import kotlinx.serialization.modules.SerializersModule
 import java.nio.ByteBuffer
 
 class SerializationService {
@@ -60,6 +62,9 @@ class SerializationService {
             allowSpecialFloatingPointValues = false
             // 不允许使用结构化的键名
             allowStructuredMapKeys = false
+            serializersModule = SerializersModule {
+                include(TimeKotlinSerializersModule.all)
+            }
         }
     }
 }
