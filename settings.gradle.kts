@@ -12,8 +12,19 @@ dependencyResolutionManagement {
     repositories {
         maven {
             url = uri("https://repository.zmkn.com/repository/maven-public/")
+            content {
+                includeGroup("com.zmkn")
+                includeGroup("com.ailingqi")
+                includeGroupByRegex("com\\.zmkn\\..+")
+                includeGroupByRegex("com\\.ailingqi\\..+")
+            }
         }
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
+        maven {
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+            content {
+                includeGroup("dev.morphia.morphia")
+            }
+        }
         google()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
