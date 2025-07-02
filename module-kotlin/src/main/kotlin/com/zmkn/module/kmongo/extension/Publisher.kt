@@ -12,8 +12,10 @@ suspend fun <T : Any> Publisher<T>.toJson(): String {
     return objectMapper.writeValueAsString(toList())
 }
 
-suspend inline fun <reified T : Any> Publisher<T>.toStringList(): List<String> {
-    return toStringList(T::class)
+suspend fun <T : Any> Publisher<T>.toStringList(): List<String> {
+    return toList().map {
+        objectMapper.writeValueAsString(it)
+    }
 }
 
 suspend fun <T : Any> Publisher<T>.toStringList(schema: KClass<T>): List<String> {

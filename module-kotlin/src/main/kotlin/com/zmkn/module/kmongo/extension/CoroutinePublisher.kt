@@ -31,8 +31,8 @@ suspend fun <T : Any> CoroutinePublisher<T>.toJson(): String {
     return publisher.toJson()
 }
 
-suspend inline fun <reified T : Any> CoroutinePublisher<T>.toStringList(): List<String> {
-    return toStringList(T::class)
+suspend fun <T : Any> CoroutinePublisher<T>.toStringList(): List<String> {
+    return publisher.toStringList()
 }
 
 suspend fun <T : Any> CoroutinePublisher<T>.toStringList(schema: KClass<T>): List<String> {
