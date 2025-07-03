@@ -16,9 +16,11 @@ import org.bson.types.ObjectId
 import org.junit.jupiter.api.Disabled
 import org.litote.kmongo.*
 import org.litote.kmongo.util.KMongoUtil
+import kotlin.reflect.typeOf
 import kotlin.test.Test
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class KMongoTest {
     private val user = ""
@@ -409,5 +411,32 @@ class KMongoTest {
         val json2 = KMongoUtils.documentToJson(document)
         println(json2)
         println(KMongoUtils.decodeFromString(Name::class, json2))
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Test
+//    @Disabled
+    fun testDecodeFromString() {
+        val account = Account(
+            id = ObjectId("67d11287d0f1c354bbad4c1e"),
+            notificationGroupId = ObjectId("67d11288d0f1c354bbad4c1f"),
+            account = "aaabbbccc",
+            phoneNumber = "16601190129",
+            status = "NORMAL",
+            userId = ObjectId("67d11287d0f1c354bbad4c1d"),
+            passwordStatus = "NORMAL",
+            accountUpdatedAt = Instant.parse("2025-03-20T02:17:13.938030200Z"),
+            password = "null",
+            passwordUpdatedAt = Instant.parse("2025-03-12T04:50:16.362275400Z"),
+            passwordUpdatedVersion = 1,
+            createdAt = Instant.parse("2025-03-12T04:50:16.362275400Z"),
+            updatedAt = Instant.parse("2025-03-12T04:50:16.362275400Z"),
+        )
+        val kType = typeOf<Account>()
+//        val json = KMongoUtils.encodeToString(kType, account)
+        val json: String = $$"""{"_id": {"$oid": "67d11287d0f1c354bbad4c1e"}, "notificationGroupId": {"$oid": "67d11288d0f1c354bbad4c1f"}, "account": "aaabbbccc", "phoneNumber": "16601190129", "status": "NORMAL", "userId": {"$oid": "67d11287d0f1c354bbad4c1d"}, "passwordStatus": "NORMAL", "accountUpdatedAt": "2025-03-20T02:17:13.938030200Z", "password": "$argon2id$v=19$m=20480,t=20,p=4$c0yM4V4dyQwebDr0srnKQA$YaQGMkazKmHqithwjjshRsnwWVROOtki6RmHIxfn6M9keU+iJJ6nSPQkohwXEI7fc86iewQFWQnj0b5he+mHN8c90emF0xkgSGhkKj1/nAyhLRo/IU7E9ZnLo6U8s/1fZ9Y1Ym0HbR2ztoie8yf9t9PRxawT81ySq4TxQ7aFkXc", "passwordUpdatedAt": "2025-03-12T04:50:16.362275400Z", "passwordUpdatedVersion": 1, "createdAt": "2025-03-12T04:50:16.362275400Z", "updatedAt": "2025-03-12T04:50:16.362275400Z"}"""
+        println(json)
+        val accountData = KMongoUtils.decodeFromString<Account>(kType, json)
+        println(accountData)
     }
 }

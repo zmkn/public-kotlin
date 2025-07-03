@@ -3,10 +3,9 @@ kotlin = "[2.2,3.0)"
 ktlint = "[12.1,13.0)"
 shadow = "[8.3,9.0)"
 jreleaser = "[1.16,2.0)"
-kotlinxSerializationJson = "[1.7,2.0)"
+kotlinxSerializationJson = "[1.9,2.0)"
 kotlinxCoroutinesCore = "[1.9,2.0)"
 protobuf = "[4.30,4.31)"
-kotlinTimeKotlinSerializersModule = "1.0.1-SNAPSHOT"
 bsonKotlinSerializersModule = "1.0.1-SNAPSHOT"
 kotlinTimeBsonCodec = "1.0.1-SNAPSHOT"
 kotlinxDatetimeBsonCodec = "1.0.1-SNAPSHOT"
@@ -45,7 +44,6 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-reactive = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactive", version.ref = "kotlinxCoroutinesCore" }
 protobuf-java-util = { group = "com.google.protobuf", name = "protobuf-java-util", version.ref = "protobuf" }
 
-kotlin-time-kotlin-serializers-module = { group = "com.zmkn.kotlin.serializers", name = "kotlin-time-kotlin-serializers-module", version.ref = "kotlinTimeKotlinSerializersModule" }
 bson-kotlin-serializers-module = { group = "com.zmkn.kotlin.serializers", name = "bson-kotlin-serializers-module", version.ref = "bsonKotlinSerializersModule" }
 kotlin-time-bson-codec = { group = "com.zmkn.bson", name = "kotlin-time-bson-codec", version.ref = "kotlinTimeBsonCodec" }
 kotlinx-datetime-bson-codec = { group = "com.zmkn.bson", name = "kotlinx-datetime-bson-codec", version.ref = "kotlinxDatetimeBsonCodec" }

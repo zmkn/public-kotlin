@@ -5,7 +5,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.bson.types.ObjectId
-import kotlin.time.Clock.System
+import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -24,14 +24,10 @@ data class Account(
     @Contextual
     val userId: ObjectId,
     val passwordStatus: String,
-    @Contextual
     val accountUpdatedAt: Instant? = null,
     val password: String? = null,
-    @Contextual
     val passwordUpdatedAt: Instant? = null,
     val passwordUpdatedVersion: Int? = null,
-    @Contextual
-    val createdAt: Instant = System.now(),
-    @Contextual
+    val createdAt: Instant = Clock.System.now(),
     val updatedAt: Instant = createdAt,
 )

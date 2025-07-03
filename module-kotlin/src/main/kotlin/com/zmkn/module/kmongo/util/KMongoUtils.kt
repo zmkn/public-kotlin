@@ -7,7 +7,6 @@ import com.zmkn.bson.codec.datetime.DatetimeBsonCodec
 import com.zmkn.bson.codec.time.TimeBsonCodec
 import com.zmkn.jackson.module.bson.BsonJacksonModule
 import com.zmkn.kotlin.serializers.module.bson.BsonKotlinSerializersModule
-import com.zmkn.kotlin.serializers.module.time.TimeKotlinSerializersModule
 import com.zmkn.serialization.jackson.Jackson
 import com.zmkn.service.SerializationService
 import kotlinx.serialization.InternalSerializationApi
@@ -53,7 +52,6 @@ object KMongoUtils {
     val json = SerializationService {
         prettyPrint = false
         serializersModule = SerializersModule {
-            include(TimeKotlinSerializersModule.all)
             include(BsonKotlinSerializersModule.all)
             include(IdKotlinXSerializationModule)
         }

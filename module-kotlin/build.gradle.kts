@@ -8,7 +8,6 @@ dependencies {
     api(project(":extension-kotlin"))
     api(project(":enumeration-kotlin"))
     api(libs.kotlin.reflect) // Kotlin 反射库
-    api(libs.kotlin.time.kotlin.serializers.module) // Kotlin time serializers for kotlinx 序列化
     api(libs.kotlin.time.bson.codec) // Kotlin time codec for bson
     api(libs.kotlinx.serialization.json) // Kotlin json 序列化库
     api(libs.kotlinx.coroutines.core) // Kotlin 协程库

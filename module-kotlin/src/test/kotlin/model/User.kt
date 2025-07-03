@@ -23,13 +23,10 @@ data class User(
     val status: String,
     val phoneNumbers: List<String> = emptyList(),
     val identityCardNumber: String? = null,
-    @Contextual
     val birth: Instant? = null,
     val gender: String? = null,
     val age: Int? = null,
     val description: String? = null,
-    @Contextual
     val createdAt: Instant = System.now(),
-    @Contextual
     val updatedAt: Instant = createdAt,
 )

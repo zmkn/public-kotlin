@@ -20,5 +20,7 @@ class SerializationServiceText {
         println(user)
         val str = _serializationService.json.encodeToString(user)
         println(str)
+        val userData = _serializationService.json.decodeFromString<User>(str)
+        println(userData)
     }
 }

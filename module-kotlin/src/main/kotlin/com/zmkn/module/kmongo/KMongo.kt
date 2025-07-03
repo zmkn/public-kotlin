@@ -41,7 +41,7 @@ class KMongo(connectionString: String, databaseName: String) {
         return collectionName in _database.listCollectionNames()
     }
 
-    suspend fun <T> withTransaction(block: suspend (session: ClientSession) -> T?): T? {
+    suspend fun <T> withTransaction(block: suspend (session: ClientSession) -> T): T {
         val session = _client.startSession()
         return try {
             session.startTransaction()

@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     api(libs.kotlin.reflect) // Kotlin 反射库
-    api(libs.kotlin.time.kotlin.serializers.module) // Kotlin time serializers for kotlinx 序列化
     api(libs.kotlinx.serialization.json) // Kotlin json 序列化库
     api(libs.kotlinx.coroutines.core) // Kotlin 协程库
     api(libs.protobuf.java.util) // Protobuf java 支持库
