@@ -335,7 +335,7 @@ allprojects {
             deploy {
                 maven {
                     github {
-                        create("github") {
+                        register("github") {
                             // Enables or disables the deployer.
                             // Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
                             // Defaults to `NEVER`.
@@ -417,7 +417,7 @@ allprojects {
                         }
                     }
                     mavenCentral {
-                        create("central") {
+                        register("central") {
                             // Enables or disables the deployer.
                             // Supported values are [`NEVER`, `ALWAYS`, `RELEASE`, `SNAPSHOT`].
                             // Defaults to `NEVER`.
