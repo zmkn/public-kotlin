@@ -13,9 +13,7 @@ class ProtobufService(
     private val parser: JsonFormat.Parser = JsonFormat.parser(),
     private val printer: JsonFormat.Printer = JsonFormat.printer()
 ) {
-    fun encodeToString(message: MessageOrBuilder): String {
-        return printer.print(message)
-    }
+    fun encodeToString(message: MessageOrBuilder): String = printer.print(message)
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Message> decodeFromString(builder: Message.Builder, json: String): T {
@@ -37,9 +35,7 @@ class ProtobufService(
     companion object {
         private val _instance by lazy { ProtobufService() }
 
-        fun getInstance(): ProtobufService {
-            return _instance
-        }
+        fun getInstance(): ProtobufService = _instance
 
         fun encodeToString(message: MessageOrBuilder): String = _instance.encodeToString(message)
 

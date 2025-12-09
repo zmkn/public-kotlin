@@ -105,17 +105,13 @@ data class GenerationParamOptions(
             STANDARD("standard"),
             PRO("pro");
 
-            override fun toString(): String {
-                return value
-            }
+            override fun toString(): String = value
 
             companion object {
-                fun fromValue(value: String): SearchStrategy {
-                    return when (value) {
-                        STANDARD.value -> STANDARD
-                        PRO.value -> PRO
-                        else -> throw IllegalArgumentException("SearchStrategy value is not allowed.")
-                    }
+                fun fromValue(value: String): SearchStrategy = when (value) {
+                    STANDARD.value -> STANDARD
+                    PRO.value -> PRO
+                    else -> throw IllegalArgumentException("SearchStrategy value is not allowed.")
                 }
             }
         }

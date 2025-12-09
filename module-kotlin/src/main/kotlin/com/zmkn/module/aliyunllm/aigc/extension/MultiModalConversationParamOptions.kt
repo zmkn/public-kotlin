@@ -13,13 +13,11 @@ fun MultiModalConversationParamOptions.AudioParameters.toAudioParameters(): Audi
     }
 }.build()
 
-fun MultiModalConversationParamOptions.AudioParameters.Voice.toAudioParametersVoice(): AudioParameters.Voice {
-    return when (this) {
-        CHERRY -> AudioParameters.Voice.CHERRY
-        SERENA -> AudioParameters.Voice.SERENA
-        ETHAN -> AudioParameters.Voice.ETHAN
-        CHELSIE -> AudioParameters.Voice.CHELSIE
-    }
+fun MultiModalConversationParamOptions.AudioParameters.Voice.toAudioParametersVoice(): AudioParameters.Voice = when (this) {
+    CHERRY -> AudioParameters.Voice.CHERRY
+    SERENA -> AudioParameters.Voice.SERENA
+    ETHAN -> AudioParameters.Voice.ETHAN
+    CHELSIE -> AudioParameters.Voice.CHELSIE
 }
 
 fun MultiModalConversationParamOptions.OcrOptions.toOcrOptions(): OcrOptions = OcrOptions.builder()
@@ -44,8 +42,8 @@ fun MultiModalConversationParamOptions.OcrOptions.TaskConfig.toOcrOptionsTaskCon
     .also {
         if (resultSchema.isNotEmpty()) {
             val resultSchemaJsonObject = JsonObject()
-            resultSchema.forEach {
-                resultSchemaJsonObject.addProperty(it.first, it.second)
+            resultSchema.forEach { schema ->
+                resultSchemaJsonObject.addProperty(schema.first, schema.second)
             }
             it.resultSchema(resultSchemaJsonObject)
         }

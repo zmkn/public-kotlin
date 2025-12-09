@@ -36,9 +36,7 @@ class PemService {
         return InputStreamReader(pemInputStream)
     }
 
-    private fun getPemReader(): PemReader {
-        return PemReader(getInputStreamReader())
-    }
+    private fun getPemReader(): PemReader = PemReader(getInputStreamReader())
 
     private fun getType(): PemType {
         val pemReader = getPemReader()
@@ -216,9 +214,7 @@ class PemService {
         PUBLIC("PUBLIC"),
         PRIVATE("PRIVATE");
 
-        override fun toString(): String {
-            return value
-        }
+        override fun toString(): String = value
     }
 
     enum class PemFormat(val value: String) {
@@ -227,9 +223,7 @@ class PemService {
         PKCS1("PKCS1"),
         PKCS8("PKCS8");
 
-        override fun toString(): String {
-            return value
-        }
+        override fun toString(): String = value
     }
 
     enum class PemAlgorithm(val value: String) {
@@ -237,9 +231,7 @@ class PemService {
         RSA("RSA"),
         EC("EC");
 
-        override fun toString(): String {
-            return value
-        }
+        override fun toString(): String = value
     }
 
     data class PemInfo(

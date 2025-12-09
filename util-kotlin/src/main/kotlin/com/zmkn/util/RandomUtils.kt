@@ -10,21 +10,19 @@ object RandomUtils {
     fun generateRandomString(
         length: Int,
         ranges: String,
-    ): String {
-        return if (length > 0) {
-            if (ranges.isNotBlank()) {
-                val sb = StringBuilder()
-                (0 until length).forEach {
-                    val randomIndex = Random.nextInt(ranges.length)
-                    sb.append(ranges[randomIndex])
-                }
-                sb.toString()
-            } else {
-                throw IllegalArgumentException("Range must not be blank.")
+    ): String = if (length > 0) {
+        if (ranges.isNotBlank()) {
+            val sb = StringBuilder()
+            (0 until length).forEach { _ ->
+                val randomIndex = Random.nextInt(ranges.length)
+                sb.append(ranges[randomIndex])
             }
+            sb.toString()
         } else {
-            throw IllegalArgumentException("Length must be greater than 0.")
+            throw IllegalArgumentException("Range must not be blank.")
         }
+    } else {
+        throw IllegalArgumentException("Length must be greater than 0.")
     }
 
     fun generateRandomString(length: Int): String = generateRandomString(length, DEFAULT_RANGES)

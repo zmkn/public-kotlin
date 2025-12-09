@@ -13,18 +13,14 @@ data class ResponseVoice(
         DEPLOYING("DEPLOYING"),
         UNDEPLOYED("UNDEPLOYED");
 
-        override fun toString(): String {
-            return value
-        }
+        override fun toString(): String = value
 
         companion object {
-            fun fromValue(value: String): Status {
-                return when (value) {
-                    OK.value -> OK
-                    DEPLOYING.value -> DEPLOYING
-                    UNDEPLOYED.value -> UNDEPLOYED
-                    else -> throw IllegalArgumentException("Status value is not allowed.")
-                }
+            fun fromValue(value: String): Status = when (value) {
+                OK.value -> OK
+                DEPLOYING.value -> DEPLOYING
+                UNDEPLOYED.value -> UNDEPLOYED
+                else -> throw IllegalArgumentException("Status value is not allowed.")
             }
         }
     }

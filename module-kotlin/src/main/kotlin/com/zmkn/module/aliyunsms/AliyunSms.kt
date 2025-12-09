@@ -13,9 +13,7 @@ import kotlinx.coroutines.withContext
 class AliyunSms(config: Config) {
     val client = Client(config.toAliyunSmsConfig())
 
-    fun sendSync(sendSmsRequest: SendSmsRequest): SendSmsResponse {
-        return client.sendSms(sendSmsRequest.toAliyunSmsSendSmsRequest()).toSendSmsResponse()
-    }
+    fun sendSync(sendSmsRequest: SendSmsRequest): SendSmsResponse = client.sendSms(sendSmsRequest.toAliyunSmsSendSmsRequest()).toSendSmsResponse()
 
     suspend fun send(sendSmsRequest: SendSmsRequest): SendSmsResponse = withContext(Dispatchers.IO) {
         sendSync(sendSmsRequest)

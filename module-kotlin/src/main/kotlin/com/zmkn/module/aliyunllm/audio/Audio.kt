@@ -62,36 +62,34 @@ class Audio(
     private fun createSpeechSynthesisParam(
         apiKeyIndex: Int,
         options: SpeechSynthesisParamOptions
-    ): SpeechSynthesisParam {
-        return SpeechSynthesisParam
-            .builder()
-            .apiKey(getApiKey(apiKeyIndex))
-            .model(options.model)
-            .voice(options.voice)
-            .apply {
-                options.textType?.also {
-                    textType(it.toSpeechSynthesisTextType())
-                }
-                options.format?.also {
-                    format(it.toSpeechSynthesisAudioFormat())
-                }
-                options.volume?.also {
-                    volume(it)
-                }
-                options.speechRate?.also {
-                    speechRate(it)
-                }
-                options.pitchRate?.also {
-                    pitchRate(it)
-                }
-                options.enableWordTimestamp?.also {
-                    enableWordTimestamp(it)
-                }
-                options.enablePhonemeTimestamp?.also {
-                    enablePhonemeTimestamp(it)
-                }
-            }.build()
-    }
+    ): SpeechSynthesisParam = SpeechSynthesisParam
+        .builder()
+        .apiKey(getApiKey(apiKeyIndex))
+        .model(options.model)
+        .voice(options.voice)
+        .apply {
+            options.textType?.also {
+                textType(it.toSpeechSynthesisTextType())
+            }
+            options.format?.also {
+                format(it.toSpeechSynthesisAudioFormat())
+            }
+            options.volume?.also {
+                volume(it)
+            }
+            options.speechRate?.also {
+                speechRate(it)
+            }
+            options.pitchRate?.also {
+                pitchRate(it)
+            }
+            options.enableWordTimestamp?.also {
+                enableWordTimestamp(it)
+            }
+            options.enablePhonemeTimestamp?.also {
+                enablePhonemeTimestamp(it)
+            }
+        }.build()
 
     private fun createStreamSpeechSynthesizer(
         apiKeyIndex: Int,

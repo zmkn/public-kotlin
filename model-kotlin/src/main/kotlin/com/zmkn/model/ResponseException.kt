@@ -5,7 +5,5 @@ data class ResponseException(
     val status: Int,
     override val message: String? = null,
 ) : Exception(message) {
-    override fun toString(): String {
-        return "ResponseException(status=$status, code=$code, message=$message)"
-    }
+    override fun toString(): String = "ResponseException(status=$status, code=$code, message=$message)"
 }

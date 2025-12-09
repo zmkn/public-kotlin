@@ -6,7 +6,5 @@ enum class TaskStatus(val value: String) {
     SUCCEEDED("SUCCEEDED"),
     FAILED("FAILED");
 
-    override fun toString(): String {
-        return value
-    }
+    override fun toString(): String = value
 }

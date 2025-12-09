@@ -24,13 +24,13 @@ data class SpeechSynthesisParamOptions(
 ) {
     init {
         volume?.let {
-            require(it >= 0 && it <= 100) { "Property 'volume' must be greater than or equal to 0 and less than or equal to 100, but was $it." }
+            require(it in 0..100) { "Property 'volume' must be greater than or equal to 0 and less than or equal to 100, but was $it." }
         }
         speechRate?.let {
-            require(it >= 0.5 && it <= 2) { "Property 'volume' must be greater than or equal to 0.5 and less than or equal to 2, but was $it." }
+            require(it in 0.5..2.0) { "Property 'volume' must be greater than or equal to 0.5 and less than or equal to 2, but was $it." }
         }
         pitchRate?.let {
-            require(it >= 0.5 && it <= 2) { "Property 'volume' must be greater than or equal to 0.5 and less than or equal to 2, but was $it." }
+            require(it in 0.5..2.0) { "Property 'volume' must be greater than or equal to 0.5 and less than or equal to 2, but was $it." }
         }
     }
 
@@ -38,17 +38,13 @@ data class SpeechSynthesisParamOptions(
         PLAIN_TEXT("PlainText"),
         SSML("SSML");
 
-        override fun toString(): String {
-            return value
-        }
+        override fun toString(): String = value
 
         companion object {
-            fun fromValue(value: String): TextType {
-                return when (value) {
-                    PLAIN_TEXT.value -> PLAIN_TEXT
-                    SSML.value -> SSML
-                    else -> throw IllegalArgumentException("TextType value is not allowed.")
-                }
+            fun fromValue(value: String): TextType = when (value) {
+                PLAIN_TEXT.value -> PLAIN_TEXT
+                SSML.value -> SSML
+                else -> throw IllegalArgumentException("TextType value is not allowed.")
             }
         }
     }
@@ -79,8 +75,6 @@ data class SpeechSynthesisParamOptions(
         PCM_44100HZ_MONO_16BIT("pcm", 44100, "mono", "16bit"),
         PCM_48000HZ_MONO_16BIT("pcm", 48000, "mono", "16bit");
 
-        override fun toString(): String {
-            return "{\"format\": \"$format\", \"sampleRate\": $sampleRate, \"channels\": \"$channels\", \"bitRate\": \"$bitRate\"}"
-        }
+        override fun toString(): String = "{\"format\": \"$format\", \"sampleRate\": $sampleRate, \"channels\": \"$channels\", \"bitRate\": \"$bitRate\"}"
     }
 }

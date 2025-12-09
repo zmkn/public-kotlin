@@ -223,31 +223,29 @@ enum class AliyunLlmTextModel(
     ;
 
     companion object {
-        fun byCode(code: String): AliyunLlmTextModel {
-            return when (code) {
-                QwenMax.code -> QwenMax
-                QwenMaxLatest.code -> QwenMaxLatest
-                QwenPlus.code -> QwenPlus
-                QwenPlusLatest.code -> QwenPlusLatest
-                QwenTurbo.code -> QwenTurbo
-                QwenTurboLatest.code -> QwenTurboLatest
-                QwenLong.code -> QwenLong
-                QwenVlMax.code -> QwenVlMax
-                QwenVlMaxLatest.code -> QwenVlMaxLatest
-                QwenVlPlus.code -> QwenVlPlus
-                QwenVlPlusLatest.code -> QwenVlPlusLatest
-                QwenVlOcr.code -> QwenVlOcr
-                QwenVlOcrLatest.code -> QwenVlOcrLatest
-                QwenMathPlus.code -> QwenMathPlus
-                QwenMathPlusLatest.code -> QwenMathPlusLatest
-                QwenMathTurbo.code -> QwenMathTurbo
-                QwenMathTurboLatest.code -> QwenMathTurboLatest
-                QwenCoderPlus.code -> QwenCoderPlus
-                QwenCoderPlusLatest.code -> QwenCoderPlusLatest
-                QwenCoderTurbo.code -> QwenCoderTurbo
-                QwenCoderTurboLatest.code -> QwenCoderTurboLatest
-                else -> throw IllegalArgumentException("AliyunLlmModel code [$code] not recognized.")
-            }
+        fun byCode(code: String): AliyunLlmTextModel = when (code) {
+            QwenMax.code -> QwenMax
+            QwenMaxLatest.code -> QwenMaxLatest
+            QwenPlus.code -> QwenPlus
+            QwenPlusLatest.code -> QwenPlusLatest
+            QwenTurbo.code -> QwenTurbo
+            QwenTurboLatest.code -> QwenTurboLatest
+            QwenLong.code -> QwenLong
+            QwenVlMax.code -> QwenVlMax
+            QwenVlMaxLatest.code -> QwenVlMaxLatest
+            QwenVlPlus.code -> QwenVlPlus
+            QwenVlPlusLatest.code -> QwenVlPlusLatest
+            QwenVlOcr.code -> QwenVlOcr
+            QwenVlOcrLatest.code -> QwenVlOcrLatest
+            QwenMathPlus.code -> QwenMathPlus
+            QwenMathPlusLatest.code -> QwenMathPlusLatest
+            QwenMathTurbo.code -> QwenMathTurbo
+            QwenMathTurboLatest.code -> QwenMathTurboLatest
+            QwenCoderPlus.code -> QwenCoderPlus
+            QwenCoderPlusLatest.code -> QwenCoderPlusLatest
+            QwenCoderTurbo.code -> QwenCoderTurbo
+            QwenCoderTurboLatest.code -> QwenCoderTurboLatest
+            else -> throw IllegalArgumentException("AliyunLlmModel code [$code] not recognized.")
         }
     }
 }

@@ -73,9 +73,7 @@ data class PublishRequestBody(
             APPLICATION_JSON("application/json"),
             APPLICATION_OCTET_STREAM("application/octet-stream");
 
-            override fun toString(): String {
-                return value
-            }
+            override fun toString(): String = value
 
             object ContentTypeSerializer : KSerializer<ContentType> {
                 override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("com.zmkn.module.emqx.model.PublishRequestBody.Properties.ContentType", PrimitiveKind.STRING)
@@ -94,13 +92,11 @@ data class PublishRequestBody(
             }
 
             companion object {
-                fun fromValue(value: String): ContentType {
-                    return when (value) {
-                        TEXT_PLAIN.value -> TEXT_PLAIN
-                        APPLICATION_JSON.value -> APPLICATION_JSON
-                        APPLICATION_OCTET_STREAM.value -> APPLICATION_OCTET_STREAM
-                        else -> throw IllegalArgumentException("ContentType value is not allowed.")
-                    }
+                fun fromValue(value: String): ContentType = when (value) {
+                    TEXT_PLAIN.value -> TEXT_PLAIN
+                    APPLICATION_JSON.value -> APPLICATION_JSON
+                    APPLICATION_OCTET_STREAM.value -> APPLICATION_OCTET_STREAM
+                    else -> throw IllegalArgumentException("ContentType value is not allowed.")
                 }
             }
         }
@@ -110,9 +106,7 @@ data class PublishRequestBody(
         PLAIN("plain"),
         BASE64("base64");
 
-        override fun toString(): String {
-            return value
-        }
+        override fun toString(): String = value
 
         object PayloadEncodingSerializer : KSerializer<PayloadEncoding> {
             override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("com.zmkn.module.emqx.model.PublishRequestBody.PayloadEncoding", PrimitiveKind.STRING)
@@ -131,12 +125,10 @@ data class PublishRequestBody(
         }
 
         companion object {
-            fun fromValue(value: String): PayloadEncoding {
-                return when (value) {
-                    PLAIN.value -> PLAIN
-                    BASE64.value -> BASE64
-                    else -> throw IllegalArgumentException("PayloadEncoding value is not allowed.")
-                }
+            fun fromValue(value: String): PayloadEncoding = when (value) {
+                PLAIN.value -> PLAIN
+                BASE64.value -> BASE64
+                else -> throw IllegalArgumentException("PayloadEncoding value is not allowed.")
             }
         }
     }

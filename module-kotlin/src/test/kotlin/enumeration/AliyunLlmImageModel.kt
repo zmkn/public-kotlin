@@ -111,29 +111,26 @@ enum class AliyunLlmImageModel(
         AliyunLlmModelOutputType.Image,
         "AI试衣-图片精修",
         false,
-    ),
-    ;
+    );
 
     companion object {
-        fun byCode(code: String): AliyunLlmImageModel {
-            return when (code) {
-                WanxV1.code -> WanxV1
-                WanxSketch.code -> WanxSketch
-                WanxXPainting.code -> WanxXPainting
-                WanxStyleRepaintV1.code -> WanxStyleRepaintV1
-                WanxBackgroundGenerationV2.code -> WanxBackgroundGenerationV2
-                ImageOutPainting.code -> ImageOutPainting
-                ImageInstanceSegmentation.code -> ImageInstanceSegmentation
-                ImageEraseCompletion.code -> ImageEraseCompletion
-                WanxStyleCosplayV1.code -> WanxStyleCosplayV1
-                VirtualmodelV2.code -> VirtualmodelV2
-                ShoemodelV1.code -> ShoemodelV1
-                WanxPosterGenerationV1.code -> WanxPosterGenerationV1
-                WanxAst.code -> WanxAst
-                Aitryon.code -> Aitryon
-                AitryonRefiner.code -> AitryonRefiner
-                else -> throw IllegalArgumentException("AliyunLlmModel code [$code] not recognized.")
-            }
+        fun byCode(code: String): AliyunLlmImageModel = when (code) {
+            WanxV1.code -> WanxV1
+            WanxSketch.code -> WanxSketch
+            WanxXPainting.code -> WanxXPainting
+            WanxStyleRepaintV1.code -> WanxStyleRepaintV1
+            WanxBackgroundGenerationV2.code -> WanxBackgroundGenerationV2
+            ImageOutPainting.code -> ImageOutPainting
+            ImageInstanceSegmentation.code -> ImageInstanceSegmentation
+            ImageEraseCompletion.code -> ImageEraseCompletion
+            WanxStyleCosplayV1.code -> WanxStyleCosplayV1
+            VirtualmodelV2.code -> VirtualmodelV2
+            ShoemodelV1.code -> ShoemodelV1
+            WanxPosterGenerationV1.code -> WanxPosterGenerationV1
+            WanxAst.code -> WanxAst
+            Aitryon.code -> Aitryon
+            AitryonRefiner.code -> AitryonRefiner
+            else -> throw IllegalArgumentException("AliyunLlmModel code [$code] not recognized.")
         }
     }
 }

@@ -23,17 +23,15 @@ class Voice(
         apiKeyIndex: Int,
         block: suspend (apiKey: String) -> T,
         exceptionHandler: suspend (e: RequestException) -> T,
-    ): T {
-        return try {
-            block(getApiKey(apiKeyIndex))
-        } catch (e: Exception) {
-            val requestException = RequestException(e)
-            val responseCode = requestException.responseCode
-            if (responseCode.statusCode == ResponseCode.INVALID_API_KEY.statusCode && responseCode.code == ResponseCode.INVALID_API_KEY.code && apiKeyIndex + 1 < apiKeys.size) {
-                catch(apiKeyIndex + 1, block, exceptionHandler)
-            } else {
-                exceptionHandler(requestException)
-            }
+    ): T = try {
+        block(getApiKey(apiKeyIndex))
+    } catch (e: Exception) {
+        val requestException = RequestException(e)
+        val responseCode = requestException.responseCode
+        if (responseCode.statusCode == ResponseCode.INVALID_API_KEY.statusCode && responseCode.code == ResponseCode.INVALID_API_KEY.code && apiKeyIndex + 1 < apiKeys.size) {
+            catch(apiKeyIndex + 1, block, exceptionHandler)
+        } else {
+            exceptionHandler(requestException)
         }
     }
 

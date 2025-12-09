@@ -39,111 +39,87 @@ class YamlService {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun merge(destination: Map<*, *>, vararg sources: Map<*, *>): Map<*, *> {
-        return if (sources.isEmpty()) {
-            destination
-        } else {
-            val newDestination = destination.toMutableMap()
-            sources.forEach { source ->
-                for ((key, value) in source) {
-                    newDestination[key] = if (value is Map<*, *>) {
-                        val destValue = newDestination[key] as? Map<Any, Any> ?: mapOf()
-                        merge(destValue, value)
-                    } else {
-                        value
-                    }
+    fun merge(destination: Map<*, *>, vararg sources: Map<*, *>): Map<*, *> = if (sources.isEmpty()) {
+        destination
+    } else {
+        val newDestination = destination.toMutableMap()
+        sources.forEach { source ->
+            for ((key, value) in source) {
+                newDestination[key] = if (value is Map<*, *>) {
+                    val destValue = newDestination[key] as? Map<Any, Any> ?: mapOf()
+                    merge(destValue, value)
+                } else {
+                    value
                 }
             }
-            newDestination
         }
+        newDestination
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun merge(destination: Iterable<*>, vararg sources: Iterable<*>): Iterable<*> {
-        return if (sources.isEmpty()) {
-            destination
-        } else {
-            val newDestination = destination.toMutableList()
-            sources.forEach { source ->
-                source.forEachIndexed { index, value ->
-                    val newDestinationValue = if (value is Map<*, *>) {
-                        val destValue = newDestination.getOrNull(index) as? Map<Any, Any> ?: mapOf()
-                        merge(destValue, value)
-                    } else {
-                        value
-                    }
-                    if (index in 0 until newDestination.size) {
-                        newDestination[index] = newDestinationValue
-                    } else {
-                        newDestination.add(newDestinationValue)
-                    }
+    fun merge(destination: Iterable<*>, vararg sources: Iterable<*>): Iterable<*> = if (sources.isEmpty()) {
+        destination
+    } else {
+        val newDestination = destination.toMutableList()
+        sources.forEach { source ->
+            source.forEachIndexed { index, value ->
+                val newDestinationValue = if (value is Map<*, *>) {
+                    val destValue = newDestination.getOrNull(index) as? Map<Any, Any> ?: mapOf()
+                    merge(destValue, value)
+                } else {
+                    value
+                }
+                if (index in 0 until newDestination.size) {
+                    newDestination[index] = newDestinationValue
+                } else {
+                    newDestination.add(newDestinationValue)
                 }
             }
-            newDestination
         }
+        newDestination
     }
 
-    fun load(yamlStream: InputStream): Any {
-        return _load.loadFromInputStream(yamlStream).also {
-            yamlStream.close()
-        }
+    fun load(yamlStream: InputStream): Any = _load.loadFromInputStream(yamlStream).also {
+        yamlStream.close()
     }
 
-    fun load(yamlReader: Reader): Any {
-        return _load.loadFromReader(yamlReader).also {
-            yamlReader.close()
-        }
+    fun load(yamlReader: Reader): Any = _load.loadFromReader(yamlReader).also {
+        yamlReader.close()
     }
 
-    fun load(yaml: String): Any {
-        return _load.loadFromString(yaml)
+    fun load(yaml: String): Any = _load.loadFromString(yaml)
+
+    fun loadAll(yamlStream: InputStream): Iterable<*> = _load.loadAllFromInputStream(yamlStream).toList().also {
+        yamlStream.close()
     }
 
-    fun loadAll(yamlStream: InputStream): Iterable<*> {
-        return _load.loadAllFromInputStream(yamlStream).toList().also {
-            yamlStream.close()
-        }
+    fun loadAll(yamlReader: Reader): Iterable<*> = _load.loadAllFromReader(yamlReader).toList().also {
+        yamlReader.close()
     }
 
-    fun loadAll(yamlReader: Reader): Iterable<*> {
-        return _load.loadAllFromReader(yamlReader).toList().also {
-            yamlReader.close()
-        }
-    }
+    fun loadAll(yaml: String): Iterable<*> = _load.loadAllFromString(yaml).toList()
 
-    fun loadAll(yaml: String): Iterable<*> {
-        return _load.loadAllFromString(yaml).toList()
-    }
+    fun <T : Any> convert(yamlMap: Map<*, *>, targetType: Class<T>): T = _objectMapper.convertValue(yamlMap, targetType)
 
-    fun <T : Any> convert(yamlMap: Map<*, *>, targetType: Class<T>): T {
-        return _objectMapper.convertValue(yamlMap, targetType)
-    }
+    fun <T : Any> convert(yamlIterable: Iterable<*>, targetType: Class<T>): Iterable<*> = yamlIterable.filterNotNull().mapNotNull {
+        when (it) {
+            is Map<*, *> -> {
+                convert(it, targetType)
+            }
 
-    fun <T : Any> convert(yamlIterable: Iterable<*>, targetType: Class<T>): Iterable<*> {
-        return yamlIterable.filterNotNull().mapNotNull {
-            when (it) {
-                is Map<*, *> -> {
-                    convert(it, targetType)
-                }
+            is Iterable<*> -> {
+                convert(it, targetType)
+            }
 
-                is Iterable<*> -> {
-                    convert(it, targetType)
-                }
-
-                else -> {
-                    null
-                }
+            else -> {
+                null
             }
         }
     }
 
-    fun convertToMap(data: Any): Map<*, *> {
-        return _objectMapper.convertValue(data, Map::class.java)
-    }
+    fun convertToMap(data: Any): Map<*, *> = _objectMapper.convertValue(data, Map::class.java)
 
-    fun convertToIterable(data: Iterable<*>): Iterable<*> {
-        return _objectMapper.convertValue(data, Iterable::class.java)
-    }
+    fun convertToIterable(data: Iterable<*>): Iterable<*> = _objectMapper.convertValue(data, Iterable::class.java)
 
     fun <T : Any> read(targetType: Class<T>, vararg yamlInputStreams: InputStream): T {
         if (yamlInputStreams.isEmpty()) {
@@ -217,13 +193,9 @@ class YamlService {
         return readList(targetType, *yamlInputStreams.toTypedArray())
     }
 
-    fun dump(yamlData: Any): String {
-        return _dump.dumpToString(yamlData)
-    }
+    fun dump(yamlData: Any): String = _dump.dumpToString(yamlData)
 
-    fun dumpAll(yamlDataIterator: Iterator<*>): String {
-        return _dump.dumpAllToString(yamlDataIterator)
-    }
+    fun dumpAll(yamlDataIterator: Iterator<*>): String = _dump.dumpAllToString(yamlDataIterator)
 
     fun write(yamlFile: File, data: Any) {
         val yamlData = convertToMap(data)

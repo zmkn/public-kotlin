@@ -9,33 +9,31 @@ import java.io.IOException
 import kotlin.coroutines.resumeWithException
 import kotlin.reflect.KType
 
-suspend fun OkHttpClient.request(request: Request): Response {
-    return suspendCancellableCoroutine { continuation ->
-        val call = newCall(request)
-        continuation.invokeOnCancellation {
-            call.cancel()
-        }
-        call.enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                val cause = e.cause
-                val message = e.message
-                val okHttpException = if (cause != null && message != null) {
-                    OkHttpException(message, cause)
-                } else if (message != null) {
-                    OkHttpException(message)
-                } else if (cause != null) {
-                    OkHttpException(cause)
-                } else {
-                    OkHttpException()
-                }
-                continuation.resumeWithException(okHttpException)
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                continuation.resumeWith(Result.success(response))
-            }
-        })
+suspend fun OkHttpClient.request(request: Request): Response = suspendCancellableCoroutine { continuation ->
+    val call = newCall(request)
+    continuation.invokeOnCancellation {
+        call.cancel()
     }
+    call.enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            val cause = e.cause
+            val message = e.message
+            val okHttpException = if (cause != null && message != null) {
+                OkHttpException(message, cause)
+            } else if (message != null) {
+                OkHttpException(message)
+            } else if (cause != null) {
+                OkHttpException(cause)
+            } else {
+                OkHttpException()
+            }
+            continuation.resumeWithException(okHttpException)
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            continuation.resumeWith(Result.success(response))
+        }
+    })
 }
 
 suspend fun OkHttpClient.get(

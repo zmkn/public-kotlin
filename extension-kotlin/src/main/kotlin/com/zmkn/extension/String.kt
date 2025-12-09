@@ -4,18 +4,16 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-fun String.toNumberOrNull(): Number? {
-    return when {
-        contains(".") -> {
-            if (contains("f", ignoreCase = true)) {
-                toFloatOrNull()
-            } else {
-                toDoubleOrNull()
-            }
+fun String.toNumberOrNull(): Number? = when {
+    contains(".") -> {
+        if (contains("f", ignoreCase = true)) {
+            toFloatOrNull()
+        } else {
+            toDoubleOrNull()
         }
-
-        else -> toLongOrNull() ?: toIntOrNull()
     }
+
+    else -> toLongOrNull() ?: toIntOrNull()
 }
 
 fun String.toDuration(): Duration {

@@ -8,22 +8,16 @@ import org.litote.kmongo.coroutine.toList
 import org.reactivestreams.Publisher
 import kotlin.reflect.KClass
 
-suspend fun <T : Any> Publisher<T>.toJson(): String {
-    return objectMapper.writeValueAsString(toList())
+suspend fun <T : Any> Publisher<T>.toJson(): String = objectMapper.writeValueAsString(toList())
+
+suspend fun <T : Any> Publisher<T>.toStringList(): List<String> = toList().map {
+    objectMapper.writeValueAsString(it)
 }
 
-suspend fun <T : Any> Publisher<T>.toStringList(): List<String> {
-    return toList().map {
-        objectMapper.writeValueAsString(it)
-    }
-}
-
-suspend fun <T : Any> Publisher<T>.toStringList(schema: KClass<T>): List<String> {
-    return toList().map {
-        if (it is Document) {
-            documentToJson(it)
-        } else {
-            encodeToString(schema, it)
-        }
+suspend fun <T : Any> Publisher<T>.toStringList(schema: KClass<T>): List<String> = toList().map {
+    if (it is Document) {
+        documentToJson(it)
+    } else {
+        encodeToString(schema, it)
     }
 }

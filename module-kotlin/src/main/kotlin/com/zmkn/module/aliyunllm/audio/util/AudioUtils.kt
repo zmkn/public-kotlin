@@ -13,7 +13,7 @@ object AudioUtils {
             for (i in matches.size - 1 downTo 0) {
                 val match = matches[i]
                 val endIndex = match.range.last + 1
-                val part = newText.substring(0, endIndex)
+                val part = newText.take(endIndex)
                 if (CharacterUtils.calculateStringLength(part) <= SPLIT_POSITION_LENGTH) {
                     texts.add(part)
                     if (endIndex != newText.length) {
@@ -28,9 +28,7 @@ object AudioUtils {
         return texts
     }
 
-    fun formatSpeechSynthesizerTexts(texts: List<String>): List<String> {
-        return texts.map { text ->
-            splitSpeechSynthesizerText(text)
-        }.flatten()
-    }
+    fun formatSpeechSynthesizerTexts(texts: List<String>): List<String> = texts.map { text ->
+        splitSpeechSynthesizerText(text)
+    }.flatten()
 }

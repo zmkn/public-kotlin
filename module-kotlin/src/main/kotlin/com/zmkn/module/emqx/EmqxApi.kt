@@ -25,33 +25,29 @@ class EmqxApi(
         val response = newOkHttpClient.get(
             url = "/clients"
         )
-        return if (response.body != null) {
-            val responseBody = try {
-                withContext(Dispatchers.IO) {
-                    response.body!!.string()
-                }
-            } catch (_: Exception) {
-                throw EmqxResponseUnknownException()
+        val responseBody = try {
+            withContext(Dispatchers.IO) {
+                response.body.string()
             }
-            when (response.code) {
-                200 -> {
-                    val kType = typeOf<ListResponseBody<ClientResponseBody, PaginationMeta>>()
-                    val newResponseBody = responseBody.replace(Regex("\"infinity\""), "null")
-                    OkHttpUtils.decodeFromString<ListResponseBody<ClientResponseBody, PaginationMeta>>(kType, newResponseBody)
-                }
-
-                400 -> {
-                    throw OkHttpUtils.decodeFromString(ExceptionResponseBody::class, responseBody).toEmqxResponseException()
-                }
-
-                else -> {
-                    throw EmqxResponseUnknownException(responseBody)
-                }
-            }.apply {
-                response.close()
-            }
-        } else {
+        } catch (_: Exception) {
             throw EmqxResponseUnknownException()
+        }
+        return when (response.code) {
+            200 -> {
+                val kType = typeOf<ListResponseBody<ClientResponseBody, PaginationMeta>>()
+                val newResponseBody = responseBody.replace(Regex("\"infinity\""), "null")
+                OkHttpUtils.decodeFromString<ListResponseBody<ClientResponseBody, PaginationMeta>>(kType, newResponseBody)
+            }
+
+            400 -> {
+                throw OkHttpUtils.decodeFromString(ExceptionResponseBody::class, responseBody).toEmqxResponseException()
+            }
+
+            else -> {
+                throw EmqxResponseUnknownException(responseBody)
+            }
+        }.apply {
+            response.close()
         }
     }
 
@@ -60,35 +56,31 @@ class EmqxApi(
             url = "/publish",
             body = body
         )
-        return if (response.body != null) {
-            val responseBody = try {
-                withContext(Dispatchers.IO) {
-                    response.body!!.string()
-                }
-            } catch (_: Exception) {
-                throw EmqxResponseUnknownException()
+        val responseBody = try {
+            withContext(Dispatchers.IO) {
+                response.body.string()
             }
-            when (response.code) {
-                200 -> {
-                    OkHttpUtils.decodeFromString(PublishResponseBody::class, responseBody)
-                }
-
-                202, 503 -> {
-                    throw OkHttpUtils.decodeFromString(PublishExceptionResponseBody::class, responseBody).toEmqxPublishResponseException()
-                }
-
-                400 -> {
-                    throw OkHttpUtils.decodeFromString(ExceptionResponseBody::class, responseBody).toEmqxResponseException()
-                }
-
-                else -> {
-                    throw EmqxResponseUnknownException(responseBody)
-                }
-            }.apply {
-                response.close()
-            }
-        } else {
+        } catch (_: Exception) {
             throw EmqxResponseUnknownException()
+        }
+        return when (response.code) {
+            200 -> {
+                OkHttpUtils.decodeFromString(PublishResponseBody::class, responseBody)
+            }
+
+            202, 503 -> {
+                throw OkHttpUtils.decodeFromString(PublishExceptionResponseBody::class, responseBody).toEmqxPublishResponseException()
+            }
+
+            400 -> {
+                throw OkHttpUtils.decodeFromString(ExceptionResponseBody::class, responseBody).toEmqxResponseException()
+            }
+
+            else -> {
+                throw EmqxResponseUnknownException(responseBody)
+            }
+        }.apply {
+            response.close()
         }
     }
 

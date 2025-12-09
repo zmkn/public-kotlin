@@ -168,62 +168,59 @@ enum class ResponseCode(
     INVOKE_PLUGIN_FAILED(500, "InvokePluginFailed", "插件调用失败", "Failed to invoke plugin."),
     MODEL_UNAVAILABLE(503, "ModelUnavailable", "模型暂时无法提供服务", "Model is unavailable, please try again later.");
 
-    override fun toString(): String =
-        "{\"statusCode\":$statusCode,\"code\":\"$code\",\"message\":\"$message\",\"messageEn\":\"$messageEn\"}"
+    override fun toString(): String = "{\"statusCode\":$statusCode,\"code\":\"$code\",\"message\":\"$message\",\"messageEn\":\"$messageEn\"}"
 
     companion object {
         fun fromCodeAndStatusCode(
             code: String,
             statusCode: Int
-        ): ResponseCode {
-            return when {
-                code == NETWORK_ERROR.code && statusCode == NETWORK_ERROR.statusCode -> NETWORK_ERROR
-                code == RESPONSE_ERROR.code && statusCode == RESPONSE_ERROR.statusCode -> RESPONSE_ERROR
-                code == INVALID_PARAMETER.code && statusCode == INVALID_PARAMETER.statusCode -> INVALID_PARAMETER
-                code == DATA_INSPECTION_FAILED.code && statusCode == DATA_INSPECTION_FAILED.statusCode -> DATA_INSPECTION_FAILED
-                code == BAD_REQUEST_EMPTY_INPUT.code && statusCode == BAD_REQUEST_EMPTY_INPUT.statusCode -> BAD_REQUEST_EMPTY_INPUT
-                code == BAD_REQUEST_EMPTY_PARAMETERS.code && statusCode == BAD_REQUEST_EMPTY_PARAMETERS.statusCode -> BAD_REQUEST_EMPTY_PARAMETERS
-                code == BAD_REQUEST_EMPTY_MODEL.code && statusCode == BAD_REQUEST_EMPTY_MODEL.statusCode -> BAD_REQUEST_EMPTY_MODEL
-                code == BAD_REQUEST_RESOURCE_NOT_EXIST.code && statusCode == BAD_REQUEST_RESOURCE_NOT_EXIST.statusCode -> BAD_REQUEST_RESOURCE_NOT_EXIST
-                code == INVALID_URL.code && statusCode == INVALID_URL.statusCode -> INVALID_URL
-                code == ARREARAGE.code && statusCode == ARREARAGE.statusCode -> ARREARAGE
-                code == UNSUPPORTED_OPERATION.code && statusCode == UNSUPPORTED_OPERATION.statusCode -> UNSUPPORTED_OPERATION
-                code == FLOW_NOT_PUBLISHED.code && statusCode == FLOW_NOT_PUBLISHED.statusCode -> FLOW_NOT_PUBLISHED
-                code == INVALID_SCHEMA.code && statusCode == INVALID_SCHEMA.statusCode -> INVALID_SCHEMA
-                code == INVALID_SCHEMA_FORMAT.code && statusCode == INVALID_SCHEMA_FORMAT.statusCode -> INVALID_SCHEMA_FORMAT
-                code == FAQ_RULE_BLOCKED.code && statusCode == FAQ_RULE_BLOCKED.statusCode -> FAQ_RULE_BLOCKED
-                code == CUSTOM_ROLE_BLOCKED.code && statusCode == CUSTOM_ROLE_BLOCKED.statusCode -> CUSTOM_ROLE_BLOCKED
-                code == INTERNAL_ERROR_ALGO_400.code && statusCode == INTERNAL_ERROR_ALGO_400.statusCode -> INTERNAL_ERROR_ALGO_400
-                code == INVALID_API_KEY.code && statusCode == INVALID_API_KEY.statusCode -> INVALID_API_KEY
-                code == ACCESS_DENIED.code && statusCode == ACCESS_DENIED.statusCode -> ACCESS_DENIED
-                code == WORK_SPACE_ACCESS_DENIED.code && statusCode == WORK_SPACE_ACCESS_DENIED.statusCode -> WORK_SPACE_ACCESS_DENIED
-                code == MODEL_ACCESS_DENIED.code && statusCode == MODEL_ACCESS_DENIED.statusCode -> MODEL_ACCESS_DENIED
-                code == ACCESS_DENIED_UNPURCHASED.code && statusCode == ACCESS_DENIED_UNPURCHASED.statusCode -> ACCESS_DENIED_UNPURCHASED
-                code == WORK_SPACE_NOT_FOUND.code && statusCode == WORK_SPACE_NOT_FOUND.statusCode -> WORK_SPACE_NOT_FOUND
-                code == MODEL_NOT_FOUND.code && statusCode == MODEL_NOT_FOUND.statusCode -> MODEL_NOT_FOUND
-                code == REQUEST_TIMEOUT.code && statusCode == REQUEST_TIMEOUT.statusCode -> REQUEST_TIMEOUT
-                code == BAD_REQUEST_TOO_LARGE.code && statusCode == BAD_REQUEST_TOO_LARGE.statusCode -> BAD_REQUEST_TOO_LARGE
-                code == BAD_REQUEST_INPUT_DOWNLOAD_FAILED.code && statusCode == BAD_REQUEST_INPUT_DOWNLOAD_FAILED.statusCode -> BAD_REQUEST_INPUT_DOWNLOAD_FAILED
-                code == BAD_REQUEST_UNSUPPORTED_FILE_FORMAT.code && statusCode == BAD_REQUEST_UNSUPPORTED_FILE_FORMAT.statusCode -> BAD_REQUEST_UNSUPPORTED_FILE_FORMAT
-                code == THROTTLING.code && statusCode == THROTTLING.statusCode -> THROTTLING
-                code == THROTTLING_RATE_QUOTA.code && statusCode == THROTTLING_RATE_QUOTA.statusCode -> THROTTLING_RATE_QUOTA
-                code == THROTTLING_ALLOCATION_QUOTA.code && statusCode == THROTTLING_ALLOCATION_QUOTA.statusCode -> THROTTLING_ALLOCATION_QUOTA
-                code == LIMIT_REQUESTS.code && statusCode == LIMIT_REQUESTS.statusCode -> LIMIT_REQUESTS
-                code == PREPAID_BILL_OVERDUE.code && statusCode == PREPAID_BILL_OVERDUE.statusCode -> PREPAID_BILL_OVERDUE
-                code == POSTPAID_BILL_OVERDUE.code && statusCode == POSTPAID_BILL_OVERDUE.statusCode -> POSTPAID_BILL_OVERDUE
-                code == COMMODITY_NOT_PURCHASED.code && statusCode == COMMODITY_NOT_PURCHASED.statusCode -> COMMODITY_NOT_PURCHASED
-                code == INTERNAL_ERROR.code && statusCode == INTERNAL_ERROR.statusCode -> INTERNAL_ERROR
-                code == INTERNAL_ERROR_ALGO.code && statusCode == INTERNAL_ERROR_ALGO.statusCode -> INTERNAL_ERROR_ALGO
-                code == SYSTEM_ERROR.code && statusCode == SYSTEM_ERROR.statusCode -> SYSTEM_ERROR
-                code == INTERNAL_ERROR_TIMEOUT.code && statusCode == INTERNAL_ERROR_TIMEOUT.statusCode -> INTERNAL_ERROR_TIMEOUT
-                code == REWRITE_FAILED.code && statusCode == REWRITE_FAILED.statusCode -> REWRITE_FAILED
-                code == RETRIEVAL_FAILED.code && statusCode == RETRIEVAL_FAILED.statusCode -> RETRIEVAL_FAILED
-                code == APP_PROCESS_FAILED.code && statusCode == APP_PROCESS_FAILED.statusCode -> APP_PROCESS_FAILED
-                code == MODEL_SERVICE_FAILED.code && statusCode == MODEL_SERVICE_FAILED.statusCode -> MODEL_SERVICE_FAILED
-                code == INVOKE_PLUGIN_FAILED.code && statusCode == INVOKE_PLUGIN_FAILED.statusCode -> INVOKE_PLUGIN_FAILED
-                code == MODEL_UNAVAILABLE.code && statusCode == MODEL_UNAVAILABLE.statusCode -> MODEL_UNAVAILABLE
-                else -> UNKNOWN_ERROR
-            }
+        ): ResponseCode = when (code) {
+            NETWORK_ERROR.code if statusCode == NETWORK_ERROR.statusCode -> NETWORK_ERROR
+            RESPONSE_ERROR.code if statusCode == RESPONSE_ERROR.statusCode -> RESPONSE_ERROR
+            INVALID_PARAMETER.code if statusCode == INVALID_PARAMETER.statusCode -> INVALID_PARAMETER
+            DATA_INSPECTION_FAILED.code if statusCode == DATA_INSPECTION_FAILED.statusCode -> DATA_INSPECTION_FAILED
+            BAD_REQUEST_EMPTY_INPUT.code if statusCode == BAD_REQUEST_EMPTY_INPUT.statusCode -> BAD_REQUEST_EMPTY_INPUT
+            BAD_REQUEST_EMPTY_PARAMETERS.code if statusCode == BAD_REQUEST_EMPTY_PARAMETERS.statusCode -> BAD_REQUEST_EMPTY_PARAMETERS
+            BAD_REQUEST_EMPTY_MODEL.code if statusCode == BAD_REQUEST_EMPTY_MODEL.statusCode -> BAD_REQUEST_EMPTY_MODEL
+            BAD_REQUEST_RESOURCE_NOT_EXIST.code if statusCode == BAD_REQUEST_RESOURCE_NOT_EXIST.statusCode -> BAD_REQUEST_RESOURCE_NOT_EXIST
+            INVALID_URL.code if statusCode == INVALID_URL.statusCode -> INVALID_URL
+            ARREARAGE.code if statusCode == ARREARAGE.statusCode -> ARREARAGE
+            UNSUPPORTED_OPERATION.code if statusCode == UNSUPPORTED_OPERATION.statusCode -> UNSUPPORTED_OPERATION
+            FLOW_NOT_PUBLISHED.code if statusCode == FLOW_NOT_PUBLISHED.statusCode -> FLOW_NOT_PUBLISHED
+            INVALID_SCHEMA.code if statusCode == INVALID_SCHEMA.statusCode -> INVALID_SCHEMA
+            INVALID_SCHEMA_FORMAT.code if statusCode == INVALID_SCHEMA_FORMAT.statusCode -> INVALID_SCHEMA_FORMAT
+            FAQ_RULE_BLOCKED.code if statusCode == FAQ_RULE_BLOCKED.statusCode -> FAQ_RULE_BLOCKED
+            CUSTOM_ROLE_BLOCKED.code if statusCode == CUSTOM_ROLE_BLOCKED.statusCode -> CUSTOM_ROLE_BLOCKED
+            INTERNAL_ERROR_ALGO_400.code if statusCode == INTERNAL_ERROR_ALGO_400.statusCode -> INTERNAL_ERROR_ALGO_400
+            INVALID_API_KEY.code if statusCode == INVALID_API_KEY.statusCode -> INVALID_API_KEY
+            ACCESS_DENIED.code if statusCode == ACCESS_DENIED.statusCode -> ACCESS_DENIED
+            WORK_SPACE_ACCESS_DENIED.code if statusCode == WORK_SPACE_ACCESS_DENIED.statusCode -> WORK_SPACE_ACCESS_DENIED
+            MODEL_ACCESS_DENIED.code if statusCode == MODEL_ACCESS_DENIED.statusCode -> MODEL_ACCESS_DENIED
+            ACCESS_DENIED_UNPURCHASED.code if statusCode == ACCESS_DENIED_UNPURCHASED.statusCode -> ACCESS_DENIED_UNPURCHASED
+            WORK_SPACE_NOT_FOUND.code if statusCode == WORK_SPACE_NOT_FOUND.statusCode -> WORK_SPACE_NOT_FOUND
+            MODEL_NOT_FOUND.code if statusCode == MODEL_NOT_FOUND.statusCode -> MODEL_NOT_FOUND
+            REQUEST_TIMEOUT.code if statusCode == REQUEST_TIMEOUT.statusCode -> REQUEST_TIMEOUT
+            BAD_REQUEST_TOO_LARGE.code if statusCode == BAD_REQUEST_TOO_LARGE.statusCode -> BAD_REQUEST_TOO_LARGE
+            BAD_REQUEST_INPUT_DOWNLOAD_FAILED.code if statusCode == BAD_REQUEST_INPUT_DOWNLOAD_FAILED.statusCode -> BAD_REQUEST_INPUT_DOWNLOAD_FAILED
+            BAD_REQUEST_UNSUPPORTED_FILE_FORMAT.code if statusCode == BAD_REQUEST_UNSUPPORTED_FILE_FORMAT.statusCode -> BAD_REQUEST_UNSUPPORTED_FILE_FORMAT
+            THROTTLING.code if statusCode == THROTTLING.statusCode -> THROTTLING
+            THROTTLING_RATE_QUOTA.code if statusCode == THROTTLING_RATE_QUOTA.statusCode -> THROTTLING_RATE_QUOTA
+            THROTTLING_ALLOCATION_QUOTA.code if statusCode == THROTTLING_ALLOCATION_QUOTA.statusCode -> THROTTLING_ALLOCATION_QUOTA
+            LIMIT_REQUESTS.code if statusCode == LIMIT_REQUESTS.statusCode -> LIMIT_REQUESTS
+            PREPAID_BILL_OVERDUE.code if statusCode == PREPAID_BILL_OVERDUE.statusCode -> PREPAID_BILL_OVERDUE
+            POSTPAID_BILL_OVERDUE.code if statusCode == POSTPAID_BILL_OVERDUE.statusCode -> POSTPAID_BILL_OVERDUE
+            COMMODITY_NOT_PURCHASED.code if statusCode == COMMODITY_NOT_PURCHASED.statusCode -> COMMODITY_NOT_PURCHASED
+            INTERNAL_ERROR.code if statusCode == INTERNAL_ERROR.statusCode -> INTERNAL_ERROR
+            INTERNAL_ERROR_ALGO.code if statusCode == INTERNAL_ERROR_ALGO.statusCode -> INTERNAL_ERROR_ALGO
+            SYSTEM_ERROR.code if statusCode == SYSTEM_ERROR.statusCode -> SYSTEM_ERROR
+            INTERNAL_ERROR_TIMEOUT.code if statusCode == INTERNAL_ERROR_TIMEOUT.statusCode -> INTERNAL_ERROR_TIMEOUT
+            REWRITE_FAILED.code if statusCode == REWRITE_FAILED.statusCode -> REWRITE_FAILED
+            RETRIEVAL_FAILED.code if statusCode == RETRIEVAL_FAILED.statusCode -> RETRIEVAL_FAILED
+            APP_PROCESS_FAILED.code if statusCode == APP_PROCESS_FAILED.statusCode -> APP_PROCESS_FAILED
+            MODEL_SERVICE_FAILED.code if statusCode == MODEL_SERVICE_FAILED.statusCode -> MODEL_SERVICE_FAILED
+            INVOKE_PLUGIN_FAILED.code if statusCode == INVOKE_PLUGIN_FAILED.statusCode -> INVOKE_PLUGIN_FAILED
+            MODEL_UNAVAILABLE.code if statusCode == MODEL_UNAVAILABLE.statusCode -> MODEL_UNAVAILABLE
+            else -> UNKNOWN_ERROR
         }
     }
 }

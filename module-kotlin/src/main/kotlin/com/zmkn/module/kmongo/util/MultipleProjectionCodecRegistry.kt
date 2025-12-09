@@ -61,9 +61,7 @@ fun multipleProjectionCodecRegistry(
                     writer: BsonWriter,
                     value: MultipleProjection<*>,
                     encoderContext: EncoderContext
-                ) {
-                    throw IllegalStateException("not supported")
-                }
+                ): Unit = throw IllegalStateException("not supported")
 
                 override fun decode(reader: BsonReader, decoderContext: DecoderContext): MultipleProjection<*> {
                     val result: MutableMap<String, Any> = mutableMapOf()

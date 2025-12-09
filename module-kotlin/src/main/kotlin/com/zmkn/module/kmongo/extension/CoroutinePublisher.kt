@@ -27,123 +27,91 @@ import org.litote.kmongo.util.KMongoUtil
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 
-suspend fun <T : Any> CoroutinePublisher<T>.toJson(): String {
-    return publisher.toJson()
+suspend fun <T : Any> CoroutinePublisher<T>.toJson(): String = publisher.toJson()
+
+suspend fun <T : Any> CoroutinePublisher<T>.toStringList(): List<String> = publisher.toStringList()
+
+suspend fun <T : Any> CoroutinePublisher<T>.toStringList(schema: KClass<T>): List<String> = publisher.toStringList(schema)
+
+suspend fun <T : Any> CoroutineCollection<T>.dropCollection(clientSession: ClientSession? = null): Void? = if (clientSession == null) {
+    collection.drop()
+} else {
+    collection.drop(clientSession)
+}.awaitFirstOrNull()
+
+suspend fun <T : Any> CoroutineCollection<T>.renameCollection(newCollectionNamespace: MongoNamespace, options: RenameCollectionOptions = RenameCollectionOptions(), clientSession: ClientSession? = null): Void? = if (clientSession == null) {
+    collection.renameCollection(newCollectionNamespace, options)
+} else {
+    collection.renameCollection(clientSession, newCollectionNamespace, options)
+}.awaitFirstOrNull()
+
+suspend fun <T : Any> CoroutineCollection<T>.dropIndex(indexName: String, dropIndexOptions: DropIndexOptions = DropIndexOptions(), clientSession: ClientSession? = null): Void? = if (clientSession == null) {
+    collection.dropIndex(indexName, dropIndexOptions)
+} else {
+    collection.dropIndex(clientSession, indexName, dropIndexOptions)
+}.awaitFirstOrNull()
+
+fun <T : Any> CoroutineCollection<T>.listIndexes(clientSession: ClientSession? = null): CoroutineListIndexesPublisher<Document> = if (clientSession == null) {
+    collection.listIndexes().coroutine
+} else {
+    collection.listIndexes(clientSession).coroutine
 }
 
-suspend fun <T : Any> CoroutinePublisher<T>.toStringList(): List<String> {
-    return publisher.toStringList()
-}
+inline fun <reified T : Any> CoroutineCollection<T>.distinctByField(fieldName: String, filter: String = EMPTY_JSON, clientSession: ClientSession? = null): CoroutineDistinctPublisher<out Any> = distinctByField(T::class, fieldName, filter, clientSession)
 
-suspend fun <T : Any> CoroutinePublisher<T>.toStringList(schema: KClass<T>): List<String> {
-    return publisher.toStringList(schema)
-}
-
-suspend fun <T : Any> CoroutineCollection<T>.dropCollection(clientSession: ClientSession? = null): Void? {
-    return if (clientSession == null) {
-        collection.drop()
+fun <T : Any> CoroutineCollection<T>.distinctByField(schema: KClass<T>, fieldName: String, filter: String = EMPTY_JSON, clientSession: ClientSession? = null): CoroutineDistinctPublisher<out Any> = schema.memberProperties.find {
+    it.name == fieldName
+}?.let {
+    if (clientSession == null) {
+        collection.distinct(it.path(), jsonToBson(filter), (it.returnType.classifier as KClass<*>).java).coroutine
     } else {
-        collection.drop(clientSession)
-    }.awaitFirstOrNull()
+        collection.distinct(clientSession, it.path(), jsonToBson(filter), (it.returnType.classifier as KClass<*>).java).coroutine
+    }
+} ?: throw IllegalArgumentException("The field name '$fieldName' does not match any property in the class ${schema.simpleName}.")
+
+fun <T : Any> CoroutineCollection<T>.distinctByField(fieldName: String, fieldType: Class<*>, filter: String = EMPTY_JSON, clientSession: ClientSession? = null): CoroutineDistinctPublisher<out Any> = if (clientSession == null) {
+    collection.distinct(fieldName, jsonToBson(filter), fieldType).coroutine
+} else {
+    collection.distinct(clientSession, fieldName, jsonToBson(filter), fieldType).coroutine
 }
 
-suspend fun <T : Any> CoroutineCollection<T>.renameCollection(newCollectionNamespace: MongoNamespace, options: RenameCollectionOptions = RenameCollectionOptions(), clientSession: ClientSession? = null): Void? {
-    return if (clientSession == null) {
-        collection.renameCollection(newCollectionNamespace, options)
-    } else {
-        collection.renameCollection(clientSession, newCollectionNamespace, options)
-    }.awaitFirstOrNull()
+fun <T : Any> CoroutineCollection<T>.find(filter: String = EMPTY_JSON, clientSession: ClientSession? = null): CoroutineFindPublisher<T> = if (clientSession == null) {
+    find(filter)
+} else {
+    find(clientSession, jsonToBson(filter))
 }
 
-suspend fun <T : Any> CoroutineCollection<T>.dropIndex(indexName: String, dropIndexOptions: DropIndexOptions = DropIndexOptions(), clientSession: ClientSession? = null): Void? {
-    return if (clientSession == null) {
-        collection.dropIndex(indexName, dropIndexOptions)
-    } else {
-        collection.dropIndex(clientSession, indexName, dropIndexOptions)
-    }.awaitFirstOrNull()
-}
+suspend inline fun <reified T : Any> CoroutineCollection<T>.findOneAsString(filter: String = EMPTY_JSON, clientSession: ClientSession? = null): String? = findOneAsString(T::class, filter, clientSession)
 
-fun <T : Any> CoroutineCollection<T>.listIndexes(clientSession: ClientSession? = null): CoroutineListIndexesPublisher<Document> {
-    return if (clientSession == null) {
-        collection.listIndexes().coroutine
+suspend fun <T : Any> CoroutineCollection<T>.findOneAsString(schema: KClass<T>, filter: String = EMPTY_JSON, clientSession: ClientSession? = null): String? = if (clientSession == null) {
+    findOne(filter)
+} else {
+    findOne(clientSession, filter)
+}?.let {
+    if (schema == Document::class) {
+        documentToJson(it as Document)
     } else {
-        collection.listIndexes(clientSession).coroutine
+        encodeToString(schema, it)
     }
 }
 
-inline fun <reified T : Any> CoroutineCollection<T>.distinctByField(fieldName: String, filter: String = EMPTY_JSON, clientSession: ClientSession? = null): CoroutineDistinctPublisher<out Any> {
-    return distinctByField(T::class, fieldName, filter, clientSession)
-}
+inline fun <reified T : Any> CoroutineCollection<T>.aggregate(pipeline: List<String>, clientSession: ClientSession? = null): CoroutineAggregatePublisher<T> = aggregate(T::class, pipeline, clientSession)
 
-fun <T : Any> CoroutineCollection<T>.distinctByField(schema: KClass<T>, fieldName: String, filter: String = EMPTY_JSON, clientSession: ClientSession? = null): CoroutineDistinctPublisher<out Any> {
-    return schema.memberProperties.find {
-        it.name == fieldName
-    }?.let {
-        if (clientSession == null) {
-            collection.distinct(it.path(), jsonToBson(filter), (it.returnType.classifier as KClass<*>).java).coroutine
-        } else {
-            collection.distinct(clientSession, it.path(), jsonToBson(filter), (it.returnType.classifier as KClass<*>).java).coroutine
-        }
-    } ?: throw IllegalArgumentException("The field name '$fieldName' does not match any property in the class ${schema.simpleName}.")
-}
-
-fun <T : Any> CoroutineCollection<T>.distinctByField(fieldName: String, fieldType: Class<*>, filter: String = EMPTY_JSON, clientSession: ClientSession? = null): CoroutineDistinctPublisher<out Any> {
-    return if (clientSession == null) {
-        collection.distinct(fieldName, jsonToBson(filter), fieldType).coroutine
+fun <T : Any> CoroutineCollection<T>.aggregate(schema: KClass<T>, pipeline: List<String>, clientSession: ClientSession? = null): CoroutineAggregatePublisher<T> = if (schema == Document::class) {
+    if (clientSession == null) {
+        collection.aggregate(KMongoUtil.toBsonList(pipeline.toTypedArray(), codecRegistry)).coroutine
     } else {
-        collection.distinct(clientSession, fieldName, jsonToBson(filter), fieldType).coroutine
+        collection.aggregate(clientSession, KMongoUtil.toBsonList(pipeline.toTypedArray(), codecRegistry)).coroutine
+    }
+} else {
+    if (clientSession == null) {
+        collection.aggregate(KMongoUtil.toBsonList(pipeline.toTypedArray(), codecRegistry), schema.java).coroutine
+    } else {
+        collection.aggregate(clientSession, KMongoUtil.toBsonList(pipeline.toTypedArray(), codecRegistry), schema.java).coroutine
     }
 }
 
-fun <T : Any> CoroutineCollection<T>.find(filter: String = EMPTY_JSON, clientSession: ClientSession? = null): CoroutineFindPublisher<T> {
-    return if (clientSession == null) {
-        find(filter)
-    } else {
-        find(clientSession, jsonToBson(filter))
-    }
-}
-
-suspend inline fun <reified T : Any> CoroutineCollection<T>.findOneAsString(filter: String = EMPTY_JSON, clientSession: ClientSession? = null): String? {
-    return findOneAsString(T::class, filter, clientSession)
-}
-
-suspend fun <T : Any> CoroutineCollection<T>.findOneAsString(schema: KClass<T>, filter: String = EMPTY_JSON, clientSession: ClientSession? = null): String? {
-    return if (clientSession == null) {
-        findOne(filter)
-    } else {
-        findOne(clientSession, filter)
-    }?.let {
-        if (schema == Document::class) {
-            documentToJson(it as Document)
-        } else {
-            encodeToString(schema, it)
-        }
-    }
-}
-
-inline fun <reified T : Any> CoroutineCollection<T>.aggregate(pipeline: List<String>, clientSession: ClientSession? = null): CoroutineAggregatePublisher<T> {
-    return aggregate(T::class, pipeline, clientSession)
-}
-
-fun <T : Any> CoroutineCollection<T>.aggregate(schema: KClass<T>, pipeline: List<String>, clientSession: ClientSession? = null): CoroutineAggregatePublisher<T> {
-    return if (schema == Document::class) {
-        if (clientSession == null) {
-            collection.aggregate(KMongoUtil.toBsonList(pipeline.toTypedArray(), codecRegistry)).coroutine
-        } else {
-            collection.aggregate(clientSession, KMongoUtil.toBsonList(pipeline.toTypedArray(), codecRegistry)).coroutine
-        }
-    } else {
-        if (clientSession == null) {
-            collection.aggregate(KMongoUtil.toBsonList(pipeline.toTypedArray(), codecRegistry), schema.java).coroutine
-        } else {
-            collection.aggregate(clientSession, KMongoUtil.toBsonList(pipeline.toTypedArray(), codecRegistry), schema.java).coroutine
-        }
-    }
-}
-
-suspend inline fun <reified T : Any> CoroutineCollection<T>.insertOne(documentString: String, options: InsertOneOptions = InsertOneOptions(), clientSession: ClientSession? = null): InsertOneResult {
-    return insertOne(T::class, documentString, options, clientSession)
-}
+suspend inline fun <reified T : Any> CoroutineCollection<T>.insertOne(documentString: String, options: InsertOneOptions = InsertOneOptions(), clientSession: ClientSession? = null): InsertOneResult = insertOne(T::class, documentString, options, clientSession)
 
 @Suppress("UNCHECKED_CAST")
 suspend fun <T : Any> CoroutineCollection<T>.insertOne(schema: KClass<T>, documentString: String, options: InsertOneOptions = InsertOneOptions(), clientSession: ClientSession? = null): InsertOneResult {
@@ -159,9 +127,7 @@ suspend fun <T : Any> CoroutineCollection<T>.insertOne(schema: KClass<T>, docume
     }
 }
 
-suspend inline fun <reified T : Any> CoroutineCollection<T>.insertMany(documentsString: List<String>, options: InsertManyOptions = InsertManyOptions(), clientSession: ClientSession? = null): InsertManyResult {
-    return insertMany(T::class, documentsString, options, clientSession)
-}
+suspend inline fun <reified T : Any> CoroutineCollection<T>.insertMany(documentsString: List<String>, options: InsertManyOptions = InsertManyOptions(), clientSession: ClientSession? = null): InsertManyResult = insertMany(T::class, documentsString, options, clientSession)
 
 @Suppress("UNCHECKED_CAST")
 suspend fun <T : Any> CoroutineCollection<T>.insertMany(schema: KClass<T>, documentsString: List<String>, options: InsertManyOptions = InsertManyOptions(), clientSession: ClientSession? = null): InsertManyResult {
@@ -181,25 +147,19 @@ suspend fun <T : Any> CoroutineCollection<T>.insertMany(schema: KClass<T>, docum
     }
 }
 
-suspend fun <T : Any> CoroutineCollection<T>.updateOne(filter: String, update: String, options: UpdateOptions = UpdateOptions(), clientSession: ClientSession? = null): UpdateResult {
-    return if (clientSession == null) {
-        updateOne(filter, update, options)
-    } else {
-        updateOne(clientSession, filter, update, options)
-    }
+suspend fun <T : Any> CoroutineCollection<T>.updateOne(filter: String, update: String, options: UpdateOptions = UpdateOptions(), clientSession: ClientSession? = null): UpdateResult = if (clientSession == null) {
+    updateOne(filter, update, options)
+} else {
+    updateOne(clientSession, filter, update, options)
 }
 
-suspend fun <T : Any> CoroutineCollection<T>.updateMany(filter: String, update: String, options: UpdateOptions = UpdateOptions(), clientSession: ClientSession? = null): UpdateResult {
-    return if (clientSession == null) {
-        updateMany(filter, update, options)
-    } else {
-        updateMany(clientSession, filter, update, options)
-    }
+suspend fun <T : Any> CoroutineCollection<T>.updateMany(filter: String, update: String, options: UpdateOptions = UpdateOptions(), clientSession: ClientSession? = null): UpdateResult = if (clientSession == null) {
+    updateMany(filter, update, options)
+} else {
+    updateMany(clientSession, filter, update, options)
 }
 
-suspend inline fun <reified T : Any> CoroutineCollection<T>.replaceOne(filter: String, replacement: String, options: ReplaceOptions = ReplaceOptions(), clientSession: ClientSession? = null): UpdateResult {
-    return replaceOne(T::class, filter, replacement, options, clientSession)
-}
+suspend inline fun <reified T : Any> CoroutineCollection<T>.replaceOne(filter: String, replacement: String, options: ReplaceOptions = ReplaceOptions(), clientSession: ClientSession? = null): UpdateResult = replaceOne(T::class, filter, replacement, options, clientSession)
 
 @Suppress("UNCHECKED_CAST")
 suspend fun <T : Any> CoroutineCollection<T>.replaceOne(schema: KClass<T>, filter: String, replacement: String, options: ReplaceOptions = ReplaceOptions(), clientSession: ClientSession? = null): UpdateResult {
@@ -215,27 +175,21 @@ suspend fun <T : Any> CoroutineCollection<T>.replaceOne(schema: KClass<T>, filte
     }
 }
 
-suspend inline fun <reified T : Any> CoroutineCollection<T>.findOneAndUpdateAsString(filter: String, update: String, options: FindOneAndUpdateOptions = FindOneAndUpdateOptions(), clientSession: ClientSession? = null): String? {
-    return findOneAndUpdateAsString(T::class, filter, update, options, clientSession)
-}
+suspend inline fun <reified T : Any> CoroutineCollection<T>.findOneAndUpdateAsString(filter: String, update: String, options: FindOneAndUpdateOptions = FindOneAndUpdateOptions(), clientSession: ClientSession? = null): String? = findOneAndUpdateAsString(T::class, filter, update, options, clientSession)
 
-suspend fun <T : Any> CoroutineCollection<T>.findOneAndUpdateAsString(schema: KClass<T>, filter: String, update: String, options: FindOneAndUpdateOptions = FindOneAndUpdateOptions(), clientSession: ClientSession? = null): String? {
-    return if (clientSession == null) {
-        findOneAndUpdate(filter, update, options)
+suspend fun <T : Any> CoroutineCollection<T>.findOneAndUpdateAsString(schema: KClass<T>, filter: String, update: String, options: FindOneAndUpdateOptions = FindOneAndUpdateOptions(), clientSession: ClientSession? = null): String? = if (clientSession == null) {
+    findOneAndUpdate(filter, update, options)
+} else {
+    findOneAndUpdate(clientSession, filter, update, options)
+}?.let {
+    if (schema == Document::class) {
+        documentToJson(it as Document)
     } else {
-        findOneAndUpdate(clientSession, filter, update, options)
-    }?.let {
-        if (schema == Document::class) {
-            documentToJson(it as Document)
-        } else {
-            encodeToString(schema, it)
-        }
+        encodeToString(schema, it)
     }
 }
 
-suspend inline fun <reified T : Any> CoroutineCollection<T>.findOneAndReplaceAsString(filter: String, replacement: String, options: FindOneAndReplaceOptions = FindOneAndReplaceOptions(), clientSession: ClientSession? = null): String? {
-    return findOneAndReplaceAsString(T::class, filter, replacement, options, clientSession)
-}
+suspend inline fun <reified T : Any> CoroutineCollection<T>.findOneAndReplaceAsString(filter: String, replacement: String, options: FindOneAndReplaceOptions = FindOneAndReplaceOptions(), clientSession: ClientSession? = null): String? = findOneAndReplaceAsString(T::class, filter, replacement, options, clientSession)
 
 @Suppress("UNCHECKED_CAST")
 suspend fun <T : Any> CoroutineCollection<T>.findOneAndReplaceAsString(schema: KClass<T>, filter: String, replacement: String, options: FindOneAndReplaceOptions = FindOneAndReplaceOptions(), clientSession: ClientSession? = null): String? {
@@ -257,43 +211,33 @@ suspend fun <T : Any> CoroutineCollection<T>.findOneAndReplaceAsString(schema: K
     }
 }
 
-suspend inline fun <reified T : Any> CoroutineCollection<T>.findOneAndDeleteAsString(filter: String, options: FindOneAndDeleteOptions = FindOneAndDeleteOptions(), clientSession: ClientSession? = null): String? {
-    return findOneAndDeleteAsString(T::class, filter, options, clientSession)
-}
+suspend inline fun <reified T : Any> CoroutineCollection<T>.findOneAndDeleteAsString(filter: String, options: FindOneAndDeleteOptions = FindOneAndDeleteOptions(), clientSession: ClientSession? = null): String? = findOneAndDeleteAsString(T::class, filter, options, clientSession)
 
-suspend fun <T : Any> CoroutineCollection<T>.findOneAndDeleteAsString(schema: KClass<T>, filter: String, options: FindOneAndDeleteOptions = FindOneAndDeleteOptions(), clientSession: ClientSession? = null): String? {
-    return if (clientSession == null) {
-        findOneAndDelete(filter, options)
+suspend fun <T : Any> CoroutineCollection<T>.findOneAndDeleteAsString(schema: KClass<T>, filter: String, options: FindOneAndDeleteOptions = FindOneAndDeleteOptions(), clientSession: ClientSession? = null): String? = if (clientSession == null) {
+    findOneAndDelete(filter, options)
+} else {
+    findOneAndDelete(clientSession, filter, options)
+}?.let {
+    if (schema == Document::class) {
+        documentToJson(it as Document)
     } else {
-        findOneAndDelete(clientSession, filter, options)
-    }?.let {
-        if (schema == Document::class) {
-            documentToJson(it as Document)
-        } else {
-            encodeToString(schema, it)
-        }
+        encodeToString(schema, it)
     }
 }
 
-suspend fun <T : Any> CoroutineCollection<T>.deleteOne(filter: String, options: DeleteOptions = DeleteOptions(), clientSession: ClientSession? = null): DeleteResult {
-    return if (clientSession == null) {
-        deleteOne(filter, options)
-    } else {
-        deleteOne(clientSession, filter, options)
-    }
+suspend fun <T : Any> CoroutineCollection<T>.deleteOne(filter: String, options: DeleteOptions = DeleteOptions(), clientSession: ClientSession? = null): DeleteResult = if (clientSession == null) {
+    deleteOne(filter, options)
+} else {
+    deleteOne(clientSession, filter, options)
 }
 
-suspend fun <T : Any> CoroutineCollection<T>.deleteMany(filter: String, options: DeleteOptions = DeleteOptions(), clientSession: ClientSession? = null): DeleteResult {
-    return if (clientSession == null) {
-        deleteMany(filter, options)
-    } else {
-        deleteMany(clientSession, filter, options)
-    }
+suspend fun <T : Any> CoroutineCollection<T>.deleteMany(filter: String, options: DeleteOptions = DeleteOptions(), clientSession: ClientSession? = null): DeleteResult = if (clientSession == null) {
+    deleteMany(filter, options)
+} else {
+    deleteMany(clientSession, filter, options)
 }
 
-suspend inline fun <reified T : Any> CoroutineCollection<T>.save(documentString: String, clientSession: ClientSession? = null): Any {
-    return save(T::class, documentString, clientSession)
-}
+suspend inline fun <reified T : Any> CoroutineCollection<T>.save(documentString: String, clientSession: ClientSession? = null): Any = save(T::class, documentString, clientSession)
 
 @Suppress("UNCHECKED_CAST")
 suspend fun <T : Any> CoroutineCollection<T>.save(schema: KClass<T>, documentString: String, clientSession: ClientSession? = null): Any {
@@ -318,31 +262,27 @@ suspend fun <T : Any> CoroutineCollection<T>.save(schema: KClass<T>, documentStr
     }
 }
 
-suspend inline fun <reified T : Any> CoroutineCollection<T>.bulkWrite(requests: List<String>, options: BulkWriteOptions = BulkWriteOptions(), clientSession: ClientSession? = null): BulkWriteResult {
-    return bulkWrite(T::class, requests, options, clientSession)
-}
+suspend inline fun <reified T : Any> CoroutineCollection<T>.bulkWrite(requests: List<String>, options: BulkWriteOptions = BulkWriteOptions(), clientSession: ClientSession? = null): BulkWriteResult = bulkWrite(T::class, requests, options, clientSession)
 
-suspend fun <T : Any> CoroutineCollection<T>.bulkWrite(schema: KClass<T>, requests: List<String>, options: BulkWriteOptions = BulkWriteOptions(), clientSession: ClientSession? = null): BulkWriteResult {
-    return if (clientSession == null) {
-        withDocumentClass<BsonDocument>().bulkWrite(
-            KMongoUtil.toWriteModel(
-                requests.toTypedArray(),
-                codecRegistry,
-                schema
-            ),
-            options
-        )
-    } else {
-        withDocumentClass<BsonDocument>().bulkWrite(
-            clientSession,
-            KMongoUtil.toWriteModel(
-                requests.toTypedArray(),
-                codecRegistry,
-                schema
-            ),
-            options
-        )
-    }
+suspend fun <T : Any> CoroutineCollection<T>.bulkWrite(schema: KClass<T>, requests: List<String>, options: BulkWriteOptions = BulkWriteOptions(), clientSession: ClientSession? = null): BulkWriteResult = if (clientSession == null) {
+    withDocumentClass<BsonDocument>().bulkWrite(
+        KMongoUtil.toWriteModel(
+            requests.toTypedArray(),
+            codecRegistry,
+            schema
+        ),
+        options
+    )
+} else {
+    withDocumentClass<BsonDocument>().bulkWrite(
+        clientSession,
+        KMongoUtil.toWriteModel(
+            requests.toTypedArray(),
+            codecRegistry,
+            schema
+        ),
+        options
+    )
 }
 
 inline fun <reified T : Any> CoroutineCollection<T>.projection(
@@ -350,9 +290,7 @@ inline fun <reified T : Any> CoroutineCollection<T>.projection(
     query: String = EMPTY_JSON,
     noinline options: (CoroutineFindPublisher<MultipleProjection<Map<String, Any>>>) -> Unit = {},
     clientSession: ClientSession? = null
-): CoroutineFindPublisher<MultipleProjection<Map<String, Any>>> {
-    return projection(T::class, projection, query, options, clientSession)
-}
+): CoroutineFindPublisher<MultipleProjection<Map<String, Any>>> = projection(T::class, projection, query, options, clientSession)
 
 @Suppress("UNCHECKED_CAST")
 fun <T : Any> CoroutineCollection<T>.projection(
@@ -431,9 +369,7 @@ suspend inline fun <reified T : Any> CoroutineCollection<T>.projectionAsStringLi
     query: String = EMPTY_JSON,
     noinline options: (CoroutineFindPublisher<MultipleProjection<Map<String, Any>>>) -> Unit = {},
     clientSession: ClientSession? = null
-): List<String> {
-    return projectionAsStringList(T::class, projection, query, options, clientSession)
-}
+): List<String> = projectionAsStringList(T::class, projection, query, options, clientSession)
 
 suspend fun <T : Any> CoroutineCollection<T>.projectionAsStringList(
     schema: KClass<T>,
@@ -441,12 +377,10 @@ suspend fun <T : Any> CoroutineCollection<T>.projectionAsStringList(
     query: String = EMPTY_JSON,
     options: (CoroutineFindPublisher<MultipleProjection<Map<String, Any>>>) -> Unit = {},
     clientSession: ClientSession? = null
-): List<String> {
-    return projection(schema, projection, query, options, clientSession).toList().map {
-        if (it.data is Document) {
-            documentToJson(it.data)
-        } else {
-            objectMapper.writeValueAsString(it.data)
-        }
+): List<String> = projection(schema, projection, query, options, clientSession).toList().map {
+    if (it.data is Document) {
+        documentToJson(it.data)
+    } else {
+        objectMapper.writeValueAsString(it.data)
     }
 }

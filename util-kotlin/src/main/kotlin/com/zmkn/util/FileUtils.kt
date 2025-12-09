@@ -17,18 +17,14 @@ object FileUtils {
 
         constructor(fileAbsolutePath: String) : this(FileInputStream(fileAbsolutePath))
 
-        fun createByteArrayInputStream(): ByteArrayInputStream {
-            return ByteArrayInputStream(_fileBytes)
-        }
+        fun createByteArrayInputStream(): ByteArrayInputStream = ByteArrayInputStream(_fileBytes)
 
         fun createFile(fileAbsolutePath: String): File {
             File(fileAbsolutePath).writeBytes(_fileBytes)
             return File(fileAbsolutePath)
         }
 
-        fun createFileInputStream(fileAbsolutePath: String): FileInputStream {
-            return createFile(fileAbsolutePath).inputStream()
-        }
+        fun createFileInputStream(fileAbsolutePath: String): FileInputStream = createFile(fileAbsolutePath).inputStream()
     }
 
     fun getProjectRootDirectory(vararg paths: String): String {
@@ -81,11 +77,7 @@ object FileUtils {
         copy(FileInputStream(source), *destinations)
     }
 
-    fun exists(file: File): Boolean {
-        return file.exists()
-    }
+    fun exists(file: File): Boolean = file.exists()
 
-    fun exists(absolutePath: String): Boolean {
-        return exists(File(absolutePath))
-    }
+    fun exists(absolutePath: String): Boolean = exists(File(absolutePath))
 }

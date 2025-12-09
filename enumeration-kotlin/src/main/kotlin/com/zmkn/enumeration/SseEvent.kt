@@ -4,9 +4,7 @@ enum class SseEvent(val value: String) {
     MESSAGE("message"),
     ERROR("error");
 
-    override fun toString(): String {
-        return value
-    }
+    override fun toString(): String = value
 
     companion object {
         fun fromValue(value: String): SseEvent? {

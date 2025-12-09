@@ -547,13 +547,13 @@ allprojects {
 
     tasks.withType<Jar> {
         archiveBaseName.set(project.name)
-        archiveVersion.set("${project.version}.${currentDateTime}")
+        archiveVersion.set("${project.version}.$currentDateTime")
     }
 
     tasks.withType<ShadowJar> {
         archiveBaseName.set(project.name)
         archiveClassifier.set("all") // 定义生成的 JAR 分类器名
-        archiveVersion.set("${project.version}.${currentDateTime}")
+        archiveVersion.set("${project.version}.$currentDateTime")
 
         dependencies {
             exclude {

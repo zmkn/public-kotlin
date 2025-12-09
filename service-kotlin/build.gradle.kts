@@ -9,13 +9,6 @@ dependencies {
     api(libs.protobuf.java.util) // Protobuf java 支持库
     api(libs.zmkn.serialization.jackson.kotlin) // Jackson 工具库
     api(libs.mongodb.driver.reactivestreams) // MongoDB 反应流异步驱动器库，kmongo 需要
-    api(libs.mongodb.driver.sync) // MongoDB 同步驱动器库，morphia 需要
-    api(libs.mongodb.driver.legacy) // MongoDB 向后兼容同步驱动器库，morphia 需要
-    // MongoDB 支持库
-    api(libs.morphia.kotlin) {
-        // 排除 mongodb 相关依赖库，由上面手动加载，防止与 kmongo 冲突
-        exclude(group = "org.mongodb")
-    }
     api(libs.ehcache) // 本地缓存插件
     api(libs.javax.jaxb.api) // ehcache 依赖此库
     api(libs.glassfish.jaxb.runtime) // ehcache 依赖此库

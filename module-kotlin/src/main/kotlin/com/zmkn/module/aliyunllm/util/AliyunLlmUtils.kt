@@ -6,13 +6,11 @@ import com.zmkn.module.aliyunllm.model.ApiOptions
 import java.net.URI
 
 object AliyunLlmUtils {
-    fun isUrl(str: String): Boolean {
-        return try {
-            val uri = URI(str)
-            uri.scheme != null && uri.host != null
-        } catch (_: Exception) {
-            false
-        }
+    fun isUrl(str: String): Boolean = try {
+        val uri = URI(str)
+        uri.scheme != null && uri.host != null
+    } catch (_: Exception) {
+        false
     }
 
     fun setApiConfigurations(apiOptions: ApiOptions) {

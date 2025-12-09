@@ -102,16 +102,14 @@ fun Document.assign(vararg documents: Document): Document {
 
 fun Document.transform(
     objectIdToString: Boolean = true,
-): Document {
-    return map {
-        if (objectIdToString) {
-            if (it.value is ObjectId) {
-                it.value.toString()
-            } else {
-                it.value
-            }
+): Document = map {
+    if (objectIdToString) {
+        if (it.value is ObjectId) {
+            it.value.toString()
         } else {
             it.value
         }
+    } else {
+        it.value
     }
 }

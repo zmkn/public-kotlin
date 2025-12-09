@@ -9,12 +9,10 @@ object BsonUtils {
     /**
      * 反转单个排序方向
      */
-    private fun reverseSortDirection(value: BsonValue): BsonValue {
-        return when (value.asInt32().value) {
-            1 -> BsonInt32(-1)
-            -1 -> BsonInt32(1)
-            else -> value
-        }
+    private fun reverseSortDirection(value: BsonValue): BsonValue = when (value.asInt32().value) {
+        1 -> BsonInt32(-1)
+        -1 -> BsonInt32(1)
+        else -> value
     }
 
     /**

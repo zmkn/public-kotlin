@@ -6,19 +6,15 @@ enum class MessageRole(val value: String) {
     ASSISTANT("assistant"),
     TOOL("tool");
 
-    override fun toString(): String {
-        return value
-    }
+    override fun toString(): String = value
 
     companion object {
-        fun fromValue(value: String): MessageRole {
-            return when (value) {
-                SYSTEM.value -> SYSTEM
-                USER.value -> USER
-                ASSISTANT.value -> ASSISTANT
-                TOOL.value -> TOOL
-                else -> throw IllegalArgumentException("MessageRole value is not allowed.")
-            }
+        fun fromValue(value: String): MessageRole = when (value) {
+            SYSTEM.value -> SYSTEM
+            USER.value -> USER
+            ASSISTANT.value -> ASSISTANT
+            TOOL.value -> TOOL
+            else -> throw IllegalArgumentException("MessageRole value is not allowed.")
         }
     }
 }

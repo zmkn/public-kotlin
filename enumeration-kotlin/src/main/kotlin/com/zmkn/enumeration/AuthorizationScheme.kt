@@ -4,9 +4,7 @@ enum class AuthorizationScheme(val scheme: String) {
     BASIC("Basic"),
     BEARER("Bearer");
 
-    override fun toString(): String {
-        return scheme
-    }
+    override fun toString(): String = scheme
 
     companion object {
         fun fromScheme(scheme: String): AuthorizationScheme? {

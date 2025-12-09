@@ -4,20 +4,22 @@ import com.zmkn.module.aliyunoss.model.Config
 import com.zmkn.util.FileUtils
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import java.io.File
-import kotlin.test.Test
 
 class AliyunOssTest {
     private val _filePath = "a123.jpg"
-    private val _aliyunOss = AliyunOss(
-        Config(
-            id = "",
-            secret = "",
-            bucket = "api-test-lingqi",
-            region = "cn-huhehaote",
-            endpoint = "oss-cn-huhehaote.aliyuncs.com",
+    private val _aliyunOss: AliyunOss by lazy {
+        AliyunOss(
+            Config(
+                id = "",
+                secret = "",
+                bucket = "api-test-lingqi",
+                region = "cn-huhehaote",
+                endpoint = "oss-cn-huhehaote.aliyuncs.com",
+            )
         )
-    )
+    }
 
     @Test
     @Disabled
@@ -35,6 +37,7 @@ class AliyunOssTest {
                 }
 
                 ProgressEventType.RESPONSE_CONTENT_LENGTH_EVENT -> {}
+
                 ProgressEventType.REQUEST_BYTE_TRANSFER_EVENT -> {
                     bytesWritten += it.bytes
                     if (totalBytes != -1L) {
@@ -46,7 +49,9 @@ class AliyunOssTest {
                 }
 
                 ProgressEventType.RESPONSE_BYTE_TRANSFER_EVENT -> {}
+
                 ProgressEventType.TRANSFER_PREPARING_EVENT -> {}
+
                 ProgressEventType.TRANSFER_STARTED_EVENT -> {
                     println("开始上传")
                 }
@@ -61,12 +66,19 @@ class AliyunOssTest {
                 }
 
                 ProgressEventType.TRANSFER_CANCELED_EVENT -> {}
+
                 ProgressEventType.TRANSFER_PART_STARTED_EVENT -> {}
+
                 ProgressEventType.TRANSFER_PART_COMPLETED_EVENT -> {}
+
                 ProgressEventType.TRANSFER_PART_FAILED_EVENT -> {}
+
                 ProgressEventType.SELECT_STARTED_EVENT -> {}
+
                 ProgressEventType.SELECT_SCAN_EVENT -> {}
+
                 ProgressEventType.SELECT_COMPLETED_EVENT -> {}
+
                 ProgressEventType.SELECT_FAILED_EVENT -> {}
             }
         }
@@ -88,6 +100,7 @@ class AliyunOssTest {
                         }
 
                         ProgressEventType.RESPONSE_CONTENT_LENGTH_EVENT -> {}
+
                         ProgressEventType.REQUEST_BYTE_TRANSFER_EVENT -> {
                             bytesWritten += it.bytes
                             if (totalBytes != -1L) {
@@ -99,7 +112,9 @@ class AliyunOssTest {
                         }
 
                         ProgressEventType.RESPONSE_BYTE_TRANSFER_EVENT -> {}
+
                         ProgressEventType.TRANSFER_PREPARING_EVENT -> {}
+
                         ProgressEventType.TRANSFER_STARTED_EVENT -> {
                             println("开始上传")
                         }
@@ -114,12 +129,19 @@ class AliyunOssTest {
                         }
 
                         ProgressEventType.TRANSFER_CANCELED_EVENT -> {}
+
                         ProgressEventType.TRANSFER_PART_STARTED_EVENT -> {}
+
                         ProgressEventType.TRANSFER_PART_COMPLETED_EVENT -> {}
+
                         ProgressEventType.TRANSFER_PART_FAILED_EVENT -> {}
+
                         ProgressEventType.SELECT_STARTED_EVENT -> {}
+
                         ProgressEventType.SELECT_SCAN_EVENT -> {}
+
                         ProgressEventType.SELECT_COMPLETED_EVENT -> {}
+
                         ProgressEventType.SELECT_FAILED_EVENT -> {}
                     }
                 }

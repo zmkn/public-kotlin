@@ -8,17 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import kotlin.Any
-import kotlin.Array
-import kotlin.String
-import kotlin.Suppress
-import kotlin.also
-import kotlin.apply
 import com.google.protobuf.Any as ProtobufAny
 
 private val objectMapper = ObjectMapper().apply {
     // 注册 Kotlin 模块以支持 Kotlin 数据类
-    setSerializationInclusion(JsonInclude.Include.NON_NULL) // 忽略所有值为 null 的属性
+    setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL) // 忽略所有值为 null 的属性
     // 配置序列化特性
     enable(SerializationFeature.INDENT_OUTPUT) // 在输出时美化打印JSON格式
     enable(SerializationFeature.CLOSE_CLOSEABLE) // 使实现了 Closeable 接口的对象（例如文件流或网络连接）都会被自动关闭
@@ -43,32 +37,26 @@ private val objectMapper = ObjectMapper().apply {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <K, V> Map<*, *>.toProtobufAnyMap(): Map<K, V> {
-    return mapValues { (_, value) ->
-        when (value) {
-            is Array<*> -> value.toProtobufAnyArray<Any?>()
-            is Iterable<*> -> value.toProtobufAnyIterable<Any?>()
-            is Sequence<*> -> value.toProtobufAnySequence<Any?>()
-            is Map<*, *> -> value.toProtobufAnyMap<Any?, Any?>()
-            else -> value.toProtobufAny()
-        }
-    } as Map<K, V>
-}
+fun <K, V> Map<*, *>.toProtobufAnyMap(): Map<K, V> = mapValues { (_, value) ->
+    when (value) {
+        is Array<*> -> value.toProtobufAnyArray<Any?>()
+        is Iterable<*> -> value.toProtobufAnyIterable<Any?>()
+        is Sequence<*> -> value.toProtobufAnySequence<Any?>()
+        is Map<*, *> -> value.toProtobufAnyMap<Any?, Any?>()
+        else -> value.toProtobufAny()
+    }
+} as Map<K, V>
 
 @Suppress("UNCHECKED_CAST")
-fun <K, V> Map<*, *>.toAnyMap(): Map<K, V> {
-    return mapValues { (_, value) ->
-        when (value) {
-            is Array<*> -> value.toAnyArray<Any?>()
-            is Iterable<*> -> value.toAnyIterable<Any?>()
-            is Sequence<*> -> value.toAnySequence<Any?>()
-            is Map<*, *> -> value.toAnyMap<Any?, Any?>()
-            is ProtobufAny -> value.toAny()
-            else -> value
-        }
-    } as Map<K, V>
-}
+fun <K, V> Map<*, *>.toAnyMap(): Map<K, V> = mapValues { (_, value) ->
+    when (value) {
+        is Array<*> -> value.toAnyArray<Any?>()
+        is Iterable<*> -> value.toAnyIterable<Any?>()
+        is Sequence<*> -> value.toAnySequence<Any?>()
+        is Map<*, *> -> value.toAnyMap<Any?, Any?>()
+        is ProtobufAny -> value.toAny()
+        else -> value
+    }
+} as Map<K, V>
 
-fun Map<String, Any?>.toJson(): String {
-    return objectMapper.writeValueAsString(this)
-}
+fun Map<String, Any?>.toJson(): String = objectMapper.writeValueAsString(this)

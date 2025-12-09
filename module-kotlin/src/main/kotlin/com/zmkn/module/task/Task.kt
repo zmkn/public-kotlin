@@ -24,15 +24,11 @@ data class Task(
         private val _jobs: MutableMap<String, Task> = mutableMapOf()
         private val _supervisorScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-        private fun generateTaskId(): String {
-            return "task-${RandomUtils.generateRandomNumber(12)}"
-        }
+        private fun generateTaskId(): String = "task-${RandomUtils.generateRandomNumber(12)}"
 
         val jobs: Map<String, Task> = _jobs
 
-        fun getTask(id: String): Task? {
-            return _jobs[id]
-        }
+        fun getTask(id: String): Task? = _jobs[id]
 
         fun setTask(id: String, task: Task) {
             _jobs[id] = task
@@ -174,7 +170,7 @@ data class Task(
         }
 
         fun cancelAll() {
-            _jobs.forEach { id, task ->
+            _jobs.forEach { (id, task) ->
                 task.job.cancel()
                 _jobs[id] = task.copy(
                     status = TaskStatus.CANCELED

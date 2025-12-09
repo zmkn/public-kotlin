@@ -1,32 +1,31 @@
 [versions]
-kotlin = "[2.2,3.0)"
-ktlint = "[12.1,13.0)"
-shadow = "[8.3,9.0)"
-jreleaser = "[1.16,2.0)"
+kotlin = "[2.3,3.0)"
+ktlint = "[14.0,15.0)"
+shadow = "[9.3,10.0)"
+jreleaser = "[1.21,2.0)"
 kotlinxSerializationJson = "[1.9,2.0)"
-kotlinxCoroutinesCore = "[1.9,2.0)"
-protobuf = "[4.30,4.31)"
+kotlinxCoroutinesCore = "[1.10,2.0)"
+protobuf = "[4.33,5.0)"
 bsonKotlinSerializersModule = "1.0.1-SNAPSHOT"
 kotlinTimeBsonCodec = "1.0.1-SNAPSHOT"
 kotlinxDatetimeBsonCodec = "1.0.1-SNAPSHOT"
 bsonJacksonModule = "1.0.1-SNAPSHOT"
 zmknSrcc = "1.0.0-SNAPSHOT"
 zmknSerialization = "1.0.0-SNAPSHOT"
-mongodb = "5.2.1"
-morphia = "3.0.0-SNAPSHOT"
-kmongo = "[5.1,6.0)"
-squareupOkhttp3 = "[4.12,5.0)"
+mongodb = "5.5.1"
+kmongo = "[5.5.1,6.0)"
+squareupOkhttp3 = "[5.3,6.0)"
 ehcache = "[3.10,4.0)"
 jaxbApi = "2.4.0-b180830.0359"
 jaxbRuntime = "2.4.0-b180830.0438"
-jackson = "[2.18,3.0)"
-jsonwebtoken = "[0.12,1.0)"
-bouncycastle = "[1.78,2.0)"
-snakeyamlEngine = "[2.8,3.0)"
-dashscopeSdkJava = "[2.20,3.0)"
+jackson = "[2.20,3.0)"
+jsonwebtoken = "[0.13,1.0)"
+bouncycastle = "[1.83,2.0)"
+snakeyamlEngine = "[3.0,4.0)"
+dashscopeSdkJava = "[2.22,3.0)"
 apacheCommonsPool2 = "[2.12,3.0)"
-victoolsJsonschemaGenerator = "[4.37,5.0)"
-aliyunDysmsapi = "[3.1,4.0)"
+victoolsJsonschemaGenerator = "[4.38,5.0)"
+aliyunDysmsapi = "[4.3,5.0)"
 aliyunSdkOss = "[3.18,4.0)"
 
 [plugins]
@@ -53,9 +52,6 @@ zmkn-serialization-jackson-kotlin = { group = "com.zmkn.serialization", name = "
 mongodb-bson = { group = "org.mongodb", name = "bson", version.ref = "mongodb" }
 mongodb-driver-core = { group = "org.mongodb", name = "mongodb-driver-core", version.ref = "mongodb" }
 mongodb-driver-reactivestreams = { group = "org.mongodb", name = "mongodb-driver-reactivestreams", version.ref = "mongodb" }
-mongodb-driver-sync = { group = "org.mongodb", name = "mongodb-driver-sync", version.ref = "mongodb" }
-mongodb-driver-legacy = { group = "org.mongodb", name = "mongodb-driver-legacy", version.ref = "mongodb" }
-morphia-kotlin = { group = "dev.morphia.morphia", name = "morphia-kotlin", version.ref = "morphia" }
 kmongo-coroutine = { group = "org.litote.kmongo", name = "kmongo-coroutine", version.ref = "kmongo" }
 kmongo-coroutine-serialization = { group = "org.litote.kmongo", name = "kmongo-coroutine-serialization", version.ref = "kmongo" }
 kmongo-id = { group = "org.litote.kmongo", name = "kmongo-id", version.ref = "kmongo" }

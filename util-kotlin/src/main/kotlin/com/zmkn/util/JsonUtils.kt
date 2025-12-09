@@ -16,34 +16,26 @@ object JsonUtils {
         }
     }
 
-    fun isJsonValid(input: String): Boolean {
-        return try {
-            Json.parseToJsonElement(input)
-            true
-        } catch (_: Exception) {
-            false
-        }
+    fun isJsonValid(input: String): Boolean = try {
+        Json.parseToJsonElement(input)
+        true
+    } catch (_: Exception) {
+        false
     }
 
-    fun isJsonValidAdvanced(input: String): Boolean {
-        return isLikelyJson(input) && isJsonValid(input)
+    fun isJsonValidAdvanced(input: String): Boolean = isLikelyJson(input) && isJsonValid(input)
+
+    fun isObjectJson(jsonString: String): Boolean = try {
+        val element = Json.parseToJsonElement(jsonString)
+        element is JsonObject
+    } catch (_: Exception) {
+        false
     }
 
-    fun isObjectJson(jsonString: String): Boolean {
-        return try {
-            val element = Json.parseToJsonElement(jsonString)
-            element is JsonObject
-        } catch (_: Exception) {
-            false
-        }
-    }
-
-    fun isArrayJson(jsonString: String): Boolean {
-        return try {
-            val element = Json.parseToJsonElement(jsonString)
-            element is JsonArray
-        } catch (_: Exception) {
-            false
-        }
+    fun isArrayJson(jsonString: String): Boolean = try {
+        val element = Json.parseToJsonElement(jsonString)
+        element is JsonArray
+    } catch (_: Exception) {
+        false
     }
 }

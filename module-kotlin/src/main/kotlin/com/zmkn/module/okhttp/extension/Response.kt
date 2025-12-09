@@ -52,42 +52,30 @@ suspend fun Response.onComplete(
     return this
 }
 
-inline fun <reified T : Any> Response.convertBody(): T? {
-    return body?.convert<T>()
+inline fun <reified T : Any> Response.convertBody(): T = body.convert<T>()
+
+fun <T : Any> Response.convertBody(schema: KClass<T>): T = body.convert(schema)
+
+inline fun <reified T : Any> Response.convertBodyOnSuccess(): T? = if (isSuccessful) {
+    body.convert<T>()
+} else {
+    null
 }
 
-fun <T : Any> Response.convertBody(schema: KClass<T>): T? {
-    return body?.convert(schema)
+fun <T : Any> Response.convertBodyOnSuccess(schema: KClass<T>): T? = if (isSuccessful) {
+    body.convert(schema)
+} else {
+    null
 }
 
-inline fun <reified T : Any> Response.convertBodyOnSuccess(): T? {
-    return if (isSuccessful) {
-        body?.convert<T>()
-    } else {
-        null
-    }
+inline fun <reified T : Any> Response.convertBodyOnFailure(): T? = if (!isSuccessful) {
+    body.convert<T>()
+} else {
+    null
 }
 
-fun <T : Any> Response.convertBodyOnSuccess(schema: KClass<T>): T? {
-    return if (isSuccessful) {
-        body?.convert(schema)
-    } else {
-        null
-    }
-}
-
-inline fun <reified T : Any> Response.convertBodyOnFailure(): T? {
-    return if (!isSuccessful) {
-        body?.convert<T>()
-    } else {
-        null
-    }
-}
-
-fun <T : Any> Response.convertBodyOnFailure(schema: KClass<T>): T? {
-    return if (!isSuccessful) {
-        body?.convert(schema)
-    } else {
-        null
-    }
+fun <T : Any> Response.convertBodyOnFailure(schema: KClass<T>): T? = if (!isSuccessful) {
+    body.convert(schema)
+} else {
+    null
 }

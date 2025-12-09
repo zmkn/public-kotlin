@@ -26,15 +26,11 @@ class AliyunOss(config: Config) {
 
     fun uploadSync(
         putObjectRequest: PutObjectRequest,
-    ): PutObjectResult {
-        return _client.putObject(putObjectRequest)
-    }
+    ): PutObjectResult = _client.putObject(putObjectRequest)
 
     fun uploadSync(
         uploadFileRequest: UploadFileRequest,
-    ): UploadFileResult {
-        return _client.uploadFile(uploadFileRequest)
-    }
+    ): UploadFileResult = _client.uploadFile(uploadFileRequest)
 
     fun uploadSync(
         filePath: String,
@@ -107,9 +103,7 @@ class AliyunOss(config: Config) {
     fun fileExistsSync(
         filePath: String,
         isOnlyInOSS: Boolean = false,
-    ): Boolean {
-        return _client.doesObjectExist(_bucketName, filePath, isOnlyInOSS)
-    }
+    ): Boolean = _client.doesObjectExist(_bucketName, filePath, isOnlyInOSS)
 
     suspend fun upload(
         putObjectRequest: PutObjectRequest,

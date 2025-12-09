@@ -106,62 +106,38 @@ object KMongoUtils {
         return collectionName
     }
 
-    fun jsonToBson(jsonString: String): BsonDocument {
-        return BsonDocument.parse(jsonString)
-    }
+    fun jsonToBson(jsonString: String): BsonDocument = BsonDocument.parse(jsonString)
 
-    fun bsonToJson(bson: Bson): String {
-        return bsonToJson(
-            bson.toBsonDocument(
-                Document::class.java,
-                customCodecRegistry
-            )
+    fun bsonToJson(bson: Bson): String = bsonToJson(
+        bson.toBsonDocument(
+            Document::class.java,
+            customCodecRegistry
         )
+    )
+
+    fun bsonToJson(bsonDocument: BsonDocument): String = bsonDocument.toJson()
+
+    fun documentToJson(document: Document): String = document.toJson()
+
+    fun documentToJson(document: Document, writerSettings: JsonWriterSettings): String = document.toJson(writerSettings)
+
+    fun documentToJson(document: Document, encoder: Encoder<Document>): String = document.toJson(encoder)
+
+    fun documentToJson(document: Document, writerSettings: JsonWriterSettings, encoder: Encoder<Document>): String = document.toJson(writerSettings, encoder)
+
+    fun jsonToDocument(json: String): Document = Document.parse(json)
+
+    fun jsonToDocument(json: String, decoder: Decoder<Document>): Document = Document.parse(json, decoder)
+
+    inline fun <reified T> encodeToString(value: T): String = json.encodeToString(value)
+
+    fun <T> encodeToString(kType: KType, value: T): String = if (kType == Document::class.starProjectedType) {
+        documentToJson(value as Document)
+    } else {
+        json.encodeToString(json.serializersModule.serializer(kType), value)
     }
 
-    fun bsonToJson(bsonDocument: BsonDocument): String {
-        return bsonDocument.toJson()
-    }
-
-    fun documentToJson(document: Document): String {
-        return document.toJson()
-    }
-
-    fun documentToJson(document: Document, writerSettings: JsonWriterSettings): String {
-        return document.toJson(writerSettings)
-    }
-
-    fun documentToJson(document: Document, encoder: Encoder<Document>): String {
-        return document.toJson(encoder)
-    }
-
-    fun documentToJson(document: Document, writerSettings: JsonWriterSettings, encoder: Encoder<Document>): String {
-        return document.toJson(writerSettings, encoder)
-    }
-
-    fun jsonToDocument(json: String): Document {
-        return Document.parse(json)
-    }
-
-    fun jsonToDocument(json: String, decoder: Decoder<Document>): Document {
-        return Document.parse(json, decoder)
-    }
-
-    inline fun <reified T> encodeToString(value: T): String {
-        return json.encodeToString(value)
-    }
-
-    fun <T> encodeToString(kType: KType, value: T): String {
-        return if (kType == Document::class.starProjectedType) {
-            documentToJson(value as Document)
-        } else {
-            json.encodeToString(json.serializersModule.serializer(kType), value)
-        }
-    }
-
-    fun <T : Any> encodeToString(schema: KClass<T>, value: T): String {
-        return encodeToString(schema.starProjectedType, value)
-    }
+    fun <T : Any> encodeToString(schema: KClass<T>, value: T): String = encodeToString(schema.starProjectedType, value)
 
     inline fun <reified T> encodeToDocument(value: T): Document {
         val json = encodeToString(value)
@@ -173,67 +149,53 @@ object KMongoUtils {
         return jsonToDocument(json)
     }
 
-    fun <T : Any> encodeToDocument(schema: KClass<T>, value: T): Document {
-        return encodeToDocument(schema.starProjectedType, value)
-    }
+    fun <T : Any> encodeToDocument(schema: KClass<T>, value: T): Document = encodeToDocument(schema.starProjectedType, value)
 
-    inline fun <reified T> decodeFromString(jsonString: String): T {
-        return json.decodeFromString(jsonString)
-    }
+    inline fun <reified T> decodeFromString(jsonString: String): T = json.decodeFromString(jsonString)
 
     @Suppress("UNCHECKED_CAST")
     @OptIn(InternalSerializationApi::class)
-    fun <T> decodeFromString(kType: KType, @FormatLanguage("json", "", "") jsonString: String): T {
-        return if (kType == Document::class.starProjectedType) {
-            jsonToDocument(jsonString) as T
-        } else {
-            json.decodeFromString(json.serializersModule.serializer(kType), jsonString) as T
-        }
+    fun <T> decodeFromString(kType: KType, @FormatLanguage("json", "", "") jsonString: String): T = if (kType == Document::class.starProjectedType) {
+        jsonToDocument(jsonString) as T
+    } else {
+        json.decodeFromString(json.serializersModule.serializer(kType), jsonString) as T
     }
 
     @OptIn(InternalSerializationApi::class)
-    fun <T : Any> decodeFromString(schema: KClass<T>, @FormatLanguage("json", "", "") jsonString: String): T {
-        return decodeFromString(schema.starProjectedType, jsonString)
-    }
+    fun <T : Any> decodeFromString(schema: KClass<T>, @FormatLanguage("json", "", "") jsonString: String): T = decodeFromString(schema.starProjectedType, jsonString)
 
     fun <T> decodeFromDocument(kType: KType, document: Document): T {
         val json = documentToJson(document)
         return decodeFromString(kType, json)
     }
 
-    fun <T : Any> decodeFromDocument(schema: KClass<T>, document: Document): T {
-        return decodeFromDocument(schema.starProjectedType, document)
-    }
+    fun <T : Any> decodeFromDocument(schema: KClass<T>, document: Document): T = decodeFromDocument(schema.starProjectedType, document)
 
-    inline fun <reified T> decodeFromDocument(document: Document): T {
-        return json.decodeFromString(documentToJson(document))
-    }
+    inline fun <reified T> decodeFromDocument(document: Document): T = json.decodeFromString(documentToJson(document))
 
     fun <T : Any> generateSetToList(
         model: T,
         excludedFields: Collection<String> = setOf(),
         allowedNull: Boolean = false,
-    ): List<SetTo<*>> {
-        return model::class.memberProperties.filterIsInstance<KProperty1<T, Any?>>()
-            .let {
-                if (excludedFields.isEmpty()) {
-                    it
-                } else {
-                    it.filter { property ->
-                        !excludedFields.contains(property.name)
-                    }
+    ): List<SetTo<*>> = model::class.memberProperties.filterIsInstance<KProperty1<T, Any?>>()
+        .let {
+            if (excludedFields.isEmpty()) {
+                it
+            } else {
+                it.filter { property ->
+                    !excludedFields.contains(property.name)
                 }
             }
-            .let {
-                if (allowedNull) {
-                    it
-                } else {
-                    it.filter { property ->
-                        property.get(model) != null
-                    }
+        }
+        .let {
+            if (allowedNull) {
+                it
+            } else {
+                it.filter { property ->
+                    property.get(model) != null
                 }
-            }.map { property ->
-                SetTo(property, property.get(model))
             }
-    }
+        }.map { property ->
+            SetTo(property, property.get(model))
+        }
 }

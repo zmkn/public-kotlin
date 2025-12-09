@@ -19,12 +19,6 @@ dependencyResolutionManagement {
                 includeGroupByRegex("com\\.ailingqi\\..+")
             }
         }
-        maven {
-            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-            content {
-                includeGroup("dev.morphia.morphia")
-            }
-        }
         google()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
@@ -40,5 +34,5 @@ project(":constant-kotlin").name = "constant-kotlin"
 project(":extension-kotlin").name = "extension-kotlin"
 project(":enumeration-kotlin").name = "enumeration-kotlin"
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }

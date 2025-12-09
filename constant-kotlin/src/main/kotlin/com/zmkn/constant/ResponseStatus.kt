@@ -142,12 +142,8 @@ enum class ResponseStatus(val value: Int) {
     UNAUTHENTICATED(26);
 
     companion object {
-        fun getByName(name: String): ResponseStatus? {
-            return entries.firstOrNull { it.name == name }
-        }
+        fun getByName(name: String): ResponseStatus? = entries.firstOrNull { it.name == name }
 
-        fun getByValue(value: Int): ResponseStatus? {
-            return entries.firstOrNull { it.value == value }
-        }
+        fun getByValue(value: Int): ResponseStatus? = entries.firstOrNull { it.value == value }
     }
 }

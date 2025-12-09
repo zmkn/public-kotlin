@@ -50,9 +50,9 @@ object AigcUtils {
         .builder()
         .role(Role.ASSISTANT.value)
         .content(content)
-        .also {
+        .also { messageBuilder ->
             toolCalls?.run {
-                it.toolCalls(map { it.toToolCallBase() })
+                messageBuilder.toolCalls(map { it.toToolCallBase() })
             }
         }
         .build()
