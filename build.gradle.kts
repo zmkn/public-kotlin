@@ -1,7 +1,10 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.konan.properties.Properties
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
+import org.jreleaser.gradle.plugin.JReleaserExtension
 import org.jreleaser.model.Active
 import org.jreleaser.model.Signing
 import org.jreleaser.model.Stereotype
@@ -157,7 +160,7 @@ allprojects {
             buildJreleaserDir.mkdirs()
         }
 
-        configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
+        configure<JReleaserExtension> {
             gitRootSearch.set(true)
 
             project {
@@ -511,7 +514,7 @@ allprojects {
         }
     }
 
-    configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
+    configure<KotlinJvmProjectExtension> {
         jvmToolchain {
             languageVersion.set(JavaLanguageVersion.of(24))
         }
@@ -520,7 +523,7 @@ allprojects {
         }
     }
 
-    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    configure<KtlintExtension> {
         filter {
             exclude {
                 // 排除所有以 .gradle.kts 结尾的文件和 build 目录下的所有文件
