@@ -9,7 +9,7 @@ import org.snakeyaml.engine.v2.common.ScalarStyle
 import java.io.*
 
 class YamlService {
-    private val _objectMapper = Jackson.objectMapper
+    private val _jsonMapper = Jackson.jsonMapper
 
     private val _loadSettings: LoadSettings
     private val _load: Load
@@ -99,7 +99,7 @@ class YamlService {
 
     fun loadAll(yaml: String): Iterable<*> = _load.loadAllFromString(yaml).toList()
 
-    fun <T : Any> convert(yamlMap: Map<*, *>, targetType: Class<T>): T = _objectMapper.convertValue(yamlMap, targetType)
+    fun <T : Any> convert(yamlMap: Map<*, *>, targetType: Class<T>): T = _jsonMapper.convertValue(yamlMap, targetType)
 
     fun <T : Any> convert(yamlIterable: Iterable<*>, targetType: Class<T>): Iterable<*> = yamlIterable.filterNotNull().mapNotNull {
         when (it) {
@@ -117,9 +117,9 @@ class YamlService {
         }
     }
 
-    fun convertToMap(data: Any): Map<*, *> = _objectMapper.convertValue(data, Map::class.java)
+    fun convertToMap(data: Any): Map<*, *> = _jsonMapper.convertValue(data, Map::class.java)
 
-    fun convertToIterable(data: Iterable<*>): Iterable<*> = _objectMapper.convertValue(data, Iterable::class.java)
+    fun convertToIterable(data: Iterable<*>): Iterable<*> = _jsonMapper.convertValue(data, Iterable::class.java)
 
     fun <T : Any> read(targetType: Class<T>, vararg yamlInputStreams: InputStream): T {
         if (yamlInputStreams.isEmpty()) {

@@ -1,7 +1,7 @@
 package com.zmkn.module.kmongo.util
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.mongodb.client.model.Filters
 import com.zmkn.bson.codec.datetime.DatetimeBsonCodec
 import com.zmkn.bson.codec.time.TimeBsonCodec
@@ -57,9 +57,11 @@ object KMongoUtils {
         }
     }.json
 
-    val objectMapper: ObjectMapper = Jackson(initializer = {
+    val jsonMapper: JsonMapper = Jackson(initializer = {
         disable(SerializationFeature.INDENT_OUTPUT)
-    }).objectMapper.registerModule(BsonJacksonModule.all).registerModule(IdJacksonModule())
+    }).jsonMapper.apply {
+        registerModule(BsonJacksonModule.all).registerModule(IdJacksonModule())
+    }
 
     fun isJsonArray(json: String) = json.trim().startsWith('[')
 

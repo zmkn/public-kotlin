@@ -13,9 +13,9 @@ import com.zmkn.module.kmongo.util.KMongoUtils.EMPTY_JSON
 import com.zmkn.module.kmongo.util.KMongoUtils.decodeFromString
 import com.zmkn.module.kmongo.util.KMongoUtils.documentToJson
 import com.zmkn.module.kmongo.util.KMongoUtils.encodeToString
+import com.zmkn.module.kmongo.util.KMongoUtils.jsonMapper
 import com.zmkn.module.kmongo.util.KMongoUtils.jsonToBson
 import com.zmkn.module.kmongo.util.KMongoUtils.jsonToDocument
-import com.zmkn.module.kmongo.util.KMongoUtils.objectMapper
 import com.zmkn.module.kmongo.util.multipleProjectionCodecRegistry
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.bson.BsonDocument
@@ -301,7 +301,7 @@ fun <T : Any> CoroutineCollection<T>.projection(
     clientSession: ClientSession? = null
 ): CoroutineFindPublisher<MultipleProjection<Map<String, Any>>> {
     if (projection.isNotBlank()) {
-        val projectionMap = objectMapper.readValue(projection, Map::class.java).filter { (key, value) ->
+        val projectionMap = jsonMapper.readValue(projection, Map::class.java).filter { (key, value) ->
             key is String && value is Int
         } as Map<String, Int>
         return if (projectionMap.isNotEmpty()) {
@@ -311,7 +311,7 @@ fun <T : Any> CoroutineCollection<T>.projection(
                 if (!projectionMap.keys.contains("_id")) {
                     newProjectionMap["_id"] = 0
                 }
-                val newProjection = objectMapper.writeValueAsString(newProjectionMap)
+                val newProjection = jsonMapper.writeValueAsString(newProjectionMap)
                 if (clientSession == null) {
                     find(query)
                 } else {
@@ -343,7 +343,7 @@ fun <T : Any> CoroutineCollection<T>.projection(
                 if (!existId) {
                     newProjectionMap["_id"] = 0
                 }
-                val newProjection = objectMapper.writeValueAsString(newProjectionMap)
+                val newProjection = jsonMapper.writeValueAsString(newProjectionMap)
                 withDocumentClass<MultipleProjection<Map<String, Any>>>()
                     .withCodecRegistry(multipleProjectionCodecRegistry(properties, codecRegistry))
                     .run {
@@ -381,6 +381,6 @@ suspend fun <T : Any> CoroutineCollection<T>.projectionAsStringList(
     if (it.data is Document) {
         documentToJson(it.data)
     } else {
-        objectMapper.writeValueAsString(it.data)
+        jsonMapper.writeValueAsString(it.data)
     }
 }

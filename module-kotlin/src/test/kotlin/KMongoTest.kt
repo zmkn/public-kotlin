@@ -218,14 +218,14 @@ class KMongoTest {
             status = "DISABLED",
             phoneNumbers = emptyList(),
         )
-        val defaultDataSetObjectNode = KMongoUtils.objectMapper.valueToTree<ObjectNode>(user).filter {
+        val defaultDataSetObjectNode = KMongoUtils.jsonMapper.valueToTree<ObjectNode>(user).filter {
             it != User::id.path() && it != User::createdAt.path()
         }
-        val userSetJson = KMongoUtils.objectMapper.writeValueAsString(defaultDataSetObjectNode)
-        val userSetOnInsertObjectNode = KMongoUtils.objectMapper.valueToTree<ObjectNode>(user).filter {
+        val userSetJson = KMongoUtils.jsonMapper.writeValueAsString(defaultDataSetObjectNode)
+        val userSetOnInsertObjectNode = KMongoUtils.jsonMapper.valueToTree<ObjectNode>(user).filter {
             it == User::createdAt.path()
         }
-        val userSetOnInsertJson = KMongoUtils.objectMapper.writeValueAsString(userSetOnInsertObjectNode)
+        val userSetOnInsertJson = KMongoUtils.jsonMapper.writeValueAsString(userSetOnInsertObjectNode)
         val update = $$"{ $set: $$userSetJson, $setOnInsert: $$userSetOnInsertJson }"
         println(update)
         val result = collection.findOneAndUpdateAsString(

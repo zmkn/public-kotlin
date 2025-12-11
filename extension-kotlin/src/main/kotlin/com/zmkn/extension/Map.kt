@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.protobuf.Any as ProtobufAny
 
-private val objectMapper = ObjectMapper().apply {
+private val jsonMapper = JsonMapper().apply {
     // 注册 Kotlin 模块以支持 Kotlin 数据类
     setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL) // 忽略所有值为 null 的属性
     // 配置序列化特性
@@ -59,4 +59,4 @@ fun <K, V> Map<*, *>.toAnyMap(): Map<K, V> = mapValues { (_, value) ->
     }
 } as Map<K, V>
 
-fun Map<String, Any?>.toJson(): String = objectMapper.writeValueAsString(this)
+fun Map<String, Any?>.toJson(): String = jsonMapper.writeValueAsString(this)

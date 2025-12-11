@@ -5,7 +5,7 @@ import com.zmkn.serialization.jackson.Jackson
 import com.google.protobuf.Any as ProtobufAny
 
 @Suppress("UNCHECKED_CAST")
-fun <K, V> Any.toMap(): Map<K, V> = Jackson.objectMapper.convertValue(this, Map::class.java) as Map<K, V>
+fun <K, V> Any.toMap(): Map<K, V> = Jackson.jsonMapper.convertValue(this, Map::class.java) as Map<K, V>
 
 fun Any?.toProtobufAny(): ProtobufAny = when (this) {
     is String -> ProtobufAny.pack(StringValue.of(this))
