@@ -9,7 +9,7 @@ protobuf = "[4.33,5.0)"
 bsonKotlinSerializersModule = "1.0.1-SNAPSHOT"
 kotlinTimeBsonCodec = "1.0.1-SNAPSHOT"
 kotlinxDatetimeBsonCodec = "1.0.1-SNAPSHOT"
-bsonJacksonModule = "1.0.1-SNAPSHOT"
+bsonJacksonModule = "2.0.0-SNAPSHOT"
 zmknSrcc = "1.0.0-SNAPSHOT"
 zmknSerialization = "1.0.0-SNAPSHOT"
 mongodb = "5.5.1"
@@ -18,7 +18,7 @@ squareupOkhttp3 = "[5.3,6.0)"
 ehcache = "[3.10,4.0)"
 jaxbApi = "2.4.0-b180830.0359"
 jaxbRuntime = "2.4.0-b180830.0438"
-jackson = "[2.20,3.0)"
+toolsJacksonBom = "[3.0,4.0)"
 jsonwebtoken = "[0.13,1.0)"
 bouncycastle = "[1.83,2.0)"
 snakeyamlEngine = "[3.0,4.0)"
@@ -54,15 +54,13 @@ mongodb-driver-core = { group = "org.mongodb", name = "mongodb-driver-core", ver
 mongodb-driver-reactivestreams = { group = "org.mongodb", name = "mongodb-driver-reactivestreams", version.ref = "mongodb" }
 kmongo-coroutine = { group = "org.litote.kmongo", name = "kmongo-coroutine", version.ref = "kmongo" }
 kmongo-coroutine-serialization = { group = "org.litote.kmongo", name = "kmongo-coroutine-serialization", version.ref = "kmongo" }
-kmongo-id = { group = "org.litote.kmongo", name = "kmongo-id", version.ref = "kmongo" }
-kmongo-id-jackson = { group = "org.litote.kmongo", name = "kmongo-id-jackson", version.ref = "kmongo" }
-kmongo-id-serialization = { group = "org.litote.kmongo", name = "kmongo-id-serialization", version.ref = "kmongo" }
 squareup-okhttp3-okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "squareupOkhttp3" }
 squareup-okhttp3-okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 ehcache = { group = "org.ehcache", name = "ehcache", version.ref = "ehcache" }
 javax-jaxb-api = { group = "javax.xml.bind", name = "jaxb-api", version.ref = "jaxbApi" }
 glassfish-jaxb-runtime = { group = "org.glassfish.jaxb", name = "jaxb-runtime", version.ref = "jaxbRuntime" }
-jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
+tools-jackson-bom = { group = "tools.jackson", name = "jackson-bom", version.ref = "toolsJacksonBom" }
+tools-jackson-databind = { group = "tools.jackson.core", name = "jackson-databind" }
 jsonwebtoken-jjwt-api = { group = "io.jsonwebtoken", name = "jjwt-api", version.ref = "jsonwebtoken" }
 jsonwebtoken-jjwt-impl = { group = "io.jsonwebtoken", name = "jjwt-impl", version.ref = "jsonwebtoken" }
 jsonwebtoken-jjwt-jackson = { group = "io.jsonwebtoken", name = "jjwt-jackson", version.ref = "jsonwebtoken" }

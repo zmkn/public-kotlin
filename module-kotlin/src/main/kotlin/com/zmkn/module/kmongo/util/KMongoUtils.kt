@@ -1,7 +1,5 @@
 package com.zmkn.module.kmongo.util
 
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.json.JsonMapper
 import com.mongodb.client.model.Filters
 import com.zmkn.bson.codec.datetime.DatetimeBsonCodec
 import com.zmkn.bson.codec.time.TimeBsonCodec
@@ -22,12 +20,12 @@ import org.bson.codecs.configuration.CodecRegistry
 import org.bson.conversions.Bson
 import org.bson.json.JsonWriterSettings
 import org.litote.kmongo.SetTo
-import org.litote.kmongo.id.jackson.IdJacksonModule
-import org.litote.kmongo.id.serialization.IdKotlinXSerializationModule
 import org.litote.kmongo.serialization.SerializationClassMappingTypeService
 import org.litote.kmongo.service.ClassMappingType
 import org.litote.kmongo.util.KMongoUtil.defaultCodecRegistry
 import org.litote.kmongo.util.ObjectMappingConfiguration
+import tools.jackson.databind.SerializationFeature
+import tools.jackson.databind.json.JsonMapper
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
@@ -53,15 +51,13 @@ object KMongoUtils {
         prettyPrint = false
         serializersModule = SerializersModule {
             include(BsonKotlinSerializersModule.all)
-            include(IdKotlinXSerializationModule)
         }
     }.json
 
     val jsonMapper: JsonMapper = Jackson(initializer = {
         disable(SerializationFeature.INDENT_OUTPUT)
-    }).jsonMapper.apply {
-        registerModule(BsonJacksonModule.all).registerModule(IdJacksonModule())
-    }
+        addModule(BsonJacksonModule.all)
+    }).jsonMapper
 
     fun isJsonArray(json: String) = json.trim().startsWith('[')
 

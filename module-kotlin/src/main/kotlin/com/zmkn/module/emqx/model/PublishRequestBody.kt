@@ -1,14 +1,6 @@
 package com.zmkn.module.emqx.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonDeserializer
-import com.fasterxml.jackson.databind.JsonSerializer
-import com.fasterxml.jackson.databind.SerializerProvider
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.zmkn.module.emqx.model.PublishRequestBody.PayloadEncoding.PLAIN
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -18,6 +10,14 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import tools.jackson.core.JsonGenerator
+import tools.jackson.core.JsonParser
+import tools.jackson.databind.DeserializationContext
+import tools.jackson.databind.SerializationContext
+import tools.jackson.databind.ValueDeserializer
+import tools.jackson.databind.ValueSerializer
+import tools.jackson.databind.annotation.JsonDeserialize
+import tools.jackson.databind.annotation.JsonSerialize
 
 @Serializable
 data class PublishRequestBody(
@@ -83,12 +83,14 @@ data class PublishRequestBody(
                 override fun deserialize(decoder: Decoder): ContentType = ContentType.fromValue(decoder.decodeString())
             }
 
-            class ContentTypeJacksonSerializer : JsonSerializer<ContentType>() {
-                override fun serialize(value: ContentType, gen: JsonGenerator, serializers: SerializerProvider) = gen.writeString(value.value)
+            class ContentTypeJacksonSerializer : ValueSerializer<ContentType>() {
+                override fun serialize(value: ContentType, gen: JsonGenerator, ctxt: SerializationContext) {
+                    gen.writeString(value.value)
+                }
             }
 
-            class ContentTypeJacksonDeserializer : JsonDeserializer<ContentType>() {
-                override fun deserialize(p: JsonParser, ctxt: DeserializationContext): ContentType = ContentType.fromValue(p.valueAsString)
+            class ContentTypeJacksonDeserializer : ValueDeserializer<ContentType>() {
+                override fun deserialize(p: JsonParser, ctxt: DeserializationContext): ContentType = ContentType.fromValue(p.string)
             }
 
             companion object {
@@ -116,12 +118,14 @@ data class PublishRequestBody(
             override fun deserialize(decoder: Decoder): PayloadEncoding = PayloadEncoding.fromValue(decoder.decodeString())
         }
 
-        class PayloadEncodingJacksonSerializer : JsonSerializer<PayloadEncoding>() {
-            override fun serialize(value: PayloadEncoding, gen: JsonGenerator, serializers: SerializerProvider) = gen.writeString(value.value)
+        class PayloadEncodingJacksonSerializer : ValueSerializer<PayloadEncoding>() {
+            override fun serialize(value: PayloadEncoding, gen: JsonGenerator, ctxt: SerializationContext) {
+                gen.writeString(value.value)
+            }
         }
 
-        class PayloadEncodingJacksonDeserializer : JsonDeserializer<PayloadEncoding>() {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): PayloadEncoding = PayloadEncoding.fromValue(p.valueAsString)
+        class PayloadEncodingJacksonDeserializer : ValueDeserializer<PayloadEncoding>() {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): PayloadEncoding = PayloadEncoding.fromValue(p.string)
         }
 
         companion object {

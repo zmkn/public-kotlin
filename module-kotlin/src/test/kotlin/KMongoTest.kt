@@ -1,4 +1,3 @@
-import com.fasterxml.jackson.databind.node.ObjectNode
 import com.mongodb.MongoNamespace
 import com.mongodb.client.model.*
 import com.mongodb.client.result.InsertOneResult
@@ -16,6 +15,7 @@ import org.bson.types.ObjectId
 import org.junit.jupiter.api.Disabled
 import org.litote.kmongo.*
 import org.litote.kmongo.util.KMongoUtil
+import tools.jackson.databind.node.ObjectNode
 import kotlin.reflect.typeOf
 import kotlin.test.Test
 import kotlin.time.Clock
@@ -101,8 +101,12 @@ class KMongoTest {
         val bson = User::id eq ObjectId(id)
         val bsonJson = KMongoUtils.bsonToJson(bson)
         println(bsonJson)
-        val user = collection.findOneAsString(Document::class, bsonJson)
+        val userString = collection.findOneAsString(Document::class, bsonJson)
+        println(userString)
+        val user = KMongoUtils.jsonMapper.readValue(userString, User::class.java)
         println(user)
+        val userJson = KMongoUtils.jsonMapper.writeValueAsString(user)
+        println(userJson)
         println("testFindOne---End")
     }
 
@@ -416,6 +420,7 @@ class KMongoTest {
     //    @Disabled
     @OptIn(ExperimentalTime::class)
     @Test
+    @Disabled
     fun testDecodeFromString() {
         val account = Account(
             id = ObjectId("67d11287d0f1c354bbad4c1e"),

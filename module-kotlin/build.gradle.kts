@@ -19,9 +19,6 @@ dependencies {
     api(libs.zmkn.serialization.jackson.kotlin) // Jackson 工具库
     api(libs.kmongo.coroutine) // MongoDB 支持库
     api(libs.kmongo.coroutine.serialization) // KMongo KotlinX serialization 支持库
-    api(libs.kmongo.id) // KMongo Id 支持库
-    api(libs.kmongo.id.jackson) // KMongo Id Jackson serialization 支持库
-    api(libs.kmongo.id.serialization) // KMongo Id KotlinX serialization 支持库
     api(platform(libs.squareup.okhttp3.okhttp.bom)) // Okhttp Bom 物料库
     api(libs.squareup.okhttp3.okhttp) // Okhttp 库
     api(libs.victools.jsonschema.generator) // dashscope sdk 依赖库

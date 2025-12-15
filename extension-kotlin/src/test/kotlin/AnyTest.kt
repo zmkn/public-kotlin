@@ -9,8 +9,8 @@ import com.google.protobuf.Any as GoogleProtobufAny
 class AnyTest {
     data class User(val name: String, val age: Int)
 
-    @Test
     @Disabled
+    @Test
     fun testToMap() {
         println("testToMap---start")
         val user = User(name = "Alice", age = 29)

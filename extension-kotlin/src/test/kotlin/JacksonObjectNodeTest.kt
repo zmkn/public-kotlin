@@ -1,7 +1,7 @@
-import com.fasterxml.jackson.databind.node.ObjectNode
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.zmkn.extension.assign
 import org.junit.jupiter.api.Disabled
+import tools.jackson.databind.node.ObjectNode
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import kotlin.test.Test
 
 class JacksonObjectNodeTest {

@@ -1,12 +1,11 @@
 package com.zmkn.extension
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.node.ArrayNode
-import com.fasterxml.jackson.databind.node.ObjectNode
+import tools.jackson.databind.node.ArrayNode
+import tools.jackson.databind.node.ObjectNode
 
 fun ObjectNode.filter(predicate: (fieldName: String) -> Boolean): ObjectNode {
     val newObjectNode = deepCopy()
-    fieldNames().asSequence().toList().forEach {
+    propertyNames().toList().forEach {
         if (!predicate(it)) {
             newObjectNode.remove(it)
         }
@@ -26,18 +25,18 @@ fun ObjectNode.assign(vararg objectNodes: ObjectNode): ObjectNode {
                     val existingProperty = newObjectNode.get(propertyName)
                     if (propertyValue.isObject) {
                         if (existingProperty != null && existingProperty.isObject) {
-                            newObjectNode.set<JsonNode>(propertyName, (existingProperty as ObjectNode).assign(propertyValue as ObjectNode))
+                            newObjectNode.set(propertyName, (existingProperty as ObjectNode).assign(propertyValue as ObjectNode))
                         } else {
-                            newObjectNode.set<JsonNode>(propertyName, propertyValue.deepCopy())
+                            newObjectNode.set(propertyName, propertyValue.deepCopy())
                         }
                     } else if (propertyValue.isArray) {
                         if (existingProperty != null && existingProperty.isArray) {
-                            newObjectNode.set<JsonNode>(propertyName, (existingProperty as ArrayNode).assign(propertyValue as ArrayNode))
+                            newObjectNode.set(propertyName, (existingProperty as ArrayNode).assign(propertyValue as ArrayNode))
                         } else {
-                            newObjectNode.set<JsonNode>(propertyName, propertyValue.deepCopy())
+                            newObjectNode.set(propertyName, propertyValue.deepCopy())
                         }
                     } else {
-                        newObjectNode.set<JsonNode>(propertyName, propertyValue.deepCopy())
+                        newObjectNode.set(propertyName, propertyValue.deepCopy())
                     }
                 }
             }
