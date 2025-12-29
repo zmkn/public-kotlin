@@ -63,7 +63,7 @@ data class MultiModalConversationParamOptions(
         TEXT("text"),
         AUDIO("audio");
 
-        override fun toString() = value
+        override fun toString(): String = value
     }
 
     data class Message(

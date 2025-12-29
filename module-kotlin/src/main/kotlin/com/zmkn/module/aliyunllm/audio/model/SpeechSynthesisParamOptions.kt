@@ -75,6 +75,6 @@ data class SpeechSynthesisParamOptions(
         PCM_44100HZ_MONO_16BIT("pcm", 44100, "mono", "16bit"),
         PCM_48000HZ_MONO_16BIT("pcm", 48000, "mono", "16bit");
 
-        override fun toString(): String = "{\"format\": \"$format\", \"sampleRate\": $sampleRate, \"channels\": \"$channels\", \"bitRate\": \"$bitRate\"}"
+        override fun toString(): String = name
     }
 }

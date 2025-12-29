@@ -168,7 +168,7 @@ enum class ResponseCode(
     INVOKE_PLUGIN_FAILED(500, "InvokePluginFailed", "插件调用失败", "Failed to invoke plugin."),
     MODEL_UNAVAILABLE(503, "ModelUnavailable", "模型暂时无法提供服务", "Model is unavailable, please try again later.");
 
-    override fun toString(): String = "{\"statusCode\":$statusCode,\"code\":\"$code\",\"message\":\"$message\",\"messageEn\":\"$messageEn\"}"
+    override fun toString(): String = name
 
     companion object {
         fun fromCodeAndStatusCode(

@@ -12,7 +12,7 @@ enum class ResponseCode(
     INVALID_API_KEY(44, "ConnectionError", "请求中的 ApiKey 错误", "Invalid API-key provided."),
     MODEL_ACCESS_DENIED(44, "Model.AccessDenied", "模型拒绝访问", "Model access denied.");
 
-    override fun toString(): String = "{\"statusCode\":$statusCode,\"code\":\"$code\",\"message\":\"$message\",\"messageEn\":\"$messageEn\"}"
+    override fun toString(): String = name
 
     companion object {
         fun fromCodeAndStatusCode(
