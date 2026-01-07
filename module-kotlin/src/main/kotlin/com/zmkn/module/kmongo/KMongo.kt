@@ -49,11 +49,11 @@ class KMongo(connectionString: String, databaseName: String) : Closeable {
     class ConnectionPoolListener : MongodbConnectionPoolListener {
         var activeConnections: Int = 0
 
-        override fun connectionCheckedOut(event: ConnectionCheckedOutEvent?) {
+        override fun connectionCheckedOut(event: ConnectionCheckedOutEvent) {
             activeConnections += 1
         }
 
-        override fun connectionCheckedIn(event: ConnectionCheckedInEvent?) {
+        override fun connectionCheckedIn(event: ConnectionCheckedInEvent) {
             activeConnections -= 1
         }
     }
