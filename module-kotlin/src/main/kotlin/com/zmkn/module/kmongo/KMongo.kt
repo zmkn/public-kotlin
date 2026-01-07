@@ -1,18 +1,62 @@
 package com.zmkn.module.kmongo
 
+import com.mongodb.ConnectionString
+import com.mongodb.MongoClientSettings
+import com.mongodb.event.ConnectionCheckedInEvent
+import com.mongodb.event.ConnectionCheckedOutEvent
 import com.mongodb.reactivestreams.client.ClientSession
 import com.zmkn.module.kmongo.util.KMongoUtils.getCollectionName
 import com.zmkn.module.kmongo.util.KMongoUtils.registerCustomCodec
 import org.bson.Document
 import org.litote.kmongo.coroutine.*
+import java.io.Closeable
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 import kotlin.reflect.KClass
+import com.mongodb.event.ConnectionPoolListener as MongodbConnectionPoolListener
 import org.litote.kmongo.reactivestreams.KMongo as KMongoUtils
 
-class KMongo(connectionString: String, databaseName: String) {
-    private val _client: CoroutineClient = KMongoUtils.createClient(connectionString).coroutine
-    private val _database: CoroutineDatabase = _client.getDatabase(databaseName)
+class KMongo(connectionString: String, databaseName: String) : Closeable {
+    private var _isOpened: Boolean = false
+    private val _lock = ReentrantLock()
+    private val _connectionListener = ConnectionPoolListener()
+    private val _client: CoroutineClient by lazy {
+        _lock.withLock {
+            KMongoUtils.createClient(
+                MongoClientSettings
+                    .builder()
+                    .applyConnectionString(ConnectionString(connectionString))
+                    .applyToConnectionPoolSettings { builder ->
+                        builder.addConnectionPoolListener(_connectionListener)
+                    }
+                    .build()
+            ).coroutine.apply {
+                _isOpened = true
+            }
+        }
+    }
+    private val _database: CoroutineDatabase by lazy {
+        _client.getDatabase(databaseName)
+    }
 
-    val database: CoroutineDatabase = _database
+    val isOpened: Boolean
+        get() = _isOpened
+    val database: CoroutineDatabase
+        get() = _database
+    val activeConnections: Int
+        get() = _connectionListener.activeConnections
+
+    class ConnectionPoolListener : MongodbConnectionPoolListener {
+        var activeConnections: Int = 0
+
+        override fun connectionCheckedOut(event: ConnectionCheckedOutEvent?) {
+            activeConnections += 1
+        }
+
+        override fun connectionCheckedIn(event: ConnectionCheckedInEvent?) {
+            activeConnections -= 1
+        }
+    }
 
     fun <T : Any> getCollection(collectionName: String, collectionTypeKClass: KClass<T>): CoroutineCollection<T> = _database.database.getCollection(collectionName, collectionTypeKClass.java).coroutine
 
@@ -55,8 +99,13 @@ class KMongo(connectionString: String, databaseName: String) {
         }
     }
 
-    fun close() {
-        _client.client.close()
+    fun hasActiveConnections(): Boolean = activeConnections > 0
+
+    override fun close() {
+        _lock.withLock {
+            _client.close()
+            _isOpened = false
+        }
     }
 
     companion object {
