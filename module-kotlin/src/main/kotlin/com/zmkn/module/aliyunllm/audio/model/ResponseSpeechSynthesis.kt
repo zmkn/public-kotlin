@@ -1,8 +1,12 @@
 package com.zmkn.module.aliyunllm.audio.model
 
+import com.alibaba.dashscope.audio.tts.timestamp.Sentence
+
 data class ResponseSpeechSynthesis(
+    val requestId: String? = null,
     val usage: Usage? = null,
     val audios: ByteArray? = null,
+    val timestamp: Sentence? = null,
 ) {
     data class Usage(
         val characters: Int,

@@ -1,5 +1,6 @@
 package com.zmkn.module.aliyunllm.audio
 
+import com.alibaba.dashscope.audio.ttsv2.enrollment.VoiceEnrollmentParam
 import com.alibaba.dashscope.audio.ttsv2.enrollment.VoiceEnrollmentService
 import com.zmkn.module.aliyunllm.Base
 import com.zmkn.module.aliyunllm.audio.extension.toResponseVoice
@@ -42,7 +43,10 @@ class Voice(
         catch(
             apiKeyIndex,
             { apiKey ->
-                VoiceEnrollmentService(apiKey).createVoice(options.model, options.prefix, options.url).toResponseVoice()
+                val customParam = VoiceEnrollmentParam.builder()
+                    .languageHints(options.languageHints?.map { it.value })
+                    .build()
+                VoiceEnrollmentService(apiKey).createVoice(options.model, options.prefix, options.url, customParam).toResponseVoice()
             },
             { e ->
                 throw e

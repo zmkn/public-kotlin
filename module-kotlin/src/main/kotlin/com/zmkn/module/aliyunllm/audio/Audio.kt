@@ -83,11 +83,34 @@ class Audio(
             options.pitchRate?.also {
                 pitchRate(it)
             }
+            options.bitRate?.also {
+                parameter("bit_rate", it)
+            }
             options.enableWordTimestamp?.also {
                 enableWordTimestamp(it)
             }
             options.enablePhonemeTimestamp?.also {
                 enablePhonemeTimestamp(it)
+            }
+            options.seed?.also {
+                seed(it)
+            }
+            options.languageHints?.also {
+                languageHints(it.map { languageHint ->
+                    languageHint.value
+                })
+            }
+            options.instruction?.also {
+                instruction(it)
+            }
+            options.enableAigcTag?.also {
+                parameter("enable_aigc_tag", it)
+            }
+            options.aigcPropagator?.also {
+                parameter("aigc_propagator", it)
+            }
+            options.aigcPropagateId?.also {
+                parameter("aigc_propagate_id", it)
             }
         }.build()
 
