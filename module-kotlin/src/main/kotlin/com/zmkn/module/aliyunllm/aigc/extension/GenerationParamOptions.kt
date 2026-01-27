@@ -1,6 +1,7 @@
 package com.zmkn.module.aliyunllm.aigc.extension
 
 import com.alibaba.dashscope.aigc.generation.SearchOptions
+import com.alibaba.dashscope.aigc.generation.TranslationOptions
 import com.alibaba.dashscope.tools.ToolCallFunction
 import com.zmkn.module.aliyunllm.aigc.model.GenerationParamOptions
 
@@ -32,4 +33,32 @@ fun GenerationParamOptions.SearchOptions.toSearchOptions(): SearchOptions = Sear
     searchStrategy?.also {
         searchOptions.searchStrategy(it.value)
     }
+}.build()
+
+fun GenerationParamOptions.TranslationOptions.toTranslationOptions(): TranslationOptions = TranslationOptions.builder().also { translationOptions ->
+    translationOptions.sourceLang(sourceLang)
+    translationOptions.targetLang(targetLang)
+    domains?.also {
+        translationOptions.domains(it)
+    }
+    terms?.also { terms ->
+        translationOptions.terms(terms.map {
+            it.toTerm()
+        })
+    }
+    tmList?.also { tmList ->
+        translationOptions.tmList(tmList.map {
+            it.toTm()
+        })
+    }
+}.build()
+
+fun GenerationParamOptions.TranslationOptions.Tm.toTm(): TranslationOptions.Tm = TranslationOptions.Tm.builder().also { tm ->
+    tm.source(source)
+    tm.target(target)
+}.build()
+
+fun GenerationParamOptions.TranslationOptions.Term.toTerm(): TranslationOptions.Term = TranslationOptions.Term.builder().also { term ->
+    term.source(source)
+    term.target(target)
 }.build()

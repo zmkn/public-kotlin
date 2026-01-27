@@ -11,10 +11,7 @@ import com.alibaba.dashscope.common.MultiModalMessage
 import com.zmkn.module.aliyunllm.Base
 import com.zmkn.module.aliyunllm.aigc.enumeration.MessageRole
 import com.zmkn.module.aliyunllm.aigc.extension.*
-import com.zmkn.module.aliyunllm.aigc.model.GenerationParamOptions
-import com.zmkn.module.aliyunllm.aigc.model.MultiModalConversationParamOptions
-import com.zmkn.module.aliyunllm.aigc.model.MultiModalResponseMessage
-import com.zmkn.module.aliyunllm.aigc.model.ResponseMessage
+import com.zmkn.module.aliyunllm.aigc.model.*
 import com.zmkn.module.aliyunllm.aigc.util.AigcUtils
 import com.zmkn.module.aliyunllm.enumeration.ResponseCode
 import com.zmkn.module.aliyunllm.model.ApiOptions
@@ -86,13 +83,41 @@ class Aigc(
                     tools(newTools)
                 }
                 options.toolChoice?.also {
-                    toolChoice(it)
+                    if (it.type == ToolChoice.Type.AUTO || it.type == ToolChoice.Type.NONE) {
+                        toolChoice(it.type.value)
+                    } else {
+                        toolChoice(it)
+                    }
+                }
+                options.parallelToolCalls?.also {
+                    parallelToolCalls(it)
                 }
                 options.enableSearch?.also {
                     enableSearch(it)
                 }
                 options.searchOptions?.also {
                     searchOptions(it.toSearchOptions())
+                }
+                options.responseFormat?.also {
+                    responseFormat(it.toResponseFormat())
+                }
+                options.enableThinking?.also {
+                    enableThinking(it)
+                }
+                options.thinkingBudget?.also {
+                    thinkingBudget(it)
+                }
+                options.logprobs?.also {
+                    logprobs(it)
+                }
+                options.topLogprobs?.also {
+                    topLogprobs(it)
+                }
+                options.n?.also {
+                    n(it)
+                }
+                options.translationOptions?.also {
+                    translationOptions(it.toTranslationOptions())
                 }
             }.build()
     }
@@ -155,8 +180,60 @@ class Aigc(
                 options.ocrOptions?.also {
                     ocrOptions(it.toOcrOptions())
                 }
+                options.text?.also {
+                    text(it)
+                }
                 options.voice?.also {
                     voice(it.toAudioParametersVoice())
+                }
+                options.tools?.also {
+                    val newTools = it.map { tool ->
+                        AigcUtils.createToolFunction(tool)
+                    }
+                    tools(newTools)
+                }
+                options.toolChoice?.also {
+                    if (it.type == ToolChoice.Type.AUTO || it.type == ToolChoice.Type.NONE) {
+                        toolChoice(it.type.value)
+                    } else {
+                        toolChoice(mapOf("type" to it.type.value, "function" to it.function))
+                    }
+                }
+                options.parallelToolCalls?.also {
+                    parallelToolCalls(it)
+                }
+                options.vlHighResolutionImages?.also {
+                    vlHighResolutionImages(it)
+                }
+                options.vlEnableImageHwOutput?.also {
+                    vlEnableImageHwOutput(it)
+                }
+                options.responseFormat?.also {
+                    responseFormat(it.toResponseFormat())
+                }
+                options.negativePrompt?.also {
+                    negativePrompt(it)
+                }
+                options.promptExtend?.also {
+                    promptExtend(it)
+                }
+                options.watermark?.also {
+                    watermark(it)
+                }
+                options.size?.also {
+                    size(it)
+                }
+                options.n?.also {
+                    n(it)
+                }
+                options.languageType?.also {
+                    languageType(it.value)
+                }
+                options.enableThinking?.also {
+                    enableThinking(it)
+                }
+                options.thinkingBudget?.also {
+                    thinkingBudget(it)
                 }
             }.build()
     }

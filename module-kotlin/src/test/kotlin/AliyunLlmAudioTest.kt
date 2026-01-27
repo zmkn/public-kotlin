@@ -5,8 +5,10 @@ import com.zmkn.module.aliyunllm.audio.model.SpeechSynthesisParamOptions.TextTyp
 import com.zmkn.module.aliyunllm.audio.model.VoiceEnrollmentCreateOptions
 import com.zmkn.module.aliyunllm.model.ApiOptions
 import com.zmkn.util.FileUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -15,21 +17,25 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class AliyunLlmAudioTest {
-    private val _voice = Voice(
-        apiKeys = listOf("123465", ""),
-    )
+    private val _voice: Voice by lazy {
+        Voice(
+            apiKeys = listOf("123465", ""),
+        )
+    }
 
-    private val _audio = Audio(
-        apiKeys = listOf("123465", ""),
-        apiOptions = ApiOptions(
-            connectionOptions = ApiOptions.ConnectionOptions(
-                connectTimeout = 30,
-                connectionPoolSize = 1000,
-                maximumAsyncRequests = 1000,
-                maximumAsyncRequestsPerHost = 1000,
+    private val _audio: Audio by lazy {
+        Audio(
+            apiKeys = listOf("123465", ""),
+            apiOptions = ApiOptions(
+                connectionOptions = ApiOptions.ConnectionOptions(
+                    connectTimeout = 30,
+                    connectionPoolSize = 1000,
+                    maximumAsyncRequests = 1000,
+                    maximumAsyncRequestsPerHost = 1000,
+                ),
             ),
-        ),
-    )
+        )
+    }
 
     @OptIn(ExperimentalTime::class)
     val audioFile = File(FileUtils.getProjectRootDirectory("temp", "${Clock.System.now().epochSeconds}.mp3")).apply {
@@ -55,7 +61,9 @@ class AliyunLlmAudioTest {
             println(it)
         }.collect {
             if (it.audios != null) {
-                fos.write(it.audios)
+                withContext(Dispatchers.IO) {
+                    fos.write(it.audios)
+                }
             }
             if (it.usage != null) {
                 println(it)

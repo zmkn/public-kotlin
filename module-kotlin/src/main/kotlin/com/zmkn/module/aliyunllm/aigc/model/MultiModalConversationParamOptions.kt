@@ -37,8 +37,47 @@ data class MultiModalConversationParamOptions(
     val audio: AudioParameters? = null,
     // OCR选项
     val ocrOptions: OcrOptions? = null,
+    // 输入的文本
+    val text: String? = null,
     // voice of tts
     val voice: AudioParameters.Voice? = null,
+    // 用于指定可供模型调用的工具数组，可以包含一个或多个工具对象。
+    val tools: List<ToolFunction>? = null,
+    // 在使用tools参数时，用于控制模型调用指定工具。
+    val toolChoice: ToolChoice? = null,
+    // 是否开启并行工具调用。默认值为 false。
+    val parallelToolCalls: Boolean? = null,
+    // 是否将输入图像的像素上限提升至 16384 Token 对应的像素值。默认值为 false。
+    // vl_high_resolution_images：true，使用固定分辨率策略，忽略 max_pixels 设置，超过此分辨率时会将图像总像素缩小至此上限内。
+    // vl_high_resolution_images为false，像素上限由 max_pixels 决定，输入图像的像素超过max_pixels会将图像缩小至max_pixels内。各模型的默认像素上限即max_pixels的默认值。
+    val vlHighResolutionImages: Boolean? = null,
+    // 是否返回图像缩放后的尺寸。模型会对输入的图像进行缩放处理，配置为 True 时会返回图像缩放后的高度和宽度，开启流式输出时，该信息在最后一个数据块（chunk）中返回。默认值为 false。
+    val vlEnableImageHwOutput: Boolean? = null,
+    // 返回内容的格式。默认值为{"type": "text"}。
+    val responseFormat: ResponseFormat? = null,
+    // 反向提示词。描述不希望在画面中出现的内容，如“模糊”、“多余的手指”等。
+    val negativePrompt: String? = null,
+    // 是否开启提示词智能改写。开启后，将使用大模型优化正向提示词，对较短的提示词有明显提升效果，但增加3-4秒耗时。默认值为 true。
+    val promptExtend: Boolean? = null,
+    // 是否添加水印标识，水印位于图片右下角，文案固定为“AI生成”。默认值为 false。
+    val watermark: Boolean? = null,
+    /*
+     * 输出图像的分辨率，格式为宽*高。例如：
+     * 1:1：1280*1280
+     * 3:4：1104*1472
+     * 4:3：1472*1104
+     * 9:16：960*1696
+     * 16:9：1696*960
+     */
+    val size: String? = null,
+    // 生成图片的数量。取值范围为1~4张，默认为4。测试阶段建议设置为1，便于低成本验证。
+    val n: Int? = null,
+    // 指定合成音频的语种，默认为 Auto。
+    val languageType: LanguageType? = null,
+    // 使用混合思考模型时，是否开启思考模式，适用于 Qwen3 、Qwen3-VL模型。
+    val enableThinking: Boolean? = null,
+    // 思考过程的最大长度。适用于Qwen3-VL、Qwen3 的商业版与开源版模型。默认值为模型最大思维链长度。
+    val thinkingBudget: Int? = null,
 ) {
     init {
         require(messages.isNotEmpty()) { "Property 'messages' must not be empty." }
@@ -57,11 +96,30 @@ data class MultiModalConversationParamOptions(
         seed?.let {
             require(it in 0..Int.MAX_VALUE) { "Property 'seed' must be between 0 and ${Int.MAX_VALUE}, but was $it." }
         }
+        n?.let {
+            require(it in 1..4) { "Property 'n' must be between 1 and 4, but was $it." }
+        }
     }
 
     enum class Modality(val value: String) {
         TEXT("text"),
         AUDIO("audio");
+
+        override fun toString(): String = value
+    }
+
+    enum class LanguageType(val value: String, val description: String) {
+        AUTO("Auto", "自动"),
+        CHINESE("Chinese", "中文"),
+        ENGLISH("English", "英文"),
+        GERMAN("German", "德语"),
+        ITALIAN("Italian", "意大利语"),
+        PORTUGUESE("Portuguese", "葡萄牙语"),
+        SPANISH("Spanish", "西班牙语"),
+        JAPANESE("Japanese", "日语"),
+        KOREAN("Korean", "韩语"),
+        FRENCH("French", "法语"),
+        RUSSIAN("Russian", "俄语");
 
         override fun toString(): String = value
     }

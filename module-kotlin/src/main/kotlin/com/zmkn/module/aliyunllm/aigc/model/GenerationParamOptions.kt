@@ -26,13 +26,29 @@ data class GenerationParamOptions(
     // stopStrings 与 stopTokens 互斥，不可同时使用。
     val stopTokens: List<List<Int>>? = null,
     // 用于指定可供模型调用的工具数组，可以包含一个或多个工具对象。
-    val tools: List<Tool>? = null,
+    val tools: List<ToolFunction>? = null,
     // 在使用tools参数时，用于控制模型调用指定工具。
     val toolChoice: ToolChoice? = null,
+    // 是否开启并行工具调用。默认值为 false。
+    val parallelToolCalls: Boolean? = null,
     // 用于控制模型在生成文本时是否使用互联网搜索结果进行参考。
     val enableSearch: Boolean? = null,
     // 联网搜索的策略。仅当enableSearch为true时生效。
     val searchOptions: SearchOptions? = null,
+    // 返回内容的格式。默认值为{"type": "text"}。
+    val responseFormat: ResponseFormat? = null,
+    // 使用混合思考模型时，是否开启思考模式，适用于 Qwen3 、Qwen3-VL模型。
+    val enableThinking: Boolean? = null,
+    // 思考过程的最大长度。适用于Qwen3-VL、Qwen3 的商业版与开源版模型。默认值为模型最大思维链长度。
+    val thinkingBudget: Int? = null,
+    // 是否返回输出 Token 的对数概率。
+    val logprobs: Boolean? = null,
+    // 指定在每一步生成时，返回模型最大概率的候选 Token 个数。取值范围：[0,5]。
+    val topLogprobs: Int? = null,
+    // 生成响应的个数，取值范围是1-4。对于需要生成多个响应的场景（如创意写作、广告文案等），可以设置较大的 n 值。
+    val n: Int? = null,
+    // 翻译参数
+    val translationOptions: TranslationOptions? = null,
 ) {
     init {
         require(messages.isNotEmpty()) { "Property 'messages' must not be empty." }
@@ -47,6 +63,12 @@ data class GenerationParamOptions(
         }
         seed?.let {
             require(it in 0..Int.MAX_VALUE) { "Property 'seed' must be between 0 and ${Int.MAX_VALUE}, but was $it." }
+        }
+        topLogprobs?.let {
+            require(it in 0..5) { "Property 'topLogprobs' must be between 0 and 5, but was $it." }
+        }
+        n?.let {
+            require(it in 1..4) { "Property 'n' must be between 1 and 4, but was $it." }
         }
         require(stopStrings == null || stopTokens == null) { "Property 'stopStrings' and 'stopTokens' are mutually exclusive." }
     }
@@ -68,25 +90,6 @@ data class GenerationParamOptions(
                 val output: String,
             )
         }
-    }
-
-    data class Tool(
-        val name: String,
-        val description: String,
-        val schema: String,
-    )
-
-    data class ToolChoice(
-        val type: String = "function",
-        val function: Function,
-    ) {
-        init {
-            require(type == "function") { "Property 'type' must be 'function', but was '$type'" }
-        }
-
-        data class Function(
-            val name: String,
-        )
     }
 
     data class SearchOptions(
@@ -115,5 +118,32 @@ data class GenerationParamOptions(
                 }
             }
         }
+    }
+
+    data class TranslationOptions(
+        // 源语言的英文全称
+        val sourceLang: String,
+        // 目标语言的英文全称
+        val targetLang: String,
+        // 在使用领域提示功能时需要设置的领域提示语句
+        val domains: String? = null,
+        // 在使用术语干预翻译功能时需要设置的术语数组
+        val terms: List<Term>? = null,
+        // 在使用翻译记忆功能时需要设置的翻译记忆数组
+        val tmList: List<Tm>? = null,
+    ) {
+        data class Tm(
+            // 源语句
+            val source: String,
+            // 已翻译的语句
+            val target: String,
+        )
+
+        data class Term(
+            // 术语
+            val source: String,
+            // 提前翻译好的术语
+            val target: String,
+        )
     }
 }

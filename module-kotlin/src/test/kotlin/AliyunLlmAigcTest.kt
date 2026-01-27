@@ -32,14 +32,16 @@ class GetTimeTool {
 }
 
 class AliyunLlmAigcTest {
-    private val _aigc = Aigc(listOf("", ""))
+    private val _aigc: Aigc by lazy {
+        Aigc(listOf("", ""))
+    }
 
-    private suspend fun createStreamMessageAndTools(messages: List<GenerationParamOptions.Message>, tools: List<GenerationParamOptions.Tool>? = null): Flow<ResponseMessage> {
+    private suspend fun createStreamMessageAndTools(messages: List<GenerationParamOptions.Message>, tools: List<ToolFunction>? = null): Flow<ResponseMessage> {
         println("开始-createStreamMessageAndTools")
         println(messages)
         val options =
             GenerationParamOptions(
-                model = "qwq-plus",
+                model = "qwen-plus",
                 messages = messages,
                 tools = tools,
                 enableSearch = false,
@@ -128,8 +130,8 @@ class AliyunLlmAigcTest {
         }
     }
 
-    @Test
     @Disabled
+    @Test
     fun testCreateStreamMessageAndTools() = runBlocking {
         createStreamMessageAndTools(
             listOf(
@@ -143,12 +145,12 @@ class AliyunLlmAigcTest {
                 )
             ),
             listOf(
-                GenerationParamOptions.Tool(
+                ToolFunction(
                     name = "get_current_weather",
                     description = "获取指定地区的天气",
                     schema = AigcUtils.generateSchema(GetWeatherTool::class.java),
                 ),
-                GenerationParamOptions.Tool(
+                ToolFunction(
                     name = "get_current_time",
                     description = "获取当前时刻的时间",
                     schema = AigcUtils.generateSchema(GetTimeTool::class.java),
@@ -159,8 +161,8 @@ class AliyunLlmAigcTest {
         }
     }
 
-    @Test
     @Disabled
+    @Test
     fun testCreateStreamMultiModalMessage() = runBlocking {
         val messages =
             mutableListOf(

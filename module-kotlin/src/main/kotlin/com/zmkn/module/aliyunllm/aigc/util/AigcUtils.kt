@@ -4,14 +4,15 @@ import com.alibaba.dashscope.common.Message
 import com.alibaba.dashscope.common.MultiModalMessage
 import com.alibaba.dashscope.common.Role
 import com.alibaba.dashscope.tools.FunctionDefinition
-import com.alibaba.dashscope.tools.ToolFunction
 import com.alibaba.dashscope.utils.JsonUtils
 import com.github.victools.jsonschema.generator.*
 import com.zmkn.module.aliyunllm.aigc.extension.toMap
 import com.zmkn.module.aliyunllm.aigc.extension.toToolCallBase
 import com.zmkn.module.aliyunllm.aigc.model.GenerationParamOptions
 import com.zmkn.module.aliyunllm.aigc.model.MultiModalMessageContent
+import com.zmkn.module.aliyunllm.aigc.model.ToolFunction
 import java.lang.reflect.Type
+import com.alibaba.dashscope.tools.ToolFunction as DashscopeToolFunction
 
 object AigcUtils {
     private val schemaGeneratorConfigBuilder = SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_2020_12, OptionPreset.PLAIN_JSON)
@@ -22,7 +23,7 @@ object AigcUtils {
             .build()
     private val schemaGenerator = SchemaGenerator(schemaGeneratorConfig)
 
-    private fun createFunctionDefinition(options: GenerationParamOptions.Tool): FunctionDefinition = FunctionDefinition
+    private fun createFunctionDefinition(options: ToolFunction): FunctionDefinition = FunctionDefinition
         .builder()
         .name(options.name)
         .description(options.description)
@@ -99,9 +100,9 @@ object AigcUtils {
 
     fun createMultiModalAssistantMessage(vararg contents: MultiModalMessageContent) = createMultiModalAssistantMessage(contents.toList())
 
-    fun createToolFunction(options: GenerationParamOptions.Tool): ToolFunction {
+    fun createToolFunction(options: ToolFunction): DashscopeToolFunction {
         val functionDefinition = createFunctionDefinition(options)
-        return ToolFunction
+        return DashscopeToolFunction
             .builder()
             .function(functionDefinition)
             .build()
