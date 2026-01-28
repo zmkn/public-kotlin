@@ -7,5 +7,5 @@ fun SpeechSynthesisResult.toResponseSpeechSynthesis(): ResponseSpeechSynthesis =
     requestId = requestId,
     usage = usage?.toResponseSpeechSynthesisUsage(),
     audios = audioFrame?.array(),
-    timestamp = timestamp
+    timestamp = timestamp?.toResponseSpeechSynthesisSentence()
 )

@@ -42,8 +42,8 @@ class AliyunLlmAudioTest {
         parentFile.mkdirs()
     }
 
-    @Test
     @Disabled
+    @Test
     fun testCreateStreamSpeechSynthesizer() = runBlocking {
         println("开始-testCreateStreamSpeechSynthesizer")
         val fos = FileOutputStream(audioFile)
@@ -55,6 +55,8 @@ class AliyunLlmAudioTest {
                 voice = "longwan_v2",
                 pitchRate = 1.0f,
                 textType = TextType.SSML,
+                enableWordTimestamp = true,
+                enablePhonemeTimestamp = true,
             )
         _audio.createStreamSpeechSynthesizer(options).catch {
             println("catch")
