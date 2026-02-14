@@ -1,11 +1,9 @@
 package com.zmkn.extension
 
 import com.google.protobuf.*
-import kotlin.time.ExperimentalTime
 import com.google.protobuf.Any as ProtobufAny
 
 @Suppress("UNCHECKED_CAST")
-@OptIn(ExperimentalTime::class)
 fun <T> ProtobufAny.toAny(): T = when {
     this.`is`(StringValue::class.java) -> this.unpack(StringValue::class.java).value
     this.`is`(Int32Value::class.java) -> this.unpack(Int32Value::class.java).value

@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 class AliyunLlmAudioTest {
     private val _voice: Voice by lazy {
@@ -37,7 +36,6 @@ class AliyunLlmAudioTest {
         )
     }
 
-    @OptIn(ExperimentalTime::class)
     val audioFile = File(FileUtils.getProjectRootDirectory("temp", "${Clock.System.now().epochSeconds}.mp3")).apply {
         parentFile.mkdirs()
     }

@@ -19,7 +19,6 @@ import tools.jackson.databind.node.ObjectNode
 import kotlin.reflect.typeOf
 import kotlin.test.Test
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 class KMongoTest {
@@ -161,7 +160,6 @@ class KMongoTest {
         println("testAggregateByDocument---End")
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testInsertOne() = runBlocking {
@@ -206,7 +204,6 @@ class KMongoTest {
         println("kMongoText---End")
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testFindOneAndUpdate() = runBlocking {
@@ -241,7 +238,6 @@ class KMongoTest {
         println("testFindOneAndUpdate---End")
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testFindOneAndReplace() = runBlocking {
@@ -282,7 +278,6 @@ class KMongoTest {
         println("kMongoText---End")
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testSave() = runBlocking {
@@ -311,7 +306,6 @@ class KMongoTest {
         println("testSave---End")
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testBulkWrite() = runBlocking {
@@ -335,7 +329,6 @@ class KMongoTest {
         println("testBulkWrite---End")
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testBulkWriteByDocument() = runBlocking {
@@ -379,7 +372,6 @@ class KMongoTest {
         println("testProjectionByDocument---End")
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testBsonToJson() {
@@ -399,7 +391,6 @@ class KMongoTest {
         println(collectionName)
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testDecodeFromDocument() {
@@ -417,8 +408,6 @@ class KMongoTest {
         println(KMongoUtils.decodeFromString(Name::class, json2))
     }
 
-    //    @Disabled
-    @OptIn(ExperimentalTime::class)
     @Test
     @Disabled
     fun testDecodeFromString() {
