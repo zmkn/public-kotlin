@@ -44,6 +44,7 @@ class Voice(
             apiKeyIndex,
             { apiKey ->
                 val customParam = VoiceEnrollmentParam.builder()
+                    .model("")
                     .languageHints(options.languageHints?.map { it.value })
                     .build()
                 VoiceEnrollmentService(apiKey).createVoice(options.model, options.prefix, options.url, customParam).toResponseVoice()

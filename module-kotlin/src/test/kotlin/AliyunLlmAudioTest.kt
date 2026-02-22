@@ -73,15 +73,16 @@ class AliyunLlmAudioTest {
         println("结束-testCreateStreamSpeechSynthesizer")
     }
 
-    @Test
     @Disabled
+    @Test
     fun testCreateVoice() = runBlocking {
         println("开始-testCreateVoice")
         val responseVoice = _voice.createVoice(
             VoiceEnrollmentCreateOptions(
-                model = "cosyvoice-v2",
+                model = "cosyvoice-v3-flash",
                 prefix = "lingqi",
-                url = "http://hz.joyfulboy.cn/voice/001.mp3",
+                url = "https://oss.test.ailingqi.com/audio/user/67d11287d0f1c354bbad4c1e/mp3/odyQFboVCMUB7hhb.mp3",
+                languageHints = null
             )
         )
         println(responseVoice)
