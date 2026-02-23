@@ -28,7 +28,7 @@ object AudioUtils {
         return texts
     }
 
-    fun formatSpeechSynthesizerTexts(texts: List<String>): List<String> = texts.map { text ->
+    fun formatSpeechSynthesizerTexts(texts: List<String>): List<String> = texts.flatMap { text ->
         splitSpeechSynthesizerText(text)
-    }.flatten()
+    }
 }

@@ -137,7 +137,7 @@ class Audio(
         }
         speechSynthesizer.updateParamAndCallback(param, resultCallback)
         if (options.textType == TextType.SSML) {
-            speechSynthesizer.call(options.texts[0])
+            speechSynthesizer.call(options.texts.joinToString(separator = ""))
         } else {
             AudioUtils.formatSpeechSynthesizerTexts(options.texts).forEach { text ->
                 speechSynthesizer.streamingCall(text)

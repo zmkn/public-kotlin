@@ -45,12 +45,12 @@ class AliyunLlmAudioTest {
     fun testCreateStreamSpeechSynthesizer() = runBlocking {
         println("开始-testCreateStreamSpeechSynthesizer")
         val fos = FileOutputStream(audioFile)
-        val texts = listOf("<speak rate=\"0.7\" pitch=\"1.0\" volume=\"100\" bgm=\"http://nls.alicdn.com/bgm/2.wav\" backgroundMusicVolume=\"30\">星阳帝国，遂州城。漫天乌云，透着一股沉闷无比的气息。</speak>")
+        val texts = listOf("<speak rate=\"0.7\" pitch=\"1.0\" volume=\"100\" bgm=\"http://nls.alicdn.com/bgm/2.wav\" backgroundMusicVolume=\"30\">星阳帝国，遂州城。漫天乌云，透着一股沉闷无比的气息。</speak>", "<speak rate=\"0.7\" pitch=\"1.0\" volume=\"100\" bgm=\"http://nls.alicdn.com/bgm/2.wav\" backgroundMusicVolume=\"30\">“黄泉路长无客栈，看好脚下，上路了！”</speak>")
         val options =
             SpeechSynthesisParamOptions(
-                model = "cosyvoice-v2",
+                model = "cosyvoice-v3-flash",
                 texts = texts,
-                voice = "longwan_v2",
+                voice = "longanyang",
                 pitchRate = 1.0f,
                 textType = TextType.SSML,
                 enableWordTimestamp = true,
