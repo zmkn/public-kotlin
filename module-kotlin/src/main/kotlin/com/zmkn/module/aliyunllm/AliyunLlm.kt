@@ -5,8 +5,9 @@ import com.zmkn.module.aliyunllm.aigc.model.GenerationParamOptions
 import com.zmkn.module.aliyunllm.aigc.model.MultiModalConversationParamOptions
 import com.zmkn.module.aliyunllm.audio.Audio
 import com.zmkn.module.aliyunllm.audio.Voice
+import com.zmkn.module.aliyunllm.audio.model.CreateVoiceOptions
+import com.zmkn.module.aliyunllm.audio.model.EnrollVoiceOptions
 import com.zmkn.module.aliyunllm.audio.model.SpeechSynthesisParamOptions
-import com.zmkn.module.aliyunllm.audio.model.VoiceEnrollmentCreateOptions
 import com.zmkn.module.aliyunllm.model.ApiOptions
 
 class AliyunLlm(
@@ -39,27 +40,29 @@ class AliyunLlm(
 
     fun createStreamSpeechSynthesizer(options: SpeechSynthesisParamOptions) = _audio.createStreamSpeechSynthesizer(options)
 
-    suspend fun createVoice(options: VoiceEnrollmentCreateOptions) = _voice.createVoice(options)
+    suspend fun createVoice(options: CreateVoiceOptions) = _voice.createVoice(options)
 
-    suspend fun queryAllVoices(
+    suspend fun enrollVoice(options: EnrollVoiceOptions) = _voice.enrollVoice(options)
+
+    suspend fun queryAllEnrolledVoices(
         prefix: String,
         pageIndex: Int,
         pageSize: Int,
-    ) = _voice.queryAllVoices(
+    ) = _voice.queryAllEnrolledVoices(
         prefix = prefix,
         pageIndex = pageIndex,
         pageSize = pageSize,
     )
 
-    suspend fun queryVoice(id: String) = _voice.queryVoice(id)
+    suspend fun queryEnrolledVoice(id: String) = _voice.queryEnrolledVoice(id)
 
-    suspend fun updateVoice(
+    suspend fun updateEnrolledVoice(
         id: String,
         url: String,
-    ) = _voice.updateVoice(
+    ) = _voice.updateEnrolledVoice(
         id = id,
         url = url,
     )
 
-    suspend fun deleteVoice(id: String) = _voice.deleteVoice(id)
+    suspend fun deleteEnrolledVoice(id: String) = _voice.deleteEnrolledVoice(id)
 }

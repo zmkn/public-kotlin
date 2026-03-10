@@ -1,6 +1,6 @@
 package com.zmkn.module.aliyunllm.audio.model
 
-data class ResponseVoice(
+data class ResponseEnrolledVoice(
     val voiceId: String? = null,
     val status: Status,
     val gmtCreate: String? = null,

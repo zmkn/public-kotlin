@@ -22,25 +22,36 @@ import kotlin.reflect.full.starProjectedType
 object OkHttpUtils {
     const val EMPTY_JSON: String = "{}"
 
-    fun create(): OkHttpClient = OkHttpClient.Builder()
+    fun create(
+        followRedirects: Boolean? = null,
+        followSslRedirects: Boolean? = null,
+        readTimeout: Long? = null,
+        writeTimeout: Long? = null,
+        connectTimeout: Long? = null,
+        callTimeout: Long? = null,
+        retryOnConnectionFailure: Boolean? = null,
+        maxIdleConnections: Int? = null,
+        keepAliveDuration: Long? = null,
+        protocols: List<Protocol>? = null,
+    ): OkHttpClient = OkHttpClient.Builder()
         // 配置此客户端以遵循重定向
-        .followRedirects(true)
+        .followRedirects(followRedirects ?: true)
         // 配置此客户端以允许协议从 HTTPS 重定向到 HTTP 以及从 HTTP 重定向到 HTTPS。重定向仍然首先受 followRedirects 限制。默认为 true。
-        .followSslRedirects(true)
+        .followSslRedirects(followSslRedirects ?: true)
         // 设置读取数据超时时间为60秒
-        .readTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(readTimeout ?: 60, TimeUnit.SECONDS)
         // 设置写入数据超时时间为60秒
-        .writeTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(writeTimeout ?: 60, TimeUnit.SECONDS)
         // 设置建立连接超时时间为10秒
-        .connectTimeout(10, TimeUnit.SECONDS)
-        // 不设置整体请求超时时间
-        .callTimeout(0, TimeUnit.SECONDS)
+        .connectTimeout(connectTimeout ?: 10, TimeUnit.SECONDS)
+        // 设置整体请求超时时间，默认0为不超时。
+        .callTimeout(callTimeout ?: 0, TimeUnit.SECONDS)
         // 设置连接失败时不自动重试
-        .retryOnConnectionFailure(false)
+        .retryOnConnectionFailure(retryOnConnectionFailure ?: true)
         // 设置连接池最大连接数为100个，每个连接最长存活时间为5分钟
-        .connectionPool(ConnectionPool(100, 5, TimeUnit.MINUTES))
+        .connectionPool(ConnectionPool(maxIdleConnections ?: 100, keepAliveDuration ?: 5, TimeUnit.MINUTES))
         // 设置连接协议列表
-        .protocols(listOf(Protocol.HTTP_2, Protocol.HTTP_1_1))
+        .protocols(protocols ?: listOf(Protocol.HTTP_2, Protocol.HTTP_1_1))
         .build()
 
     fun isFullUrl(url: String): Boolean = !url.startsWith("/")

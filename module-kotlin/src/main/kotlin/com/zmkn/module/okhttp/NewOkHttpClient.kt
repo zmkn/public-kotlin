@@ -10,9 +10,11 @@ import okhttp3.Response
 import kotlin.reflect.KType
 
 class NewOkHttpClient(
-    var okHttpClient: OkHttpClient = OkHttpUtils.create(),
     val baseUrl: String,
+    okHttpClient: OkHttpClient? = null,
 ) {
+    var okHttpClient: OkHttpClient = okHttpClient ?: OkHttpUtils.create()
+
     suspend fun request(request: Request): Response {
         val url = request.url.toString()
         val newRequest = if (OkHttpUtils.isFullUrl(url)) {

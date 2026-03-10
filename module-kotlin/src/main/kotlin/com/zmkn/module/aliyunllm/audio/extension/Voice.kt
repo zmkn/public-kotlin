@@ -1,14 +1,14 @@
 package com.zmkn.module.aliyunllm.audio.extension
 
 import com.alibaba.dashscope.audio.ttsv2.enrollment.Voice
-import com.zmkn.module.aliyunllm.audio.model.ResponseVoice
+import com.zmkn.module.aliyunllm.audio.model.ResponseEnrolledVoice
 
-fun Voice.toResponseVoice(): ResponseVoice = ResponseVoice(
+fun Voice.toResponseEnrolledVoice(): ResponseEnrolledVoice = ResponseEnrolledVoice(
     voiceId = voiceId,
     status = if (status == null) {
-        ResponseVoice.Status.OK
+        ResponseEnrolledVoice.Status.OK
     } else {
-        ResponseVoice.Status.fromValue(status)
+        ResponseEnrolledVoice.Status.fromValue(status)
     },
     gmtCreate = gmtCreate,
     gmtModified = gmtModified,

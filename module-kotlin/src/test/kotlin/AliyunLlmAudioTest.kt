@@ -1,8 +1,9 @@
 import com.zmkn.module.aliyunllm.audio.Audio
 import com.zmkn.module.aliyunllm.audio.Voice
+import com.zmkn.module.aliyunllm.audio.model.CreateVoiceOptions
+import com.zmkn.module.aliyunllm.audio.model.EnrollVoiceOptions
 import com.zmkn.module.aliyunllm.audio.model.SpeechSynthesisParamOptions
 import com.zmkn.module.aliyunllm.audio.model.SpeechSynthesisParamOptions.TextType
-import com.zmkn.module.aliyunllm.audio.model.VoiceEnrollmentCreateOptions
 import com.zmkn.module.aliyunllm.model.ApiOptions
 import com.zmkn.util.FileUtils
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,7 @@ import kotlin.time.Clock
 class AliyunLlmAudioTest {
     private val _voice: Voice by lazy {
         Voice(
-            apiKeys = listOf("123465", ""),
+            apiKeys = listOf("123", ""),
         )
     }
 
@@ -78,53 +79,75 @@ class AliyunLlmAudioTest {
     fun testCreateVoice() = runBlocking {
         println("开始-testCreateVoice")
         val responseVoice = _voice.createVoice(
-            VoiceEnrollmentCreateOptions(
-                model = "cosyvoice-v3-flash",
+            CreateVoiceOptions(
+                input = CreateVoiceOptions.Input(
+                    targetModel = "cosyvoice-v3.5-plus",
+                    prefix = "lingqi",
+                    voicePrompt = "沉稳的中年男性播音员，音色低沉浑厚，富有磁性，语速平稳，吐字清晰，适合用于新闻播报或纪录片解说。",
+                    previewText = "各位听众朋友，大家好，欢迎收听晚间新闻。",
+                ),
+            ),
+        )
+        println(responseVoice)
+        println(responseVoice.output?.voiceId)
+        println("结束-testCreateVoice")
+    }
+
+    @Disabled
+    @Test
+    fun testEnrollVoice() = runBlocking {
+        println("开始-testEnrollVoice")
+        val responseVoice = _voice.enrollVoice(
+            EnrollVoiceOptions(
+                model = "cosyvoice-v3.5-flash",
                 prefix = "lingqi",
                 url = "https://oss.test.ailingqi.com/audio/user/67d11287d0f1c354bbad4c1e/mp3/odyQFboVCMUB7hhb.mp3",
                 languageHints = null
             )
         )
         println(responseVoice)
-        println("结束-testCreateVoice")
+        println("结束-testEnrollVoice")
     }
 
-    @Test
     @Disabled
-    fun testQueryAllVoices() = runBlocking {
-        println("开始-testQueryAllVoices")
-        val list = _voice.queryAllVoices("lingqi", 0, 10)
+    @Test
+    fun testQueryAllEnrolledVoices() = runBlocking {
+        println("开始-testQueryAllEnrolledVoices")
+        val list = _voice.queryAllEnrolledVoices("lingqi", 0, 10)
+        list.forEach {
+            println(it.voiceId)
+        }
         println(list)
-        println("结束-testQueryAllVoices")
+        println("结束-testQueryAllEnrolledVoices")
     }
 
     @Test
     @Disabled
-    fun testQueryVoice() = runBlocking {
-        println("开始-testQueryVoice")
-        val voice = _voice.queryVoice("cosyvoice-v1-aaa1-3aff2904a86c400bbd4e77eca17b7da7")
+    fun testQueryEnrolledVoice() = runBlocking {
+        println("开始-testQueryEnrolledVoice")
+        val voice = _voice.queryEnrolledVoice("cosyvoice-v1-aaa1-3aff2904a86c400bbd4e77eca17b7da7")
         println(voice)
-        println("结束-testQueryVoice")
+        println("结束-testQueryEnrolledVoice")
     }
 
     @Test
     @Disabled
-    fun testUpdateVoice() = runBlocking {
-        println("开始-testUpdateVoice")
-        val result = _voice.updateVoice(
+    fun testUpdateEnrolledVoice() = runBlocking {
+        println("开始-testUpdateEnrolledVoice")
+        val result = _voice.updateEnrolledVoice(
             id = "cosyvoice-v1-aaa1-3aff2904a86c400bbd4e77eca17b7da7",
             url = "http://hz.joyfulboy.cn/voice/001.mp3",
         )
         println(result)
-        println("结束-testUpdateVoice")
+        println("结束-testUpdateEnrolledVoice")
     }
 
     @Test
     @Disabled
-    fun testDeleteVoice() = runBlocking {
-        println("开始-testDeleteVoice")
-        val result = _voice.deleteVoice("cosyvoice-v1-aaa1-ce39a5e71a104ac1a8572ff9baed2f6b")
+    fun testDeleteEnrolledVoice() = runBlocking {
+        println("开始-testDeleteEnrolledVoice")
+        val result = _voice.deleteEnrolledVoice("cosyvoice-v1-aaa1-ce39a5e71a104ac1a8572ff9baed2f6b")
         println(result)
-        println("结束-testDeleteVoice")
+        println("结束-testDeleteEnrolledVoice")
     }
 }

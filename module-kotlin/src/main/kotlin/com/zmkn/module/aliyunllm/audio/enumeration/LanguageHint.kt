@@ -10,7 +10,11 @@ enum class LanguageHint(
     DE("de", "德语"),
     JA("ja", "日语"),
     KO("ko", "韩语"),
-    RU("ru", "俄语");
+    RU("ru", "俄语"),
+    PT("pt", "葡萄牙语"),
+    TH("th", "泰语"),
+    ID("id", "印尼语"),
+    VI("vi", "越南语");
 
     override fun toString(): String = name
 

@@ -2,16 +2,21 @@ package com.zmkn.module.aliyunllm.audio
 
 import com.alibaba.dashscope.audio.ttsv2.enrollment.VoiceEnrollmentParam
 import com.alibaba.dashscope.audio.ttsv2.enrollment.VoiceEnrollmentService
+import com.alibaba.dashscope.common.Status
+import com.alibaba.dashscope.exception.ApiException
+import com.alibaba.dashscope.utils.Constants
 import com.zmkn.module.aliyunllm.Base
-import com.zmkn.module.aliyunllm.audio.extension.toResponseVoice
-import com.zmkn.module.aliyunllm.audio.model.ResponseVoice
-import com.zmkn.module.aliyunllm.audio.model.VoiceEnrollmentCreateOptions
+import com.zmkn.module.aliyunllm.audio.extension.toResponseEnrolledVoice
+import com.zmkn.module.aliyunllm.audio.model.*
 import com.zmkn.module.aliyunllm.enumeration.ResponseCode
 import com.zmkn.module.aliyunllm.model.ApiOptions
 import com.zmkn.module.aliyunllm.model.RequestException
 import com.zmkn.module.aliyunllm.util.AliyunLlmUtils
+import com.zmkn.module.okhttp.NewOkHttpClient
+import com.zmkn.module.okhttp.util.OkHttpUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Headers
 
 class Voice(
     private val apiKeys: List<String>,
@@ -20,6 +25,18 @@ class Voice(
     apiKeys = apiKeys,
     apiOptions = apiOptions,
 ) {
+    private val _httpClient: NewOkHttpClient = NewOkHttpClient(
+        baseUrl = Constants.baseHttpApiUrl,
+        okHttpClient = apiOptions?.connectionOptions?.let { connectionOptions ->
+            OkHttpUtils.create(
+                readTimeout = connectionOptions.readTimeout,
+                writeTimeout = connectionOptions.writeTimeout,
+                connectTimeout = connectionOptions.connectTimeout,
+                maxIdleConnections = connectionOptions.connectionPoolSize,
+            )
+        },
+    )
+
     private suspend fun <T> catch(
         apiKeyIndex: Int,
         block: suspend (apiKey: String) -> T,
@@ -38,16 +55,44 @@ class Voice(
 
     private suspend fun createVoice(
         apiKeyIndex: Int,
-        options: VoiceEnrollmentCreateOptions,
-    ): ResponseVoice = withContext(Dispatchers.IO) {
+        options: CreateVoiceOptions,
+    ): ResponseCreatedVoice = withContext(Dispatchers.IO) {
+        catch(
+            apiKeyIndex,
+            { apiKey ->
+                val headers = Headers.headersOf("Authorization", "Bearer $apiKey")
+                val response = _httpClient.post("/services/audio/tts/customization", options, headers)
+                val responseBody = response.body.string()
+                when (response.code) {
+                    200 -> {
+                        OkHttpUtils.decodeFromString(ResponseCreatedVoice::class, responseBody)
+                    }
+
+                    else -> {
+                        val exception = OkHttpUtils.decodeFromString(RequestCreateVoiceException::class, responseBody)
+                        throw ApiException(Status.builder().statusCode(response.code).code(exception.code).message(exception.message).build())
+                    }
+                }
+            },
+            { e ->
+                throw e
+            },
+        )
+    }
+
+    private suspend fun enrollVoice(
+        apiKeyIndex: Int,
+        options: EnrollVoiceOptions,
+    ): ResponseEnrolledVoice = withContext(Dispatchers.IO) {
         catch(
             apiKeyIndex,
             { apiKey ->
                 val customParam = VoiceEnrollmentParam.builder()
                     .model("")
                     .languageHints(options.languageHints?.map { it.value })
+                    .parameters(mapOf("enable_preprocess" to true))
                     .build()
-                VoiceEnrollmentService(apiKey).createVoice(options.model, options.prefix, options.url, customParam).toResponseVoice()
+                VoiceEnrollmentService(apiKey).createVoice(options.model, options.prefix, options.url, customParam).toResponseEnrolledVoice()
             },
             { e ->
                 throw e
@@ -55,16 +100,16 @@ class Voice(
         )
     }
 
-    private suspend fun queryAllVoices(
+    private suspend fun queryAllEnrolledVoices(
         apiKeyIndex: Int,
         prefix: String,
         pageIndex: Int,
         pageSize: Int,
-    ): List<ResponseVoice> = withContext(Dispatchers.IO) {
+    ): List<ResponseEnrolledVoice> = withContext(Dispatchers.IO) {
         catch(
             apiKeyIndex,
             { apiKey ->
-                VoiceEnrollmentService(apiKey).listVoice(prefix, pageIndex, pageSize).toList().map { it.toResponseVoice() }
+                VoiceEnrollmentService(apiKey).listVoice(prefix, pageIndex, pageSize).toList().map { it.toResponseEnrolledVoice() }
             },
             { e ->
                 throw e
@@ -72,14 +117,14 @@ class Voice(
         )
     }
 
-    private suspend fun queryVoice(
+    private suspend fun queryEnrolledVoice(
         apiKeyIndex: Int,
         id: String,
-    ): ResponseVoice? = withContext(Dispatchers.IO) {
+    ): ResponseEnrolledVoice? = withContext(Dispatchers.IO) {
         catch(
             apiKeyIndex,
             { apiKey ->
-                VoiceEnrollmentService(apiKey).queryVoice(id).toResponseVoice()
+                VoiceEnrollmentService(apiKey).queryVoice(id).toResponseEnrolledVoice()
             },
             { e ->
                 val responseCode = e.responseCode
@@ -92,7 +137,7 @@ class Voice(
         )
     }
 
-    private suspend fun updateVoice(
+    private suspend fun updateEnrolledVoice(
         apiKeyIndex: Int,
         id: String,
         url: String,
@@ -117,7 +162,7 @@ class Voice(
         )
     }
 
-    private suspend fun deleteVoice(
+    private suspend fun deleteEnrolledVoice(
         apiKeyIndex: Int,
         id: String,
     ): Boolean = withContext(Dispatchers.IO) {
@@ -138,20 +183,22 @@ class Voice(
         )
     }
 
-    suspend fun createVoice(options: VoiceEnrollmentCreateOptions) = createVoice(0, options)
+    suspend fun createVoice(options: CreateVoiceOptions) = createVoice(0, options)
 
-    suspend fun queryAllVoices(
+    suspend fun enrollVoice(options: EnrollVoiceOptions) = enrollVoice(0, options)
+
+    suspend fun queryAllEnrolledVoices(
         prefix: String,
         pageIndex: Int,
         pageSize: Int,
-    ) = queryAllVoices(0, prefix, pageIndex, pageSize)
+    ) = queryAllEnrolledVoices(0, prefix, pageIndex, pageSize)
 
-    suspend fun queryVoice(id: String) = queryVoice(0, id)
+    suspend fun queryEnrolledVoice(id: String) = queryEnrolledVoice(0, id)
 
-    suspend fun updateVoice(
+    suspend fun updateEnrolledVoice(
         id: String,
         url: String,
-    ) = updateVoice(0, id, url)
+    ) = updateEnrolledVoice(0, id, url)
 
-    suspend fun deleteVoice(id: String) = deleteVoice(0, id)
+    suspend fun deleteEnrolledVoice(id: String) = deleteEnrolledVoice(0, id)
 }
