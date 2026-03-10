@@ -1,6 +1,8 @@
 package com.zmkn.module.aliyunllm.audio.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.zmkn.extension.gbkLength
+import com.zmkn.module.aliyunllm.audio.enumeration.CreateVoiceResponseFormat
 import com.zmkn.module.aliyunllm.audio.enumeration.LanguageHint
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -24,12 +26,12 @@ data class CreateVoiceOptions(
         @param:JsonProperty("target_model")
         val targetModel: String,
 
-        // 用于设计音色时使用的提示词，长度不得超过 500 个字符。例如：“沉稳的中年男性播音员，音色低沉浑厚，富有磁性，语速平稳，吐字清晰，适合用于新闻播报或纪录片解说。”。
+        // 用于设计音色时使用的提示词，长度不得超过 500 个字符。只支持中文和英文。例如：“沉稳的中年男性播音员，音色低沉浑厚，富有磁性，语速平稳，吐字清晰，适合用于新闻播报或纪录片解说。”。
         @SerialName("voice_prompt")
         @param:JsonProperty("voice_prompt")
         val voicePrompt: String,
 
-        // 目标音色生成的预览音频朗读的内容，长度不得超过 500 个字符。例如：“各位听众朋友，大家好，欢迎收听晚间新闻。”。
+        // 目标音色生成的预览音频朗读的内容，长度不得超过 200 个字符。例如：“各位听众朋友，大家好，欢迎收听晚间新闻。”。
         @SerialName("preview_text")
         @param:JsonProperty("preview_text")
         val previewText: String,
@@ -47,7 +49,13 @@ data class CreateVoiceOptions(
         @SerialName("language_hints")
         @param:JsonProperty("language_hints")
         val languageHints: List<LanguageHint>? = null,
-    )
+    ) {
+        init {
+            require(voicePrompt.gbkLength in 0..500) { "Property 'voicePrompt' must be greater than or equal to 0 and less than or equal to 500, but was $voicePrompt." }
+            require(previewText.gbkLength in 0..500) { "Property 'previewText' must be greater than or equal to 0 and less than or equal to 200, but was $previewText." }
+            require(prefix.matches(Regex("^[a-z0-9]{1,9}$"))) { "prefix must be 1-9 lowercase letters and/or numbers." }
+        }
+    }
 
     @Serializable
     data class Parameters(
@@ -58,7 +66,7 @@ data class CreateVoiceOptions(
         // 生成的音频格式，默认值：wav。例如：wav。
         @SerialName("response_format")
         @param:JsonProperty("response_format")
-        val responseFormat: String = "wav",
+        val responseFormat: CreateVoiceResponseFormat = CreateVoiceResponseFormat.WAV,
     ) {
         init {
             require(sampleRate in 6000..510000) { "Property 'sampleRate' must be greater than or equal to 6000 and less than or equal to 510000, but was $sampleRate." }

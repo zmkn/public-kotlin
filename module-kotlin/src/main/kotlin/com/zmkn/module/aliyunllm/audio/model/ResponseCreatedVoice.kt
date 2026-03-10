@@ -1,6 +1,7 @@
 package com.zmkn.module.aliyunllm.audio.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.zmkn.module.aliyunllm.audio.enumeration.CreateVoiceResponseFormat
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -8,9 +9,9 @@ import kotlinx.serialization.Serializable
 data class ResponseCreatedVoice(
     @SerialName("request_id")
     @param:JsonProperty("request_id")
-    val requestId: String? = null,
-    val usage: Usage? = null,
-    val output: Output? = null,
+    val requestId: String,
+    val usage: Usage,
+    val output: Output,
 ) {
     @Serializable
     data class Usage(
@@ -34,10 +35,10 @@ data class ResponseCreatedVoice(
             // Base64编码的音频数据
             val data: String,
 
-            // 文件格式，例如：wav
+            // 生成的音频格式，例如：wav
             @SerialName("response_format")
             @param:JsonProperty("response_format")
-            val responseFormat: String,
+            val responseFormat: CreateVoiceResponseFormat,
 
             // 音频码率。例如：32000
             @SerialName("sample_rate")

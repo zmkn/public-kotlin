@@ -1,8 +1,12 @@
 package com.zmkn.extension
 
+import java.nio.charset.Charset
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
+
+val String.gbkLength: Int
+    get() = toByteArray(Charset.forName("GBK")).size
 
 fun String.toNumberOrNull(): Number? = when {
     contains(".") -> {
