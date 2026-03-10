@@ -52,7 +52,7 @@ data class CreateVoiceOptions(
     ) {
         init {
             require(voicePrompt.gbkLength in 0..500) { "Property 'voicePrompt' must be greater than or equal to 0 and less than or equal to 500, but was $voicePrompt." }
-            require(previewText.gbkLength in 0..500) { "Property 'previewText' must be greater than or equal to 0 and less than or equal to 200, but was $previewText." }
+            require(previewText.gbkLength in 0..200) { "Property 'previewText' must be greater than or equal to 0 and less than or equal to 200, but was $previewText." }
             require(prefix.matches(Regex("^[a-z0-9]{1,9}$"))) { "prefix must be 1-9 lowercase letters and/or numbers." }
         }
     }
