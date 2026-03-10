@@ -29,6 +29,10 @@ enum class LanguageHint(
             JA.value -> JA
             KO.value -> KO
             RU.value -> RU
+            PT.value -> PT
+            TH.value -> TH
+            ID.value -> ID
+            VI.value -> VI
             else -> throw IllegalArgumentException("LanguageHint value is not allowed.")
         }
     }
