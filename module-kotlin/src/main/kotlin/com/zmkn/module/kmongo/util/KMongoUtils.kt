@@ -20,6 +20,7 @@ import org.bson.codecs.configuration.CodecRegistry
 import org.bson.conversions.Bson
 import org.bson.json.JsonWriterSettings
 import org.litote.kmongo.SetTo
+import org.litote.kmongo.path
 import org.litote.kmongo.serialization.SerializationClassMappingTypeService
 import org.litote.kmongo.service.ClassMappingType
 import org.litote.kmongo.util.KMongoUtil.defaultCodecRegistry
@@ -171,11 +172,11 @@ object KMongoUtils {
 
     inline fun <reified T> decodeFromDocument(document: Document): T = json.decodeFromString(documentToJson(document))
 
-    fun <T : Any> generateSetToList(
+    fun <T : Any> formatAsPropertyList(
         model: T,
         excludedFields: Collection<String> = setOf(),
         allowedNull: Boolean = false,
-    ): List<SetTo<*>> = model::class.memberProperties.filterIsInstance<KProperty1<T, Any?>>()
+    ): List<KProperty1<T, Any?>> = model::class.memberProperties.filterIsInstance<KProperty1<T, Any?>>()
         .let {
             if (excludedFields.isEmpty()) {
                 it
@@ -193,7 +194,29 @@ object KMongoUtils {
                     property.get(model) != null
                 }
             }
-        }.map { property ->
-            SetTo(property, property.get(model))
         }
+
+    fun <T : Any> generateEqList(
+        model: T,
+        excludedFields: Collection<String> = setOf(),
+        allowedNull: Boolean = false,
+    ): List<Bson> = formatAsPropertyList(
+        model = model,
+        excludedFields = excludedFields,
+        allowedNull = allowedNull,
+    ).map { property ->
+        Filters.eq(property.path(), property.get(model))
+    }
+
+    fun <T : Any> generateSetToList(
+        model: T,
+        excludedFields: Collection<String> = setOf(),
+        allowedNull: Boolean = false,
+    ): List<SetTo<*>> = formatAsPropertyList(
+        model = model,
+        excludedFields = excludedFields,
+        allowedNull = allowedNull,
+    ).map { property ->
+        SetTo(property, property.get(model))
+    }
 }
