@@ -2,7 +2,7 @@
 kotlin = "[2.3,3.0)"
 ktlint = "[14.0,15.0)"
 shadow = "[9.3,10.0)"
-jreleaser = "[1.21,2.0)"
+jreleaser = "[1.23,2.0)"
 kotlinxSerializationJson = "[1.9,2.0)"
 kotlinxCoroutinesCore = "[1.10,2.0)"
 protobuf = "[4.33,5.0)"
