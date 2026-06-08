@@ -1,6 +1,6 @@
 package com.zmkn.module.aliyunllm.aigc.extension
 
-import com.alibaba.dashscope.aigc.generation.SearchInfo
+import com.alibaba.dashscope.common.SearchInfo
 import com.zmkn.module.aliyunllm.aigc.model.ResponseMessage
 
 fun SearchInfo.toResponseMessageOutputSearchInfo(): ResponseMessage.Output.SearchInfo = ResponseMessage.Output.SearchInfo(

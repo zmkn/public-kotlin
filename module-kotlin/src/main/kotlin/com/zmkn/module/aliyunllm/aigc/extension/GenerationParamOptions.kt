@@ -1,7 +1,7 @@
 package com.zmkn.module.aliyunllm.aigc.extension
 
-import com.alibaba.dashscope.aigc.generation.SearchOptions
 import com.alibaba.dashscope.aigc.generation.TranslationOptions
+import com.alibaba.dashscope.common.SearchOptions
 import com.alibaba.dashscope.tools.ToolCallFunction
 import com.zmkn.module.aliyunllm.aigc.model.GenerationParamOptions
 

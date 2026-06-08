@@ -89,7 +89,7 @@ class AliyunLlmAudioTest {
             ),
         )
         println(responseVoice)
-        println(responseVoice.output?.voiceId)
+        println(responseVoice.output.voiceId)
         println("结束-testCreateVoice")
     }
 
@@ -101,7 +101,7 @@ class AliyunLlmAudioTest {
             EnrollVoiceOptions(
                 model = "cosyvoice-v3.5-flash",
                 prefix = "lingqi",
-                url = "https://oss.test.ailingqi.com/audio/user/67d11287d0f1c354bbad4c1e/mp3/odyQFboVCMUB7hhb.mp3",
+                url = "https://oss.test.ailingqi.com/voice/user/67d11287d0f1c354bbad4c1e/wav/S9tc3fNoQ2NwZWAW.wav",
                 languageHints = null
             )
         )
@@ -142,11 +142,11 @@ class AliyunLlmAudioTest {
         println("结束-testUpdateEnrolledVoice")
     }
 
-    @Test
     @Disabled
+    @Test
     fun testDeleteEnrolledVoice() = runBlocking {
         println("开始-testDeleteEnrolledVoice")
-        val result = _voice.deleteEnrolledVoice("cosyvoice-v1-aaa1-ce39a5e71a104ac1a8572ff9baed2f6b")
+        val result = _voice.deleteEnrolledVoice("cosyvoice-v3.5-flash-lingqi-a92f45844ed24edf884cd5288dfb35be")
         println(result)
         println("结束-testDeleteEnrolledVoice")
     }
